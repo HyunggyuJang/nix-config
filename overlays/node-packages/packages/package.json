@@ -1,0 +1,5 @@
+[
+  "jsdom",
+  "@mozilla/readability",
+  "qutejs"
+]
