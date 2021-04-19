@@ -139,6 +139,8 @@ in with lib;
           config.unbind("<ctrl-t>")
           config.unbind("<ctrl-w>")
           config.unbind("<ctrl-shift-w>")
+          # I use `x` instead `d`.
+          config.unbind("d")
 
           config.bind(';;', 'hint inputs --first')  # easier to reach than ;t
 
@@ -496,10 +498,12 @@ in with lib;
         };
         extraConfig = ''
           yabai -m rule --add app="^System Preferences$" manage=off
-          yabai -m rule --add app=Anki space=2
-          yabai -m rule --add app="Microsoft Teams" space=3
-          yabai -m rule --add app=zoom space=3
-          yabai -m rule --add app="Emacs" title="Emacs Everywhere ::*" manage=off sticky=on
+          yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off sticky=on
+          yabai -m rule --add app=Emacs space=1
+          yabai -m rule --add app=qutebrowser space=2
+          yabai -m rule --add app=Anki space=3
+          yabai -m rule --add app="Microsoft Teams" space=4
+          yabai -m rule --add app=zoom space=4
         '';
       };
       skhd = {
