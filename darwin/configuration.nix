@@ -111,7 +111,7 @@ in with lib;
               # Plain old org capture
               "<Meta-p>": "open javascript:location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())",
               # Plain old org capture at current point
-              "<Meta-L>": "open javascript:location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())"
+              "<Meta-i>": "open javascript:location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())"
           }
 
           c.bindings.commands['command'] = {
@@ -408,7 +408,7 @@ in with lib;
       pkgs.zsh
     ];
     environment.variables = {
-      EDITOR = "emacsclient --alternate-editor=emacs";
+      EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
       VISUAL = "$EDITOR";
       LANG = "en_US.UTF-8";
       SHELL = "${pkgs.zsh}/bin/zsh";
