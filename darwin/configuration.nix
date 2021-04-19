@@ -336,6 +336,7 @@ in with lib;
         <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
         <fontconfig>
           <dir>/Library/Fonts</dir>
+          <dir>${hgj_home}/Library/Fonts</dir>
         </fontconfig>
       '';
         };
