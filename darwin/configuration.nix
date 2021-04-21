@@ -37,19 +37,8 @@ in with lib;
 
     home-manager.useGlobalPkgs = true;
     home-manager.users.hynggyujang =
-      let
-        doom-emacs = pkgs.callPackage (builtins.fetchTarball {
-          url = https://github.com/vlaci/nix-doom-emacs/archive/master.tar.gz;
-        }) {
-          inherit pkgs;
-          doomPrivateDir = environment.variables.DOOMDIR;
-        };
-      in rec {
-        # home.packages = [ doom-emacs ];
+      rec {
         home.file = {
-          # ".emacs.d/init.el".text = ''
-          #     (load "default.el")
-          # '';
           "${hgj_localbin}/eldev" = {
             source = pkgs.fetchurl {
               name = "eldev";
@@ -231,10 +220,10 @@ sudo rm -rf /var/root/.cache/nix
               esac
             '';
           };
-          ".emacs-profile".text = "doom";
           ".emacs-profiles.el".text = ''
           (("doom" . ((user-emacs-directory . "${environment.variables.EMACSDIR}")))
-           ("d12frosted" ((user-emacs-directory . "${xdg.configHome}/emacs"))))
+           ("d12frosted" . ((user-emacs-directory . "${xdg.configHome}/emacs")
+                            (env . (("SHELL" . "${pkgs.fish}"))))))
           '';
           ".qutebrowser/config.py".text = ''
           config.load_autoconfig(True)
@@ -604,6 +593,7 @@ sudo rm -rf /var/root/.cache/nix
       (lua.withPackages (ps: with ps; [fennel]))
       gnupg
       pass
+      fish
     ];
     environment.shells = [
       pkgs.bashInteractive
@@ -647,6 +637,9 @@ sudo rm -rf /var/root/.cache/nix
                       pathExists (path + ("/" + n + "/default.nix")))
             (attrNames (readDir path)));
 
+    programs.fish = {
+      enable = true;
+    };
     programs.zsh = {
       enable = true;
       enableFzfCompletion = true;
@@ -967,6 +960,10 @@ sudo rm -rf /var/root/.cache/nix
           open < ctrl - g ; default
 
           # emacs
+          ## Doom
+          open < d : echo "doom" > $HOME/.emacs-profile; open -a "$HOME/Applications/Nix Apps/Emacs.app"; skhd -k "ctrl - g"
+          ## d12Frosted
+          open < f : echo "d12frosted" > $HOME/.emacs-profile; open -a "$HOME/Applications/Nix Apps/Emacs.app"; skhd -k "ctrl - g"
           open < e : open -a "$HOME/Applications/Nix Apps/Emacs.app"; skhd -k "ctrl - g"
           open < shift - e : DEBUG=1 open -a "$HOME/Applications/Nix Apps/Emacs.app"; skhd -k "ctrl - g"
 
@@ -1004,6 +1001,7 @@ sudo rm -rf /var/root/.cache/nix
         pkgs.sarasa-gothic
         pkgs.etBook
         pkgs.emacs-all-the-icons-fonts
+        pkgs.source-code-pro
       ];
     };
     homebrew = {
