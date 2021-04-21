@@ -2,6 +2,7 @@
 
 let hgj_home = builtins.getEnv "HOME";
     hgj_sync = "${hgj_home}/Desktop";
+    hgj_localbin = ".local/bin";
 
     mach-nix = import <mach-nix> {
       inherit pkgs;
@@ -30,7 +31,7 @@ let hgj_home = builtins.getEnv "HOME";
     };
 
 in with lib;
-  {
+  rec {
     # Home manager
     imports = [ <home-manager/nix-darwin> ];
 
@@ -49,6 +50,192 @@ in with lib;
           # ".emacs.d/init.el".text = ''
           #     (load "default.el")
           # '';
+          "${hgj_localbin}/eldev" = {
+            source = pkgs.fetchurl {
+              name = "eldev";
+              url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
+              sha256 = "0csn6c4w95iswqdlj5akzspcm5ar7imngqcdch87ac21wz8xigln";
+            };
+            executable = true;
+          };
+          "${hgj_localbin}/open_kitty" = {
+            executable = true;
+            text = ''
+#!/usr/bin/env bash
+
+# https://github.com/noperator/dotfiles/blob/master/.config/kitty/launch-instance.sh
+
+# Launch a kitty window from another kitty window, while:
+# 1. Copying the first window's working directory, and
+# 2. Keeping the second window on the first window's focused display.
+
+PATH="$HOME/Applications/Nix Apps/kitty.app/Contents/MacOS${"\${PATH:+:\${PATH}}"}"
+
+FOCUSED_WINDOW=$(yabai -m query --windows --window)
+
+# If launching _from_ a focused kitty window, open the new kitty window with
+# the same working directory. The socket is required to use control messages to
+# grab the working directory of the focused kitty window; more details in
+# kitty's documentation:
+# - https://sw.kovidgoyal.net/kitty/invocation.html?highlight=socket#cmdoption-kitty-listen-on
+FOCUSED_WINDOW_APP=$(echo "$FOCUSED_WINDOW" | jq '.app' -r)
+if [[ "$FOCUSED_WINDOW_APP" == 'kitty' ]]; then
+    DIR=$(
+        kitty @ --to unix:/tmp/mykitty ls |
+        jq '.[] | select(.is_focused==true) | .tabs[] | select(.is_focused==true) | .windows[] | .cwd' -r
+    )
+else
+    DIR="$HOME"
+fi
+
+# Adapted a few changes from @yanzhang0219's script to leverage yabai signals to
+# move the new kitty window to the focused display, rather than the display the
+# first kitty window was launched from.
+# - https://github.com/koekeishiya/yabai/issues/413#issuecomment-604072616
+# - https://github.com/koekeishiya/yabai/wiki/Commands#automation-with-rules-and-signals
+FOCUSED_WINDOW_DISPLAY=$(echo "$FOCUSED_WINDOW" | jq .display)
+FOCUSED_WINDOW_ID=$(echo "$FOCUSED_WINDOW" | jq .id)
+
+yabai -m signal --add \
+    action="yabai -m signal --remove temp_move_kitty;
+            YABAI_WINDOW_DISPLAY=\$(yabai -m query --windows --window $YABAI_WINDOW_ID | jq .display);
+            if ! [[ \$YABAI_WINDOW_DISPLAY == $FOCUSED_WINDOW_DISPLAY ]]; then
+                yabai -m window \$YABAI_WINDOW_ID --warp $FOCUSED_WINDOW_ID;
+                yabai -m window --focus \$YABAI_WINDOW_ID;
+            fi" \
+    app=kitty \
+    event=window_created \
+    label=temp_move_kitty
+
+# Launch new kitty window; the temporary signal above will move it to the
+# focused display.
+kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
+            '';
+          };
+          "${hgj_localbin}/uninstall-nix-osx" = {
+            executable = true;
+            text = ''
+#!usr/bin/env bash
+
+# !!WARNING!!
+# This will DELETE all efforts you have put into configuring nix
+# Have a look through everything that gets deleted / copied over
+
+# nix-env -e '.*'
+
+rm -rf "$HOME"/.nix-*
+# rm -rf $HOME/.config/nixpkgs
+rm -rf "$HOME"/.cache/nix
+rm -rf "$HOME"/.nixpkgs
+
+if [ -L "$HOME"/Applications ]; then
+  rm "$HOME"/Applications
+fi
+
+sudo rm -rf /etc/nix /nix
+
+# Nix wasnt installed using `--daemon`
+# [ ! -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist ] && exit 0
+
+if [ -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist ]; then
+    sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+    sudo rm /Library/LaunchDaemons/org.nixos.nix-daemon.plist
+fi
+
+if [ -f /etc/profile.backup-before-nix ]; then
+    sudo mv /etc/profile.backup-before-nix /etc/profile
+fi
+
+if [ -f /etc/bashrc.backup-before-nix ]; then
+    sudo mv /etc/bashrc.backup-before-nix /etc/bashrc
+fi
+
+if [ -f /etc/zshrc.backup-before-nix ]; then
+    sudo mv /etc/zshrc.backup-before-nix /etc/zshrc
+fi
+
+USERS=$(sudo dscl . list /Users | grep nixbld)
+
+for USER in $USERS; do
+    sudo /usr/bin/dscl . -delete "/Users/$USER"
+    sudo /usr/bin/dscl . -delete /Groups/staff GroupMembership "$USER";
+done
+
+_GROUPS=$(sudo dscl . list /Groups | grep nixbld)
+
+for GROUP in $_GROUPS; do
+    sudo /usr/bin/dscl . -delete "/Groups/$GROUP"
+done
+
+sudo rm -rf /var/root/.nix-*
+sudo rm -rf /var/root/.cache/nix
+
+# useful for finding hanging links
+# $ find . -type l -maxdepth 5 ! -exec test -e {} \; -print 2>/dev/null | xargs -I {} sh -c 'file -b {} | grep nix && echo {}'
+            '';
+          };
+          "${hgj_localbin}/emacs-eru" = {
+            executable = true;
+            text = ''
+              #!/usr/bin/env bash
+
+              set -e
+
+              ACTION=$1
+
+              emacs_d=$HOME/.config/emacs
+              if [[ -d "$XDG_CONFIG_HOME" ]]; then
+                emacs_d="$XDG_CONFIG_HOME/emacs"
+              fi
+
+              function print_usage() {
+                echo "Usage:
+                emacs-eru ACTION
+
+              Actions:
+                install               Install dependencies, compile and lint configurations
+                upgrade               Upgrade dependencies
+                test                  Test configurations
+              "
+              }
+
+              if [ -z "$ACTION" ]; then
+                echo "No ACTION is provided"
+                print_usage
+                exit 1
+              fi
+
+              case "$ACTION" in
+                install)
+                  cd "$emacs_d" && {
+                    make bootstrap compile lint roam
+                  }
+                  ;;
+
+                upgrade)
+                  cd "$emacs_d" && {
+                    make upgrade compile lint
+                  }
+                  ;;
+
+                test)
+                  cd "$emacs_d" && {
+                    make test
+                  }
+                  ;;
+
+                *)
+                  echo "Unrecognized ACTION $ACTION"
+                  print_usage
+                  ;;
+              esac
+            '';
+          };
+          ".emacs-profile".text = "doom";
+          ".emacs-profiles.el".text = ''
+          (("doom" . ((user-emacs-directory . "${environment.variables.EMACSDIR}")))
+           ("d12frosted" ((user-emacs-directory . "${xdg.configHome}/emacs"))))
+          '';
           ".qutebrowser/config.py".text = ''
           config.load_autoconfig(True)
           # c.window.hide_decoration = True
@@ -415,6 +602,8 @@ in with lib;
       # for pdf-tools
       gcc gnumake automake autoconf pkgconfig libpng zlib poppler
       (lua.withPackages (ps: with ps; [fennel]))
+      gnupg
+      pass
     ];
     environment.shells = [
       pkgs.bashInteractive
@@ -427,12 +616,16 @@ in with lib;
       SHELL = "${pkgs.zsh}/bin/zsh";
       NODE_PATH = "/run/current-system/sw/lib/node_modules";
       DOOMDIR = "${hgj_sync}/dotfiles/.doom.d";
+      EMACSDIR = "${hgj_home}/.doom.d";
+      DOOMLOCALDIR = "${hgj_home}/.doom";
     };
 
     environment.systemPath = [
-      "$HOME/Desktop/bin"
+      "$HOME/${hgj_localbin}"
       # Easy access to Doom
-      "$HOME/.emacs.d/bin"
+      # SystemPath added before to the variables, it can be inspected at /etc/static/zshenv,
+      # which source *-set-environment file.
+      "${environment.variables.EMACSDIR}/bin"
     ];
 
     environment.pathsToLink = [
@@ -517,6 +710,7 @@ in with lib;
           yabai -m rule --add app=Anki space=3
           yabai -m rule --add app="Microsoft Teams" space=4
           yabai -m rule --add app=zoom space=4
+          yabai -m rule --add app="Google Chrome" space=5
         '';
       };
       skhd = {
@@ -777,7 +971,7 @@ in with lib;
           open < shift - e : DEBUG=1 open -a "$HOME/Applications/Nix Apps/Emacs.app"; skhd -k "ctrl - g"
 
           # kitty or terminal
-          open < t : "$HOME/Desktop/bin/open_kitty"; skhd -k "ctrl - g"
+          open < t : open_kitty; skhd -k "ctrl - g"
 
           # Internet Browser
           open < b : open -a "/Applications/qutebrowser.app"; skhd -k "ctrl - g"
