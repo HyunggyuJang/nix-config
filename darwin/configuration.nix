@@ -3,6 +3,7 @@
 let hgj_home = builtins.getEnv "HOME";
     hgj_sync = "${hgj_home}/Desktop";
     hgj_localbin = ".local/bin";
+    localconfig = import <localconfig>;
 
     mach-nix = import <mach-nix> {
       inherit pkgs;
@@ -13,6 +14,7 @@ let hgj_home = builtins.getEnv "HOME";
       requirements = ''
         readability-lxml
         octave-kernel
+        mathlibtools
     '';
     };
 
@@ -36,7 +38,7 @@ in with lib;
     imports = [ <home-manager/nix-darwin> ];
 
     home-manager.useGlobalPkgs = true;
-    home-manager.users.hynggyujang =
+    home-manager.users.hyunggyujang =
       rec {
         home.file = {
           "${hgj_localbin}/eldev" = {
@@ -46,60 +48,6 @@ in with lib;
               sha256 = "0csn6c4w95iswqdlj5akzspcm5ar7imngqcdch87ac21wz8xigln";
             };
             executable = true;
-          };
-          "${hgj_localbin}/open_kitty" = {
-            executable = true;
-            text = ''
-#!/usr/bin/env bash
-
-# https://github.com/noperator/dotfiles/blob/master/.config/kitty/launch-instance.sh
-
-# Launch a kitty window from another kitty window, while:
-# 1. Copying the first window's working directory, and
-# 2. Keeping the second window on the first window's focused display.
-
-PATH="$HOME/Applications/Nix Apps/kitty.app/Contents/MacOS${"\${PATH:+:\${PATH}}"}"
-
-FOCUSED_WINDOW=$(yabai -m query --windows --window)
-
-# If launching _from_ a focused kitty window, open the new kitty window with
-# the same working directory. The socket is required to use control messages to
-# grab the working directory of the focused kitty window; more details in
-# kitty's documentation:
-# - https://sw.kovidgoyal.net/kitty/invocation.html?highlight=socket#cmdoption-kitty-listen-on
-FOCUSED_WINDOW_APP=$(echo "$FOCUSED_WINDOW" | jq '.app' -r)
-if [[ "$FOCUSED_WINDOW_APP" == 'kitty' ]]; then
-    DIR=$(
-        kitty @ --to unix:/tmp/mykitty ls |
-        jq '.[] | select(.is_focused==true) | .tabs[] | select(.is_focused==true) | .windows[] | .cwd' -r
-    )
-else
-    DIR="$HOME"
-fi
-
-# Adapted a few changes from @yanzhang0219's script to leverage yabai signals to
-# move the new kitty window to the focused display, rather than the display the
-# first kitty window was launched from.
-# - https://github.com/koekeishiya/yabai/issues/413#issuecomment-604072616
-# - https://github.com/koekeishiya/yabai/wiki/Commands#automation-with-rules-and-signals
-FOCUSED_WINDOW_DISPLAY=$(echo "$FOCUSED_WINDOW" | jq .display)
-FOCUSED_WINDOW_ID=$(echo "$FOCUSED_WINDOW" | jq .id)
-
-yabai -m signal --add \
-    action="yabai -m signal --remove temp_move_kitty;
-            YABAI_WINDOW_DISPLAY=\$(yabai -m query --windows --window $YABAI_WINDOW_ID | jq .display);
-            if ! [[ \$YABAI_WINDOW_DISPLAY == $FOCUSED_WINDOW_DISPLAY ]]; then
-                yabai -m window \$YABAI_WINDOW_ID --warp $FOCUSED_WINDOW_ID;
-                yabai -m window --focus \$YABAI_WINDOW_ID;
-            fi" \
-    app=kitty \
-    event=window_created \
-    label=temp_move_kitty
-
-# Launch new kitty window; the temporary signal above will move it to the
-# focused display.
-kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
-            '';
           };
           "${hgj_localbin}/uninstall-nix-osx" = {
             executable = true;
@@ -185,6 +133,7 @@ sudo rm -rf /var/root/.cache/nix
                 install               Install dependencies, compile and lint configurations
                 upgrade               Upgrade dependencies
                 test                  Test configurations
+                compile               Reflect minor changes by compiling
               "
               }
 
@@ -210,6 +159,12 @@ sudo rm -rf /var/root/.cache/nix
                 test)
                   cd "$emacs_d" && {
                     make test
+                  }
+                  ;;
+
+                compile)
+                  cd "$emacs_d" && {
+                    make compile
                   }
                   ;;
 
@@ -360,10 +315,10 @@ sudo rm -rf /var/root/.cache/nix
             };
             executable = true;
           };
-          ".bash_profile".text = ". /Users/hynggyujang/.nix-profile/etc/profile.d/nix.sh";
+          ".bash_profile".text = ". ${hgj_home}/.nix-profile/etc/profile.d/nix.sh";
           ".gitconfig".text = ''
           [user]
-            name = Hynggyu Jang
+            name = Hyunggyu Jang
             email = murasakipurplez5@gmail.com
         '';
           ".mailcap".text = ''
@@ -425,7 +380,7 @@ sudo rm -rf /var/root/.cache/nix
         '';
           ".notmuch-config".text = ''
           [database]
-          path=/Users/hynggyujang/.mail
+          path=${hgj_home}/.mail
           [user]
           name=Hyunggyu Jang
           primary_email=murasakipurplez5@gmail.com
@@ -439,7 +394,63 @@ sudo rm -rf /var/root/.cache/nix
           synchronize_flags=true
         '';
           ".SpaceVim.d".source = "${hgj_sync}/dotfiles/.SpaceVim.d";
-        };
+        } //
+        (if localconfig.hostname == "classic" then {
+                    "${hgj_localbin}/open_kitty" = {
+            executable = true;
+            text = ''
+#!/usr/bin/env bash
+
+# https://github.com/noperator/dotfiles/blob/master/.config/kitty/launch-instance.sh
+
+# Launch a kitty window from another kitty window, while:
+# 1. Copying the first window's working directory, and
+# 2. Keeping the second window on the first window's focused display.
+
+PATH="$HOME/Applications/Nix Apps/kitty.app/Contents/MacOS${"\${PATH:+:\${PATH}}"}"
+
+FOCUSED_WINDOW=$(yabai -m query --windows --window)
+
+# If launching _from_ a focused kitty window, open the new kitty window with
+# the same working directory. The socket is required to use control messages to
+# grab the working directory of the focused kitty window; more details in
+# kitty's documentation:
+# - https://sw.kovidgoyal.net/kitty/invocation.html?highlight=socket#cmdoption-kitty-listen-on
+FOCUSED_WINDOW_APP=$(echo "$FOCUSED_WINDOW" | jq '.app' -r)
+if [[ "$FOCUSED_WINDOW_APP" == 'kitty' ]]; then
+    DIR=$(
+        kitty @ --to unix:/tmp/mykitty ls |
+        jq '.[] | select(.is_focused==true) | .tabs[] | select(.is_focused==true) | .windows[] | .cwd' -r
+    )
+else
+    DIR="$HOME"
+fi
+
+# Adapted a few changes from @yanzhang0219's script to leverage yabai signals to
+# move the new kitty window to the focused display, rather than the display the
+# first kitty window was launched from.
+# - https://github.com/koekeishiya/yabai/issues/413#issuecomment-604072616
+# - https://github.com/koekeishiya/yabai/wiki/Commands#automation-with-rules-and-signals
+FOCUSED_WINDOW_DISPLAY=$(echo "$FOCUSED_WINDOW" | jq .display)
+FOCUSED_WINDOW_ID=$(echo "$FOCUSED_WINDOW" | jq .id)
+
+yabai -m signal --add \
+    action="yabai -m signal --remove temp_move_kitty;
+            YABAI_WINDOW_DISPLAY=\$(yabai -m query --windows --window $YABAI_WINDOW_ID | jq .display);
+            if ! [[ \$YABAI_WINDOW_DISPLAY == $FOCUSED_WINDOW_DISPLAY ]]; then
+                yabai -m window \$YABAI_WINDOW_ID --warp $FOCUSED_WINDOW_ID;
+                yabai -m window --focus \$YABAI_WINDOW_ID;
+            fi" \
+    app=kitty \
+    event=window_created \
+    label=temp_move_kitty
+
+# Launch new kitty window; the temporary signal above will move it to the
+# focused display.
+kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
+            '';
+          };
+        } else {});
         home.sessionVariables = {
           FONTCONFIG_FILE    = "${xdg.configHome}/fontconfig/fonts.conf";
           FONTCONFIG_PATH    = "${xdg.configHome}/fontconfig";
@@ -485,7 +496,6 @@ sudo rm -rf /var/root/.cache/nix
           maildir_separator = /
         '';
 
-          configFile."karabiner/karabiner.json".source = "${hgj_sync}/dotfiles/karabiner.json";
           configFile."kitty/dracula.conf".source = "${kittyDracula}/dracula.conf";
           configFile."kitty/diff.conf".source = "${kittyDracula}/diff.conf";
           configFile."kitty/kitty.conf".text = ''
@@ -515,7 +525,1383 @@ sudo rm -rf /var/root/.cache/nix
           <dir>${hgj_home}/Library/Fonts</dir>
         </fontconfig>
       '';
-        };
+        } //
+        (if localconfig.hostname == "classic" then {
+          configFile."karabiner/karabiner.json".text = ''
+{
+    "global": {
+        "check_for_updates_on_startup": false,
+        "show_in_menu_bar": true,
+        "show_profile_name_in_menu_bar": false
+    },
+    "profiles": [
+        {
+            "complex_modifications": {
+                "parameters": {
+                    "basic.simultaneous_threshold_milliseconds": 50,
+                    "basic.to_delayed_action_delay_milliseconds": 500,
+                    "basic.to_if_alone_timeout_milliseconds": 1000,
+                    "basic.to_if_held_down_threshold_milliseconds": 500,
+                    "mouse_motion_to_scroll.speed": 100
+                },
+                "rules": [
+                    {
+                        "description": "コマンドキーをオプションキーに置き換える。",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "left_command",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_option"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "英数・かなキーを他のキーと組み合わせて押したときに、コマンドキーを送信する。",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "japanese_eisuu",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_command"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "japanese_eisuu"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "japanese_eisuu",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_command"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "f17"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "japanese_kana",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_command"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "japanese_kana"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "japanese_kana",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_command"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "f18"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "input_sources": [
+                                            {
+                                                "language": "ko"
+                                            }
+                                        ],
+                                        "type": "input_source_if"
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_option"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "input_sources": [
+                                            {
+                                                "language": "ko"
+                                            }
+                                        ],
+                                        "type": "input_source_unless"
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_option"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "hold_down_milliseconds": 50,
+                                        "key_code": "japanese_eisuu"
+                                    },
+                                    {
+                                        "select_input_source": {
+                                            "language": "ko"
+                                        }
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_option"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "f19"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Change escape to control if pressed with other keys, to escape if pressed alone.",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "escape",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_control"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "escape"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Change return key to control if pressed with other keys, to return if pressed alone.",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "return_or_enter",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_control"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "return_or_enter"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Bash style Emacs key bindings (rev 2)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "w",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "delete_or_backspace",
+                                        "modifiers": [
+                                            "left_option"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "u",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_arrow",
+                                        "modifiers": [
+                                            "left_command",
+                                            "left_shift"
+                                        ]
+                                    },
+                                    {
+                                        "key_code": "delete_or_backspace",
+                                        "repeat": false
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Emacs key bindings [control+keys] (rev 10)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "d",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "option"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "delete_forward"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "h",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "option"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "delete_or_backspace"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "i",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "tab"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "keyboard_types": [
+                                            "ansi",
+                                            "iso"
+                                        ],
+                                        "type": "keyboard_type_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "open_bracket",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "escape"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "keyboard_types": [
+                                            "jis"
+                                        ],
+                                        "type": "keyboard_type_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "close_bracket",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "escape"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "m",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift",
+                                            "option"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "return_or_enter"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "b",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift",
+                                            "option"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_arrow"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "f",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift",
+                                            "option"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_arrow"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "n",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift",
+                                            "option"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "down_arrow"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "p",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift",
+                                            "option"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "up_arrow"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "v",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "page_down"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^com\\.microsoft\\.Excel$",
+                                            "^com\\.microsoft\\.Powerpoint$",
+                                            "^com\\.microsoft\\.Word$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "a",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "home"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^com\\.microsoft\\.Excel$",
+                                            "^com\\.microsoft\\.Powerpoint$",
+                                            "^com\\.microsoft\\.Word$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "e",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "end"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.eclipse\\.platform\\.ide$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "a",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_arrow",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.eclipse\\.platform\\.ide$"
+                                        ],
+                                        "type": "frontmost_application_if"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "e",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_arrow",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Emacs key bindings [option+keys] (rev 5)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "v",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "option"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "page_up"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "b",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "option"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_arrow",
+                                        "modifiers": [
+                                            "left_option"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "f",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "option"
+                                        ],
+                                        "optional": [
+                                            "caps_lock",
+                                            "shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_arrow",
+                                        "modifiers": [
+                                            "left_option"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "d",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "option"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "delete_forward",
+                                        "modifiers": [
+                                            "left_option"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Emacs key bindings [C-x key strokes] (rev 2)",
+                        "manipulators": [
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "C-x",
+                                        "type": "variable_if",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "c",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "q",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "C-x",
+                                        "type": "variable_if",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "f",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "o",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "C-x",
+                                        "type": "variable_if",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "s",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "s",
+                                        "modifiers": [
+                                            "left_command"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "name": "C-x",
+                                        "type": "variable_if",
+                                        "value": 1
+                                    }
+                                ],
+                                "from": {
+                                    "any": "key_code",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "type": "basic"
+                            },
+                            {
+                                "conditions": [
+                                    {
+                                        "bundle_identifiers": [
+                                            "^org\\.gnu\\.Emacs$",
+                                            "^com\\.apple\\.Terminal$",
+                                            "^com\\.googlecode\\.iterm2$",
+                                            "^com\\.microsoft\\.VSCode$",
+                                            "^com\\.qvacua\\.VimR$"
+                                        ],
+                                        "file_paths": [
+                                            "kitty",
+                                            "qutebrowser"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
+                                "from": {
+                                    "key_code": "x",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "control"
+                                        ],
+                                        "optional": [
+                                            "caps_lock"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "set_variable": {
+                                            "name": "C-x",
+                                            "value": 1
+                                        }
+                                    }
+                                ],
+                                "to_delayed_action": {
+                                    "to_if_canceled": [
+                                        {
+                                            "set_variable": {
+                                                "name": "C-x",
+                                                "value": 0
+                                            }
+                                        }
+                                    ],
+                                    "to_if_invoked": [
+                                        {
+                                            "set_variable": {
+                                                "name": "C-x",
+                                                "value": 0
+                                            }
+                                        }
+                                    ]
+                                },
+                                "type": "basic"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "devices": [
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": false,
+                        "product_id": 657,
+                        "vendor_id": 1452
+                    },
+                    "ignore": false,
+                    "manipulate_caps_lock_led": true,
+                    "simple_modifications": []
+                }
+            ],
+            "fn_function_keys": [
+                {
+                    "from": {
+                        "key_code": "f1"
+                    },
+                    "to": {
+                        "consumer_key_code": "display_brightness_decrement"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f2"
+                    },
+                    "to": {
+                        "consumer_key_code": "display_brightness_increment"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f3"
+                    },
+                    "to": {
+                        "key_code": "mission_control"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f4"
+                    },
+                    "to": {
+                        "key_code": "launchpad"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f5"
+                    },
+                    "to": {
+                        "key_code": "illumination_decrement"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f6"
+                    },
+                    "to": {
+                        "key_code": "illumination_increment"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f7"
+                    },
+                    "to": {
+                        "consumer_key_code": "rewind"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f8"
+                    },
+                    "to": {
+                        "consumer_key_code": "play_or_pause"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f9"
+                    },
+                    "to": {
+                        "consumer_key_code": "fast_forward"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f10"
+                    },
+                    "to": {
+                        "consumer_key_code": "mute"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f11"
+                    },
+                    "to": {
+                        "consumer_key_code": "volume_decrement"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "f12"
+                    },
+                    "to": {
+                        "consumer_key_code": "volume_increment"
+                    }
+                }
+            ],
+            "name": "Default profile",
+            "parameters": {
+                "delay_milliseconds_before_open_device": 1000
+            },
+            "selected": true,
+            "simple_modifications": [
+                {
+                    "from": {
+                        "key_code": "caps_lock"
+                    },
+                    "to": {
+                        "key_code": "fn"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "escape"
+                    },
+                    "to": {
+                        "key_code": "caps_lock"
+                    }
+                },
+                {
+                    "from": {
+                        "key_code": "left_control"
+                    },
+                    "to": {
+                        "key_code": "escape"
+                    }
+                }
+            ],
+            "virtual_hid_keyboard": {
+                "country_code": 0,
+                "mouse_key_xy_scale": 100
+            }
+        }
+    ]
+}
+'';
+        } else {});
       };
     system.defaults.NSGlobalDomain = {
       ApplePressAndHoldEnabled = false;
@@ -559,7 +1945,6 @@ sudo rm -rf /var/root/.cache/nix
       nodejs
       isync
       nixfmt
-      skhd
       shellcheck
       ripgrep
       # desktop-file-utils
@@ -590,11 +1975,15 @@ sudo rm -rf /var/root/.cache/nix
       pandoc
       # for pdf-tools
       gcc gnumake automake autoconf pkgconfig libpng zlib poppler
-      (lua.withPackages (ps: with ps; [fennel]))
+      (lua5_3.withPackages (ps: with ps; [fennel]))
       gnupg
       pass
       fish
-    ];
+      yaskkserv2 #→ Cannot build
+      cargo
+    ] ++ (if localconfig.hostname == "classic" then [
+      skhd
+    ] else []);
     environment.shells = [
       pkgs.bashInteractive
       pkgs.zsh
@@ -647,10 +2036,13 @@ sudo rm -rf /var/root/.cache/nix
       enableFzfHistory = true;
       enableSyntaxHighlighting = true;
       # For brew completions
-      interactiveShellInit = ''
+      interactiveShellInit = let brewpath = if localconfig.hostname == "silicon" then "/opt/homebrew"
+                                            else "/usr/local";
+                             in
+                               ''
         echo >&2 "Homebrew completion path..."
-        if [ -f /usr/local/bin/brew ]; then
-          PATH=/usr/local/bin:$PATH fpath+=$(brew --prefix)/share/zsh/site-functions
+        if [ -f ${brewpath}/bin/brew ]; then
+          PATH=${brewpath}/bin:$PATH fpath+=$(brew --prefix)/share/zsh/site-functions
         else
           echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
         fi
@@ -658,15 +2050,21 @@ sudo rm -rf /var/root/.cache/nix
     };
 
     # Manual setting for workaround of org-id: 7127dc6e-5a84-476c-8d31-59737a4f85f9
-    launchd.daemons.yabai-sa = {
-      script = ''
+    launchd.daemons = if localconfig.hostname == "classic" then {
+      yabai-sa = {
+        script = ''
           ${pkgs.yabai}/bin/yabai --check-sa || ${pkgs.yabai}/bin/yabai --install-sa
         '';
 
-      serviceConfig.RunAtLoad = true;
-      serviceConfig.KeepAlive.SuccessfulExit = false;
-    };
+        serviceConfig.RunAtLoad = true;
+        serviceConfig.KeepAlive.SuccessfulExit = false;
+      };
+    } else {};
     services = {
+      activate-system.enable = true;
+      nix-daemon.enable =false;
+    } //
+    (if localconfig.hostname == "classic" then {
       yabai = {
         enable = true;
         package = pkgs.yabai;
@@ -961,27 +2359,29 @@ sudo rm -rf /var/root/.cache/nix
 
           # emacs
           ## Doom
-          open < d : echo "doom" > $HOME/.emacs-profile; open -a "$HOME/Applications/Nix Apps/Emacs.app"; skhd -k "ctrl - g"
+          open < d : echo "doom" > $HOME/.emacs-profile; open -a "$HOME/Applications/Nix Apps/Emacs.app"&; skhd -k "ctrl - g"
           ## d12Frosted
-          open < f : echo "d12frosted" > $HOME/.emacs-profile; open -a "$HOME/Applications/Nix Apps/Emacs.app"; skhd -k "ctrl - g"
-          open < e : open -a "$HOME/Applications/Nix Apps/Emacs.app"; skhd -k "ctrl - g"
-          open < shift - e : DEBUG=1 open -a "$HOME/Applications/Nix Apps/Emacs.app"; skhd -k "ctrl - g"
+          open < f : echo "d12frosted" > $HOME/.emacs-profile; open -a "$HOME/Applications/Nix Apps/Emacs.app"&; skhd -k "ctrl - g"
+          open < e : open -a "$HOME/Applications/Nix Apps/Emacs.app"&; skhd -k "ctrl - g"
+          open < shift - e : DEBUG=1 open -a "$HOME/Applications/Nix Apps/Emacs.app"&; skhd -k "ctrl - g"
 
           # kitty or terminal
-          open < t : open_kitty; skhd -k "ctrl - g"
+          open < t : open_kitty &; skhd -k "ctrl - g"
 
           # Internet Browser
-          open < b : open -a "/Applications/qutebrowser.app"; skhd -k "ctrl - g"
-          ctrl + cmd - e : skhd -k "cmd - a" ; doom everywhere
-          ctrl + shift + cmd - e : doom everywhere
+          open < b : open -a "/Applications/qutebrowser.app" &; skhd -k "ctrl - g"
+          ctrl + cmd - e : doom everywhere
+          ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         '';
       };
-      activate-system.enable = true;
-      nix-daemon.enable =false;
-    };
+    } else {});
 
     nix = {
-      trustedUsers = [ "hynggyujang" "@admin" ];
+      trustedUsers = [ "@admin" ] ++ (if localconfig.hostname == "classic" then [
+        "hynggyujang"
+      ] else if localconfig.hostname == "silicon" then [
+        "hyunggyujang"
+      ] else []);
       # See Fix ⚠️ — Unnecessary NIX_PATH entry for single user installation in nix_darwin.org
       nixPath = mkForce [
         { darwin-config = "${config.environment.darwinConfig}"; }
@@ -990,7 +2390,7 @@ sudo rm -rf /var/root/.cache/nix
       package = pkgs.nix;
     };
 
-    users.users.hynggyujang = {
+    users.users.hyunggyujang = {
       name = "Hyunggyu Jang";
       home = "${hgj_home}";
       shell = pkgs.zsh;

@@ -1,6 +1,6 @@
 final: prev:
 with prev;
-with lua.pkgs;
+with lua5_3.pkgs;
 {
   fennel = buildLuarocksPackage {
     pname = "fennel";
@@ -11,7 +11,7 @@ with lua.pkgs;
       sha256 = "11sv6cmb4l7ain3p0wqf23n0966n2xls42ynigb7mdbdjy89afa0";
     };
     disabled = (luaOlder "5.1");
-    propagatedBuildInputs = [ lua ];
+    propagatedBuildInputs = [ lua5_3 ];
 
     meta = with lib; {
       homepage = "https://fennel-lang.org/";
