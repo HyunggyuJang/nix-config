@@ -40,6 +40,14 @@ in with lib;
     home-manager.useGlobalPkgs = true;
     home-manager.users = let userconfig = rec {
         home.file = {
+            ".mail/.notmuch/hooks/pre-new".text = ''
+#!/bin/bash
+filter="tag:deleted tag:trash AND folder:/account.nagoya/"
+echo "$(notmuch count "$filter") trashed messages"
+notmuch search --output=files --format=text0 "$filter" | xargs -0 --no-run-if-empty rm
+
+mbsync nagoya
+            '';
           "${hgj_localbin}/eldev" = {
             source = pkgs.fetchurl {
               name = "eldev";
@@ -392,8 +400,127 @@ sudo rm -rf /var/root/.cache/nix
           [maildir]
           synchronize_flags=true
         '';
-        } //
-        (if localconfig.hostname == "classic" then {
+          ".spacehammer/config.fnl".text = ''
+(require-macros :lib.macros)
+
+(local {:concat concat
+        :logf logf} (require :lib.functional))
+
+(global hhtwm (require :hhtwm))
+(hhtwm.start)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Actions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(fn highlight-active-window
+  []
+  (let [rect (hs.drawing.rectangle (: (hs.window.focusedWindow) :frame))]
+    (: rect :setStrokeColor {:red 1 :blue 0 :green 1 :alpha 1})
+    (: rect :setStrokeWidth 5)
+    (: rect :setFill false)
+    (: rect :show)
+    (hs.timer.doAfter .3 (fn [] (: rect :delete)))))
+
+(fn activate-app
+  [app-name]
+  (hs.application.launchOrFocus app-name)
+  (let [app (hs.application.find app-name)]
+    (when app
+      (: app :activate)
+      (hs.timer.doAfter .05 highlight-active-window)
+      (: app :unhide))))
+
+(fn activator
+  [app-name]
+  "
+  A higher order function to activate a target app. It's useful for quickly
+  binding a modal menu action or hotkey action to launch or focus on an app.
+  Takes a string application name
+  Returns a function to activate that app.
+
+  Example:
+  (local launch-emacs (activator \"Emacs\"))
+  (launch-emacs)
+  "
+  (fn activate []
+    (activate-app app-name)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; General
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(local return
+       {:key :space
+        :title "Back"
+        :action :previous})
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Apps Menu
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(local app-bindings
+       [return
+        {:key :e
+         :title "Emacs"
+         :action (activator "Emacs")}
+        {:key :g
+         :title "b"
+         :action (activator "Google Chrome")}
+        {:key :b
+         :title "Default browser"
+         :action (activator "qutebrowser")}
+        {:key :t
+         :title "Default terminal"
+         :action (activator "kitty")}])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Main Menu & Config
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(local menu-items
+       [{:key   :a
+         :title "Apps"
+         :items app-bindings}])
+
+(local common-keys
+       [{:mods [:cmd]
+         :key :space
+         :action "lib.modal:activate-modal"}])
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; App Specific Config
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(local hammerspoon-config
+       {:key "Hammerspoon"
+        :items (concat
+                menu-items
+                [{:key :r
+                  :title "Reload Console"
+                  :action hs.reload}
+                 {:key :c
+                  :title "Clear Console"
+                  :action hs.console.clearConsole}])
+        :keys []})
+
+(local apps
+       [hammerspoon-config])
+
+(local config
+       {:title "Main Menu"
+        :items menu-items
+        :keys  common-keys
+        :apps  apps
+        :hyper {:key "f20"}})           ;FIXME
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Exports
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+config
+          '';
                     "${hgj_localbin}/open_kitty" = {
             executable = true;
             text = ''
@@ -405,7 +532,7 @@ sudo rm -rf /var/root/.cache/nix
 # 1. Copying the first window's working directory, and
 # 2. Keeping the second window on the first window's focused display.
 
-PATH="$HOME/Applications/Nix Apps/kitty.app/Contents/MacOS${"\${PATH:+:\${PATH}}"}"
+PATH="${if localconfig.hostname == "classic" then "$HOME/Applications/Nix Apps" else "/Applications"}/kitty.app/Contents/MacOS${"\${PATH:+:\${PATH}}"}"
 
 FOCUSED_WINDOW=$(yabai -m query --windows --window)
 
@@ -448,7 +575,7 @@ yabai -m signal --add \
 kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
           };
-        } else {});
+        };
         home.sessionVariables = if localconfig.hostname == "classic" then {
           FONTCONFIG_FILE    = "${xdg.configHome}/fontconfig/fonts.conf";
           FONTCONFIG_PATH    = "${xdg.configHome}/fontconfig";
@@ -460,20 +587,20 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             } else {
                 enable = false;
             };
-          zsh = rec {
-            enable = true;
-            dotDir = ".config/zsh";
-            enableCompletion = false;
-            enableAutosuggestions = true;
+          # zsh = rec {
+          #   enable = true;
+          #   dotDir = ".config/zsh";
+          #   enableCompletion = false;
+          #   enableAutosuggestions = true;
 
-            history = {
-              size = 50000;
-              save = 500000;
-              path = "$HOME/${dotDir}/history";
-              ignoreDups = true;
-              share = true;
-            };
-          };
+          #   history = {
+          #     size = 50000;
+          #     save = 500000;
+          #     path = "$HOME/${dotDir}/history";
+          #     ignoreDups = true;
+          #     share = true;
+          #   };
+          # };
         };
         xdg = {
           enable = true;
@@ -1902,6 +2029,298 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
 }
 '';
           } else {
+              "yabai/yabairc".text = ''
+yabai -m config active_window_opacity 1.000000
+yabai -m config auto_balance on
+yabai -m config bottom_padding 0
+yabai -m config focus_follows_mouse off
+yabai -m config layout bsp
+yabai -m config left_padding 0
+yabai -m config mouse_action1 move
+yabai -m config mouse_action2 resize
+yabai -m config mouse_follows_focus off
+yabai -m config mouse_modifier fn
+yabai -m config normal_window_opacity 0.900000
+yabai -m config right_padding 0
+yabai -m config split_ratio 0.500000
+yabai -m config top_padding 0
+yabai -m config window_border off
+yabai -m config window_gap 0
+yabai -m config window_opacity on
+yabai -m config window_opacity_duration 0.000000
+yabai -m config window_placement second_child
+yabai -m config window_shadow off
+yabai -m config window_topmost on
+yabai -m rule --add app="^System Preferences$" manage=off
+yabai -m rule --add app=AquaSKK manage=off
+yabai -m rule --add app=Emacs title="^Emacs Everywhere ::*" manage=off
+yabai -m rule --add app=qutebrowser space=2
+yabai -m rule --add app=Anki space=3
+yabai -m rule --add app="^Microsoft Teams$" space=4
+yabai -m rule --add app="^zoom$" space=4
+yabai -m rule --add app="^Google Chrome$" space=5
+'';
+              "skhd/skhdrc".text = ''
+################################################################################
+#
+# window manipulation
+#
+
+# ^ = 0x18
+ctrl + cmd - 0x18 : yabai -m window --focus recent
+ctrl + cmd - h : yabai -m window --focus west
+ctrl + cmd - j : yabai -m window --focus south
+ctrl + cmd - k : yabai -m window --focus north
+ctrl + cmd - l : yabai -m window --focus east
+
+ctrl + cmd - r : yabai -m space --rotate 90
+ctrl + cmd + shift - r : yabai -m space --rotate 270
+
+:: mywindow @
+:: swap @
+:: warp @
+:: myinsert @
+
+ctrl + cmd - w ; mywindow
+mywindow < ctrl - g ; default
+
+mywindow < h : yabai -m window west --resize right:-20:0 2> /dev/null || yabai -m window --resize right:-20:0
+mywindow < j : yabai -m window north --resize bottom:0:20 2> /dev/null || yabai -m window --resize bottom:0:20
+mywindow < k : yabai -m window south --resize top:0:-20 2> /dev/null || yabai -m window --resize top:0:-20
+mywindow < l : yabai -m window east --resize left:20:0 2> /dev/null || yabai -m window --resize left:20:0
+mywindow < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
+  | xargs -I{} yabai -m window --focus {}
+
+mywindow < ctrl + cmd - w ; swap
+swap < ctrl - g ; default
+
+swap < n : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
+  | xargs -I{} yabai -m window --swap {}
+
+swap < p: yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
+  | xargs -I{} yabai -m window --swap {}
+
+swap < h : skhd -k "ctrl - g" ; yabai -m window --swap west
+swap < j : skhd -k "ctrl - g" ; yabai -m window --swap south
+swap < k : skhd -k "ctrl - g" ; yabai -m window --swap north
+swap < l : skhd -k "ctrl - g" ; yabai -m window --swap east
+
+swap < 0x18 : skhd -k "ctrl - g" ; yabai -m window --swap recent
+
+swap < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
+  | xargs -I{} yabai -m window --swap {}
+
+
+mywindow < w ; warp
+warp < ctrl - g ; default
+warp < h : skhd -k "ctrl - g" ; \
+  yabai -m window --warp west
+warp < j : skhd -k "ctrl - g" ; \
+  yabai -m window --warp south
+warp < k : skhd -k "ctrl - g" ; \
+  yabai -m window --warp north
+warp < l : skhd -k "ctrl - g" ; \
+  yabai -m window --warp east
+warp < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
+  | xargs -I{} yabai -m window --warp {}
+
+mywindow < i ; myinsert
+myinsert < ctrl - g ; default
+
+myinsert < h : skhd -k "ctrl - g"; yabai -m window --insert west
+myinsert < j : skhd -k "ctrl - g"; yabai -m window --insert north
+myinsert < k : skhd -k "ctrl - g"; yabai -m window --insert south
+myinsert < l : skhd -k "ctrl - g"; yabai -m window --insert east
+
+ctrl + cmd - return : yabai -m window --toggle zoom-fullscreen
+
+################################################################################
+#
+# space manipulation
+#
+
+# Move currently focused window to the specified space
+ctrl + cmd - 1 : yabai -m window --space 1; yabai -m space --focus 1
+ctrl + cmd - 2 : yabai -m window --space 2; yabai -m space --focus 2
+ctrl + cmd - 3 : yabai -m window --space 3; yabai -m space --focus 3
+ctrl + cmd - 4 : yabai -m window --space 4; yabai -m space --focus 4
+ctrl + cmd - 5 : yabai -m window --space 5; yabai -m space --focus 5
+ctrl + cmd - 6 : yabai -m window --space 6; yabai -m space --focus 6
+
+################################################################################
+#
+# Applications
+#
+
+ctrl + cmd - c [
+  "emacs" : skhd -k "ctrl - x" ; skhd -k "ctrl - c"
+  "finder" : skhd -k "cmd - w"
+  # "Google Chrome" : skhd -k "cmd - w" # I'll use chrome in app mode while using yabai!
+  "kitty" : skhd -k "cmd - w"
+  *       : skhd -k "cmd - q"
+]
+
+################################################################################
+#
+# Mode for opening applications
+#
+
+:: open @
+ctrl + cmd - o ; open
+open < ctrl - g ; default
+
+# emacs
+## Doom
+open < d : echo "doom" > $HOME/.emacs-profile; open -a Emacs&; skhd -k "ctrl - g"
+## d12Frosted
+open < f : echo "d12frosted" > $HOME/.emacs-profile; open -a Emacs&; skhd -k "ctrl - g"
+open < e : open -a Emacs&; skhd -k "ctrl - g"
+open < shift - e : DEBUG=1 open -a Emacs&; skhd -k "ctrl - g"
+
+# kitty or terminal
+open < t : open_kitty &; skhd -k "ctrl - g"
+
+# Internet Browser
+open < b : open -a "/Applications/qutebrowser.app" &; skhd -k "ctrl - g"
+ctrl + cmd - e : doom everywhere
+ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
+
+'';
               "karabiner/karabiner.json".text = ''
 {
     "global": {
@@ -1971,9 +2390,216 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                                 "type": "basic"
                             }
                         ]
+                    },
+                    {
+                        "description": "Change to English layout if Left ⌘ key pressed alone, else send ⌘ key.",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "left_command",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_command"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "f17"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_command"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "f18"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "right_option",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "right_option"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "f19"
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
+                                    "key_code": "escape",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_command"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "caps_lock"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
                     }
                 ]
             },
+            "devices": [],
+            "fn_function_keys": [
+                {
+                    "from": {
+                        "key_code": "f1"
+                    },
+                    "to": [
+                        {
+                            "consumer_key_code": "display_brightness_decrement"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f2"
+                    },
+                    "to": [
+                        {
+                            "consumer_key_code": "display_brightness_increment"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f3"
+                    },
+                    "to": [
+                        {
+                            "apple_vendor_keyboard_key_code": "mission_control"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f4"
+                    },
+                    "to": [
+                        {
+                            "apple_vendor_keyboard_key_code": "spotlight"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f5"
+                    },
+                    "to": [
+                        {
+                            "consumer_key_code": "dictation"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f6"
+                    },
+                    "to": [
+                        {
+                            "key_code": "f6"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f7"
+                    },
+                    "to": [
+                        {
+                            "consumer_key_code": "rewind"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f8"
+                    },
+                    "to": [
+                        {
+                            "consumer_key_code": "play_or_pause"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f9"
+                    },
+                    "to": [
+                        {
+                            "consumer_key_code": "fast_forward"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f10"
+                    },
+                    "to": [
+                        {
+                            "consumer_key_code": "mute"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f11"
+                    },
+                    "to": [
+                        {
+                            "consumer_key_code": "volume_decrement"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "f12"
+                    },
+                    "to": [
+                        {
+                            "consumer_key_code": "volume_increment"
+                        }
+                    ]
+                }
+            ],
             "name": "Default profile",
             "parameters": {
                 "delay_milliseconds_before_open_device": 1000
@@ -2007,7 +2633,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                            if localconfig.hostname == "classic" then {
                                hynggyujang = userconfig;
                            } else {
-                               hyunggyujang = userconfig;
+                               hyunggyujang = userconfig;  #// { home.packages = mkForce []; };
                            };
     system = if localconfig.hostname == "classic" then {
         defaults.NSGlobalDomain = {
@@ -2035,6 +2661,10 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
 
     environment = {
         darwinConfig = "${hgj_sync}/dotfiles/nixpkgs/darwin/configuration.nix";
+        shellAliases =  {
+            dbuild = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
+            dswitch = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
+        };
         variables = {
             EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
             VISUAL = "$EDITOR";
@@ -2503,8 +3133,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
       ] else []);
       # See Fix ⚠️ — Unnecessary NIX_PATH entry for single user installation in nix_darwin.org
       nixPath = mkForce [
-          ( { darwin-config = "${config.environment.darwinConfig}"; } //
-            { localconfig = <localconfig>; } )
+        { darwin-config = "${config.environment.darwinConfig}"; }
         "$HOME/.nix-defexpr/channels"
       ];
       package = pkgs.nix;

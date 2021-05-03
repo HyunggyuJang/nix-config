@@ -1,9 +1,8 @@
 NIX_CONF = $(HOME)/Desktop/dotfiles/nixpkgs/darwin
 NIXPATH = "$(NIX_PATH):localconfig=$(NIX_CONF)/$(HOSTNAME).nix:darwin-config=$(NIX_CONF)/configuration.nix"
-PRENIX = PATH="$(BUILD_PATH)/sw/bin:$(PATH)" NIX_PATH="$(NIXPATH)"
+PRENIX = PATH="/nix/var/nix/profiles/system/sw/bin:$(PATH)" NIX_PATH="$(NIXPATH)"
 
 NIX_BUILD = $(PRENIX) nix-build
-BUILD_PATH = /run/current-system
 
 ifeq ($(HOSTNAME),silicon)
 BUILD_ARGS = # --argstr system aarch64-darwin not work.
@@ -11,7 +10,7 @@ else
 BUILD_ARGS =
 endif
 
-DARWIN_REBUILD = $(PRENIX) $(BUILD_PATH)/sw/bin/darwin-rebuild
+DARWIN_REBUILD = $(PRENIX) darwin-rebuild
 DARWIN_INSTALL = $(PRENIX) ./result/bin/darwin-installer
 
 define announce
