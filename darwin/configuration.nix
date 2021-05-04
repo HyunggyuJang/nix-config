@@ -39,15 +39,19 @@ in with lib;
 
     home-manager.useGlobalPkgs = true;
     home-manager.users = let userconfig = rec {
+        home.packages = with pkgs; [ nix-zsh-completions ];
         home.file = {
-            ".mail/.notmuch/hooks/pre-new".text = ''
+            ".mail/.notmuch/hooks/pre-new" = {
+                text = ''
 #!/bin/bash
 filter="tag:deleted tag:trash AND folder:/account.nagoya/"
 echo "$(notmuch count "$filter") trashed messages"
-notmuch search --output=files --format=text0 "$filter" | xargs -0 --no-run-if-empty rm
+notmuch search --output=files --format=text0 "$filter" | ${if localconfig.hostname == "silicon" then "g" else ""}xargs -0 --no-run-if-empty rm
 
 mbsync nagoya
             '';
+                executable = true;
+            };
           "${hgj_localbin}/eldev" = {
             source = pkgs.fetchurl {
               name = "eldev";
@@ -575,32 +579,6 @@ yabai -m signal --add \
 kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
           };
-        };
-        home.sessionVariables = if localconfig.hostname == "classic" then {
-          FONTCONFIG_FILE    = "${xdg.configHome}/fontconfig/fonts.conf";
-          FONTCONFIG_PATH    = "${xdg.configHome}/fontconfig";
-        } else {};
-        programs = {
-          # qutebrowser.enable = true;
-            home-manager = if localconfig.hostname == "classic" then {
-                enable = true;
-            } else {
-                enable = false;
-            };
-          # zsh = rec {
-          #   enable = true;
-          #   dotDir = ".config/zsh";
-          #   enableCompletion = false;
-          #   enableAutosuggestions = true;
-
-          #   history = {
-          #     size = 50000;
-          #     save = 500000;
-          #     path = "$HOME/${dotDir}/history";
-          #     ignoreDups = true;
-          #     share = true;
-          #   };
-          # };
         };
         xdg = {
           enable = true;
@@ -2053,7 +2031,7 @@ yabai -m config window_shadow off
 yabai -m config window_topmost on
 yabai -m rule --add app="^System Preferences$" manage=off
 yabai -m rule --add app=AquaSKK manage=off
-yabai -m rule --add app=Emacs title="^Emacs Everywhere ::*" manage=off
+yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off
 yabai -m rule --add app=qutebrowser space=2
 yabai -m rule --add app=Anki space=3
 yabai -m rule --add app="^Microsoft Teams$" space=4
@@ -2631,9 +2609,14 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
     };
                          in
                            if localconfig.hostname == "classic" then {
-                               hynggyujang = userconfig;
+                               hynggyujang = userconfig // {
+                                   home.sessionVariables = {
+                                       FONTCONFIG_FILE    = "${xdg.configHome}/fontconfig/fonts.conf";
+                                       FONTCONFIG_PATH    = "${xdg.configHome}/fontconfig";
+                                   };
+                               };
                            } else {
-                               hyunggyujang = userconfig;  #// { home.packages = mkForce []; };
+                               hyunggyujang = userconfig;
                            };
     system = if localconfig.hostname == "classic" then {
         defaults.NSGlobalDomain = {
@@ -2664,7 +2647,9 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         shellAliases =  {
             dbuild = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
             dswitch = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
-        };
+        } // (if localconfig.hostname == "silicon" then {
+            bswitch = "arch -arm64 brew bundle --file=${hgj_sync}/dotfiles/Brewfile --cleanup --zap";
+        } else {});
         variables = {
             EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
             VISUAL = "$EDITOR";
@@ -2787,6 +2772,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         else
           echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
         fi
+        source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
       '';
         };
     }
