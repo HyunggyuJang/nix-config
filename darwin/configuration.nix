@@ -41,17 +41,15 @@ in with lib;
     home-manager.users = let userconfig = rec {
         home.packages = with pkgs; [ nix-zsh-completions ];
         home.file = {
-            ".mail/.notmuch/hooks/pre-new" = {
-                text = ''
-#!/bin/bash
-filter="tag:deleted tag:trash AND folder:/account.nagoya/"
-echo "$(notmuch count "$filter") trashed messages"
-notmuch search --output=files --format=text0 "$filter" | ${if localconfig.hostname == "silicon" then "g" else ""}xargs -0 --no-run-if-empty rm
-
-mbsync nagoya
-            '';
-                executable = true;
-            };
+#             ".mail/.notmuch/hooks/pre-new" = {
+#                 text = ''
+# #!/bin/bash
+# filter="tag:deleted tag:trash AND folder:/account.nagoya/"
+# echo "$(notmuch count "$filter") trashed messages"
+# notmuch search --output=files --format=text0 "$filter" | ${if localconfig.hostname == "silicon" then "g" else ""}xargs -0 --no-run-if-empty rm
+#             '';
+#                 executable = true;
+#             };
           "${hgj_localbin}/eldev" = {
             source = pkgs.fetchurl {
               name = "eldev";
@@ -188,6 +186,9 @@ sudo rm -rf /var/root/.cache/nix
           };
           ".emacs-profiles.el".text = ''
           (("doom" . ((user-emacs-directory . "${environment.variables.EMACSDIR}")))
+           ("doom-experimental" . ((user-emacs-directory . "~/.doom.d_")
+                                   (env . (("DOOMLOCALDIR" . "~/.doom_")
+                                           ("EMACSDIR" . "~/.doom.d_")))))
            ("d12frosted" . ((user-emacs-directory . "${xdg.configHome}/emacs")
                             (env . (("SHELL" . "${pkgs.fish}"))))))
           '';
@@ -304,6 +305,11 @@ sudo rm -rf /var/root/.cache/nix
               }
           })
         '';
+          "Library/Application Support/Zotero/Profiles/z6bvhh6i.default/chrome/userChrome.css".source = pkgs.fetchurl {
+              name = "Zotero-Dark-theme";
+              url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
+              sha256 = "03hb64j6baj5kx24cf9y7vx4sdsv34553djsf4l3krz7aj7cwi7f";
+          };
           ".qutebrowser/dracula".source = pkgs.fetchFromGitHub {
             owner = "dracula";
             repo = "qutebrowser";
@@ -404,127 +410,6 @@ sudo rm -rf /var/root/.cache/nix
           [maildir]
           synchronize_flags=true
         '';
-          ".spacehammer/config.fnl".text = ''
-(require-macros :lib.macros)
-
-(local {:concat concat
-        :logf logf} (require :lib.functional))
-
-(global hhtwm (require :hhtwm))
-(hhtwm.start)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Actions
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(fn highlight-active-window
-  []
-  (let [rect (hs.drawing.rectangle (: (hs.window.focusedWindow) :frame))]
-    (: rect :setStrokeColor {:red 1 :blue 0 :green 1 :alpha 1})
-    (: rect :setStrokeWidth 5)
-    (: rect :setFill false)
-    (: rect :show)
-    (hs.timer.doAfter .3 (fn [] (: rect :delete)))))
-
-(fn activate-app
-  [app-name]
-  (hs.application.launchOrFocus app-name)
-  (let [app (hs.application.find app-name)]
-    (when app
-      (: app :activate)
-      (hs.timer.doAfter .05 highlight-active-window)
-      (: app :unhide))))
-
-(fn activator
-  [app-name]
-  "
-  A higher order function to activate a target app. It's useful for quickly
-  binding a modal menu action or hotkey action to launch or focus on an app.
-  Takes a string application name
-  Returns a function to activate that app.
-
-  Example:
-  (local launch-emacs (activator \"Emacs\"))
-  (launch-emacs)
-  "
-  (fn activate []
-    (activate-app app-name)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; General
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(local return
-       {:key :space
-        :title "Back"
-        :action :previous})
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Apps Menu
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(local app-bindings
-       [return
-        {:key :e
-         :title "Emacs"
-         :action (activator "Emacs")}
-        {:key :g
-         :title "b"
-         :action (activator "Google Chrome")}
-        {:key :b
-         :title "Default browser"
-         :action (activator "qutebrowser")}
-        {:key :t
-         :title "Default terminal"
-         :action (activator "kitty")}])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Main Menu & Config
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(local menu-items
-       [{:key   :a
-         :title "Apps"
-         :items app-bindings}])
-
-(local common-keys
-       [{:mods [:cmd]
-         :key :space
-         :action "lib.modal:activate-modal"}])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; App Specific Config
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(local hammerspoon-config
-       {:key "Hammerspoon"
-        :items (concat
-                menu-items
-                [{:key :r
-                  :title "Reload Console"
-                  :action hs.reload}
-                 {:key :c
-                  :title "Clear Console"
-                  :action hs.console.clearConsole}])
-        :keys []})
-
-(local apps
-       [hammerspoon-config])
-
-(local config
-       {:title "Main Menu"
-        :items menu-items
-        :keys  common-keys
-        :apps  apps
-        :hyper {:key "f20"}})           ;FIXME
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Exports
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-config
-          '';
                     "${hgj_localbin}/open_kitty" = {
             executable = true;
             text = ''
@@ -579,7 +464,18 @@ yabai -m signal --add \
 kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
           };
-        };
+        } // (if localconfig.hostname == "silicon" then {
+            # Need to clone yaskkserv2 repository to ~/test/yaskkserv2 first,
+            # then build as instructed via `cargo build --release`
+            "${hgj_localbin}/yaskkserv2" = {
+                source = "${hgj_home}/test/yaskkserv2/target/release/yaskkserv2";
+                executable = true;
+            };
+            "${hgj_localbin}/yaskkserv2_make_dictionary" = {
+                source = "${hgj_home}/test/yaskkserv2/target/release/yaskkserv2_make_dictionary";
+                executable = true;
+            };
+        } else {});
         xdg = {
           enable = true;
 
@@ -589,14 +485,15 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
           configFile = {
               "afew/config".text = ''
           [MailMover]
-          folders = account.nagoya/Inbox
+          folders = account.nagoya/Inbox account.nagoya/Trash
           rename = True
 
-          account.nagoya/Inbox = 'NOT tag:inbox AND tag:lab':'account.nagoya/Lab' 'NOT tag:inbox AND tag:school':'account.nagoya/School' 'NOT tag:inbox AND NOT tag:trash':'account.nagoya/Archive'
+          account.nagoya/Inbox = 'tag:trash':'account.nagoya/Trash' 'NOT tag:inbox AND tag:lab':'account.nagoya/Lab' 'NOT tag:inbox AND tag:school':'account.nagoya/School' 'NOT tag:inbox AND NOT tag:trash':'account.nagoya/Archive'
+          account.nagoya/Trash = 'NOT tag:trash':'account.nagoya/Inbox'
 
           [FolderNameFilter]
           folder_blacklist = account.nagoya account.gmail mail Archive
-          folder_transforms = Drafts:draft Junk:spam
+          folder_transforms = Drafts:draft Junk:spam Trash
           folder_lowercases = true
           maildir_separator = /
         '';
@@ -2030,6 +1927,7 @@ yabai -m config window_placement second_child
 yabai -m config window_shadow off
 yabai -m config window_topmost on
 yabai -m rule --add app="^System Preferences$" manage=off
+yabai -m rule --add app="^Karabiner-Elements$" manage=off
 yabai -m rule --add app=AquaSKK manage=off
 yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off
 yabai -m rule --add app=qutebrowser space=2
@@ -2045,7 +1943,7 @@ yabai -m rule --add app="^Google Chrome$" space=5
 #
 
 # ^ = 0x18
-ctrl + cmd - 0x18 : yabai -m window --focus recent
+ctrl + cmd - 6 : yabai -m window --focus recent
 ctrl + cmd - h : yabai -m window --focus west
 ctrl + cmd - j : yabai -m window --focus south
 ctrl + cmd - k : yabai -m window --focus north
@@ -2286,12 +2184,13 @@ open < ctrl - g ; default
 ## Doom
 open < d : echo "doom" > $HOME/.emacs-profile; open -a Emacs&; skhd -k "ctrl - g"
 ## d12Frosted
-open < f : echo "d12frosted" > $HOME/.emacs-profile; open -a Emacs&; skhd -k "ctrl - g"
+open < f : echo "doom-experimental" > $HOME/.emacs-profile; open -a Emacs&; skhd -k "ctrl - g"
 open < e : open -a Emacs&; skhd -k "ctrl - g"
 open < shift - e : DEBUG=1 open -a Emacs&; skhd -k "ctrl - g"
 
 # kitty or terminal
 open < t : open_kitty &; skhd -k "ctrl - g"
+open < shift - t : open -a kitty &; skhd -k "ctrl - g"
 
 # Internet Browser
 open < b : open -a "/Applications/qutebrowser.app" &; skhd -k "ctrl - g"
@@ -2434,150 +2333,11 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                                     }
                                 ],
                                 "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "escape",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_command"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "caps_lock"
-                                    }
-                                ],
-                                "type": "basic"
                             }
                         ]
                     }
                 ]
             },
-            "devices": [],
-            "fn_function_keys": [
-                {
-                    "from": {
-                        "key_code": "f1"
-                    },
-                    "to": [
-                        {
-                            "consumer_key_code": "display_brightness_decrement"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f2"
-                    },
-                    "to": [
-                        {
-                            "consumer_key_code": "display_brightness_increment"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f3"
-                    },
-                    "to": [
-                        {
-                            "apple_vendor_keyboard_key_code": "mission_control"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f4"
-                    },
-                    "to": [
-                        {
-                            "apple_vendor_keyboard_key_code": "spotlight"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f5"
-                    },
-                    "to": [
-                        {
-                            "consumer_key_code": "dictation"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f6"
-                    },
-                    "to": [
-                        {
-                            "key_code": "f6"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f7"
-                    },
-                    "to": [
-                        {
-                            "consumer_key_code": "rewind"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f8"
-                    },
-                    "to": [
-                        {
-                            "consumer_key_code": "play_or_pause"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f9"
-                    },
-                    "to": [
-                        {
-                            "consumer_key_code": "fast_forward"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f10"
-                    },
-                    "to": [
-                        {
-                            "consumer_key_code": "mute"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f11"
-                    },
-                    "to": [
-                        {
-                            "consumer_key_code": "volume_decrement"
-                        }
-                    ]
-                },
-                {
-                    "from": {
-                        "key_code": "f12"
-                    },
-                    "to": [
-                        {
-                            "consumer_key_code": "volume_increment"
-                        }
-                    ]
-                }
-            ],
             "name": "Default profile",
             "parameters": {
                 "delay_milliseconds_before_open_device": 1000
@@ -2591,6 +2351,16 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                     "to": [
                         {
                             "key_code": "escape"
+                        }
+                    ]
+                },
+                {
+                    "from": {
+                        "key_code": "escape"
+                    },
+                    "to": [
+                        {
+                            "key_code": "caps_lock"
                         }
                     ]
                 }
@@ -2668,6 +2438,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             # SystemPath added before to the variables, it can be inspected at /etc/static/zshenv,
             # which source *-set-environment file.
             "${environment.variables.EMACSDIR}/bin"
+            # Elan
+            "$HOME/.elan/bin"
         ];
         profiles = mkForce ([ "$HOME/.nix-profile" ] ++
                    (if localconfig.hostname == "classic" then
@@ -2827,6 +2599,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             };
             extraConfig = ''
           yabai -m rule --add app="^System Preferences$" manage=off
+          yabai -m rule --add app="^Karabiner-Elements$" manage=off
           yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off sticky=on
           yabai -m rule --add app=Emacs space=1
           yabai -m rule --add app=qutebrowser space=2
