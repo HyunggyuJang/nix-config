@@ -294,6 +294,7 @@ sudo rm -rf /var/root/.cache/nix
           c.aliases['readability'] = "spawn -u readability"
           c.aliases['chrome'] = "spawn open -na 'Google Chrome' --args --app={url}"
           c.aliases['removed'] = "open javascript:document.location=document.URL.replace('reddit.com','removeddit.com');"
+          c.aliases['save-to-zotero'] = "jseval --url --quiet javascript:var d=document,s=d.createElement('script');s.src='https://www.zotero.org/bookmarklet/loader.js';(d.body?d.body:d.documentElement).appendChild(s);void(0);"
 
           #Activate dracula theme
           import dracula.draw
@@ -493,7 +494,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
 
           [FolderNameFilter]
           folder_blacklist = account.nagoya account.gmail mail Archive
-          folder_transforms = Drafts:draft Junk:spam Trash
+          folder_transforms = Drafts:draft Junk:spam
           folder_lowercases = true
           maildir_separator = /
         '';
@@ -1928,6 +1929,7 @@ yabai -m config window_shadow off
 yabai -m config window_topmost on
 yabai -m rule --add app="^System Preferences$" manage=off
 yabai -m rule --add app="^Karabiner-Elements$" manage=off
+yabai -m rule --add app="^Digital Paper App$" manage=off
 yabai -m rule --add app=AquaSKK manage=off
 yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off
 yabai -m rule --add app=qutebrowser space=2
@@ -2386,7 +2388,11 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                                    };
                                };
                            } else {
-                               hyunggyujang = userconfig;
+                               hyunggyujang = { config, ...}: userconfig // {
+                                   home.file = userconfig.home.file // {
+                                       "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
+                                   };
+                               };
                            };
     system = if localconfig.hostname == "classic" then {
         defaults.NSGlobalDomain = {
