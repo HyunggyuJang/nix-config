@@ -26,3 +26,7 @@ switch:
 		$(call announce,darwin-rebuild switch)
 		@$(DARWIN_REBUILD) switch -Q
 		@echo "Darwin generation: $$($(DARWIN_REBUILD) --list-generations | tail -1)"
+rollback:
+		$(call announce,darwin-rebuild switch --rollback)
+		@$(DARWIN_REBUILD) switch --rollback
+		@echo "Darwin generation: $$($(DARWIN_REBUILD) --list-generations | tail -1)"

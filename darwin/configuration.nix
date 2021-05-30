@@ -54,7 +54,7 @@ in with lib;
             source = pkgs.fetchurl {
               name = "eldev";
               url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
-              sha256 = "0csn6c4w95iswqdlj5akzspcm5ar7imngqcdch87ac21wz8xigln";
+              sha256 = "0ikhhfxm1rz3wp37spsy8bcnx5071ard71pd1riw09rsybilxhgn";
             };
             executable = true;
           };
@@ -288,13 +288,13 @@ sudo rm -rf /var/root/.cache/nix
           config.bind(';;', 'hint inputs --first')  # easier to reach than ;t
 
           # Open in chrome
-          config.bind(';g', 'hint links spawn open -na "Google Chrome" --args --app={hint-url}')
+          config.bind(';g', 'hint links spawn open -na "Google Chrome" --args --kiosk {hint-url}')
 
           c.aliases['readability-js'] = "spawn -u readability-js"
           c.aliases['readability'] = "spawn -u readability"
-          c.aliases['chrome'] = "spawn open -na 'Google Chrome' --args --app={url}"
+          c.aliases['chrome'] = "spawn open -na 'Google Chrome' --args --kiosk {url}"
           c.aliases['removed'] = "open javascript:document.location=document.URL.replace('reddit.com','removeddit.com');"
-          c.aliases['save-to-zotero'] = "jseval --url --quiet javascript:var d=document,s=d.createElement('script');s.src='https://www.zotero.org/bookmarklet/loader.js';(d.body?d.body:d.documentElement).appendChild(s);void(0);"
+          c.aliases['save-to-zotero'] = "jseval --quiet var d=document,s=d.createElement('script');s.src='https://www.zotero.org/bookmarklet/loader.js';(d.body?d.body:d.documentElement).appendChild(s);void(0);"
 
           #Activate dracula theme
           import dracula.draw
@@ -2423,6 +2423,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         shellAliases =  {
             dbuild = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
             dswitch = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
+            drb = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
         } // (if localconfig.hostname == "silicon" then {
             bswitch = "arch -arm64 brew bundle --file=${hgj_sync}/dotfiles/Brewfile --cleanup --zap";
         } else {});
