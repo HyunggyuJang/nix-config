@@ -50,6 +50,11 @@ in with lib;
 #             '';
 #                 executable = true;
 #             };
+            ".latexmkrc".text = ''
+$dvipdf = 'dvipdfmx %O %S';
+$latex = 'platex';
+$bibtex = 'pbibtex';
+                '';
           "${hgj_localbin}/eldev" = {
             source = pkgs.fetchurl {
               name = "eldev";
@@ -188,7 +193,8 @@ sudo rm -rf /var/root/.cache/nix
           (("doom" . ((user-emacs-directory . "${environment.variables.EMACSDIR}")))
            ("doom-experimental" . ((user-emacs-directory . "~/.doom.d_")
                                    (env . (("DOOMLOCALDIR" . "~/.doom_")
-                                           ("EMACSDIR" . "~/.doom.d_")))))
+                                           ("EMACSDIR" . "~/.doom.d_")
+                                           ("DOOMDIR" . "~/.doom-private")))))
            ("d12frosted" . ((user-emacs-directory . "${xdg.configHome}/emacs")
                             (env . (("SHELL" . "${pkgs.fish}"))))))
           '';
@@ -205,6 +211,9 @@ sudo rm -rf /var/root/.cache/nix
           c.url.default_page = 'https://google.com'
           c.url.start_pages = c.url.default_page
           c.url.searchengines = {"DEFAULT": "https://google.com/search?q={}"}
+          with config.pattern('teams.microsoft.com') as p:
+               p.content.unknown_url_scheme_policy = 'allow-all'
+          c.content.unknown_url_scheme_policy
 
           c.editor.command = ['emacsclient', '{}']
 
@@ -1930,6 +1939,7 @@ yabai -m config window_topmost on
 yabai -m rule --add app="^System Preferences$" manage=off
 yabai -m rule --add app="^Karabiner-Elements$" manage=off
 yabai -m rule --add app="^Digital Paper App$" manage=off
+yabai -m rule --add app="Inkscape" title="TexText" manage=off
 yabai -m rule --add app=AquaSKK manage=off
 yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off
 yabai -m rule --add app=qutebrowser space=2
@@ -2438,7 +2448,9 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         ( if localconfig.hostname == "classic" then {
             SHELL = "${pkgs.zsh}/bin/zsh";
             NODE_PATH =  "/run/current-system/sw/lib/node_modules";
-        } else {});
+        } else {
+            LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
+        });
         systemPath = [
             "$HOME/${hgj_localbin}"
             # Easy access to Doom
