@@ -2151,8 +2151,8 @@ mywindow < i ; myinsert
 myinsert < ctrl - g ; default
 
 myinsert < h : skhd -k "ctrl - g"; yabai -m window --insert west
-myinsert < j : skhd -k "ctrl - g"; yabai -m window --insert north
-myinsert < k : skhd -k "ctrl - g"; yabai -m window --insert south
+myinsert < j : skhd -k "ctrl - g"; yabai -m window --insert south
+myinsert < k : skhd -k "ctrl - g"; yabai -m window --insert north
 myinsert < l : skhd -k "ctrl - g"; yabai -m window --insert east
 
 ctrl + cmd - return : yabai -m window --toggle zoom-fullscreen
