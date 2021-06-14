@@ -389,8 +389,7 @@ sudo rm -rf /var/root/.cache/nix
           defaults
           auth           on
           tls            on
-          # https://github.com/okovko/msmtp_gmail_setup/blob/master/msmtp_setup.sh
-          tls_fingerprint 77:05:8C:8E:FC:3C:F0:5C:17:F1:21:75:02:27:33:30:D4:85:00:C2:09:63:4E:0A:56:AA:C1:54:45:FD:F6:37
+          tls_trust_file /etc/ssl/certs/ca-certificates.crt
           logfile        ~/.msmtp.log
 
           # Nagoya-U mail
