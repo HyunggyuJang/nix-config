@@ -2162,12 +2162,12 @@ ctrl + cmd - return : yabai -m window --toggle zoom-fullscreen
 #
 
 # Move currently focused window to the specified space
-ctrl + cmd - 1 : yabai -m window --space 1; yabai -m space --focus 1
-ctrl + cmd - 2 : yabai -m window --space 2; yabai -m space --focus 2
-ctrl + cmd - 3 : yabai -m window --space 3; yabai -m space --focus 3
-ctrl + cmd - 4 : yabai -m window --space 4; yabai -m space --focus 4
-ctrl + cmd - 5 : yabai -m window --space 5; yabai -m space --focus 5
-ctrl + cmd - 6 : yabai -m window --space 6; yabai -m space --focus 6
+ctrl + cmd - 1 : yabai -m window --space 1; skhd -k "cmd - 1"
+ctrl + cmd - 2 : yabai -m window --space 2; skhd -k "cmd - 2"
+ctrl + cmd - 3 : yabai -m window --space 3; skhd -k "cmd - 3"
+ctrl + cmd - 4 : yabai -m window --space 4; skhd -k "cmd - 4"
+ctrl + cmd - 5 : yabai -m window --space 5; skhd -k "cmd - 5"
+ctrl + cmd - 6 : yabai -m window --space 6; skhd -k "cmd - 6"
 
 ################################################################################
 #
@@ -2193,18 +2193,18 @@ open < ctrl - g ; default
 
 # emacs
 ## Doom
-open < d : echo "doom" > $HOME/.emacs-profile; open -a Emacs&; skhd -k "ctrl - g"
+open < d : skhd -k "ctrl - g"; echo "doom" > $HOME/.emacs-profile; open -a Emacs
 ## d12Frosted
-open < f : echo "doom-experimental" > $HOME/.emacs-profile; open -a Emacs&; skhd -k "ctrl - g"
-open < e : open -a Emacs&; skhd -k "ctrl - g"
-open < shift - e : DEBUG=1 open -a Emacs&; skhd -k "ctrl - g"
+open < f : skhd -k "ctrl - g"; echo "doom-experimental" > $HOME/.emacs-profile; open -a Emacs
+open < e : skhd -k "ctrl - g"; open -a Emacs
+open < shift - e : skhd -k "ctrl - g"; DEBUG=1 open -a Emacs
 
 # kitty or terminal
-open < t : open_kitty &; skhd -k "ctrl - g"
-open < shift - t : open -a kitty &; skhd -k "ctrl - g"
+open < t : skhd -k "ctrl - g"; open_kitty
+open < shift - t : skhd -k "ctrl - g"; open -a kitty
 
 # Internet Browser
-open < b : open -a "/Applications/qutebrowser.app" &; skhd -k "ctrl - g"
+open < b : skhd -k "ctrl - g"; open -a "/Applications/qutebrowser.app"
 ctrl + cmd - e : doom everywhere
 ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
 
