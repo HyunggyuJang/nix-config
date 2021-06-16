@@ -2346,6 +2346,27 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                                 "type": "basic"
                             }
                         ]
+                    },
+                    {
+                        "description": "Map F6 (Do Not Disturb) to Cmd+Opt+Eject for Sleep Mac",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "f6"
+                                },
+                                "to_after_key_up": [
+                                    {
+                                    "repeat": false,
+                                    "consumer_key_code": "eject",
+                                    "modifiers": [
+                                        "left_gui",
+                                        "left_alt"
+                                        ]
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
                     }
                 ]
             },
