@@ -10,6 +10,10 @@ let hgj_home = builtins.getEnv "HOME";
       python = "python38";
     };
 
+    nur = import <nur> {
+      inherit pkgs;
+    };
+
     myPython = mach-nix.mkPython {
       requirements = ''
         readability-lxml
@@ -52,8 +56,8 @@ in with lib;
 #             };
             ".latexmkrc".text = ''
 $dvipdf = 'dvipdfmx %O %S';
-$latex = 'platex';
-$bibtex = 'pbibtex';
+$latex = 'uplatex';
+$bibtex = 'upbibtex';
                 '';
           "${hgj_localbin}/eldev" = {
             source = pkgs.fetchurl {
@@ -304,6 +308,7 @@ sudo rm -rf /var/root/.cache/nix
           c.aliases['chrome'] = "spawn open -na 'Google Chrome' --args --kiosk {url}"
           c.aliases['removed'] = "open javascript:document.location=document.URL.replace('reddit.com','removeddit.com');"
           c.aliases['save-to-zotero'] = "jseval --quiet var d=document,s=d.createElement('script');s.src='https://www.zotero.org/bookmarklet/loader.js';(d.body?d.body:d.documentElement).appendChild(s);void(0);"
+          c.aliases['mouse-pointer'] = "open javascript:void%20function(){document.head.innerHTML+=%22%3Cstyle%3E%20*%20%20{%20cursor:%20url(data:image/png;base64,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),%20auto%20!important;%20}%20%3C/style%3E%22}();"
 
           #Activate dracula theme
           import dracula.draw
@@ -315,6 +320,17 @@ sudo rm -rf /var/root/.cache/nix
               }
           })
         '';
+          "Library/texmf/tex/latex/lstlean.tex".source = pkgs.fetchurl {
+              name = "Lean-syntax-tex-highlight";
+              url = "https://raw.githubusercontent.com/leanprover-community/lean/master/extras/latex/lstlean.tex";
+              sha256 = "0ig0r4zg9prfydzc4wbywjfj1yv4578zrd80bx34vbkfbgqvpq5m";
+          };
+
+          "Library/texmf/tex/latex/lstlangcoq.sty".source = pkgs.fetchurl {
+              name = "Coq-syntax-tex-highlight";
+              url = "https://raw.githubusercontent.com/PrincetonUniversity/VST/master/doc/lstlangcoq.sty";
+              sha256 = "12dg7yqfsh2hz74nmb0y0qvdr75dn06mj0inyz9assh55ixpljd4";
+          };
           "Library/Application Support/Zotero/Profiles/z6bvhh6i.default/chrome/userChrome.css".source = pkgs.fetchurl {
               name = "Zotero-Dark-theme";
               url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
@@ -330,7 +346,7 @@ sudo rm -rf /var/root/.cache/nix
             source = pkgs.fetchurl {
               name = "readability-js";
               url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability-js";
-              sha256 = "1plp2gnvk2qy6kkdhl05fd01n15nxfy2hllyd2lskp9z0g8gdldn";
+              sha256 = "14hbaz9x9680l3cbv7v9pndnhvpff62j9wiadgg9gwvkxn179zd1";
             };
             executable = true;
           };
@@ -2421,7 +2437,63 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                                hyunggyujang = { config, ...}: userconfig // {
                                    home.file = userconfig.home.file // {
                                        "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
+                                       "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
                                    };
+                                   programs.firefox.enable = true;
+                                   programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
+                                   programs.firefox.extensions =
+                                       with nur.repos.rycee.firefox-addons; [
+                                        ublock-origin
+                                        # browserpass
+                                        vimium
+                                       ];
+                                       programs.firefox.profiles =
+        {
+          home = {
+            id = 0;
+            settings = {
+          "app.update.auto" = false;
+          "browser.startup.homepage" = "https://start.duckduckgo.com";
+          "browser.search.region" = "KR";
+          "browser.search.countryCode" = "KR";
+          "browser.search.isUS" = true;
+          "browser.ctrlTab.recentlyUsedOrder" = false;
+          "browser.newtabpage.enabled" = false;
+          "browser.bookmarks.showMobileBookmarks" = true;
+          "browser.uidensity" = 1;
+          "browser.urlbar.placeholderName" = "DuckDuckGo";
+          "browser.urlbar.update1" = true;
+          "distribution.searchplugins.defaultLocale" = "en-KR";
+          "general.useragent.locale" = "en-KR";
+          "identity.fxaccounts.account.device.name" = localconfig.hostname;
+          "privacy.trackingprotection.enabled" = true;
+          "privacy.trackingprotection.socialtracking.enabled" = true;
+          "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+          "reader.color_scheme" = "sepia";
+          "services.sync.declinedEngines" = "addons,passwords,prefs";
+          "services.sync.engine.addons" = false;
+          "services.sync.engineStatusChanged.addons" = true;
+          "services.sync.engine.passwords" = false;
+          "services.sync.engine.prefs" = false;
+          "services.sync.engineStatusChanged.prefs" = true;
+          "signon.rememberSignons" = false;
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+        };
+            userChrome = (
+              builtins.readFile (
+                pkgs.substituteAll {
+                  name = "homeUserChrome";
+                  src = pkgs.fetchurl {
+                      name = "userChrome.css";
+                      url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
+                      sha256 = "17jlcdp2hw98mg8423ag8bmbrvj05ml5pb2z912clzjn51dfi6dr";
+                  };
+                  tabLineColour = "#5e81ac";
+                }
+              )
+            );
+          };
+        };
                                };
                            };
     system = if localconfig.hostname == "classic" then {
@@ -2480,9 +2552,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             # Elan
             "$HOME/.elan/bin"
         ];
-        profiles = mkForce ([ "$HOME/.nix-profile" ] ++
-                   (if localconfig.hostname == "classic" then
-                       ["/run/current-system/sw"] else []));
+        profiles = mkForce ([ "$HOME/.nix-profile" "/run/current-system/sw" ]);
     } // (if localconfig.hostname == "classic" then {
         systemPackages = with pkgs; [
             git
@@ -2553,8 +2623,12 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         ];
         loginShell = "${pkgs.zsh}/bin/zsh -l";
     } else {
-        systemPackages = [];
-        shells = mkForce [];
+        systemPackages = with pkgs; [
+            # nixfmt # Note that it needs ghc, which doesn't support silicon mac currently.
+        ];
+        shells = [
+            pkgs.zsh
+        ];
     });
 
     nixpkgs.overlays =
@@ -2583,6 +2657,14 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         else
           echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
         fi
+        vterm_printf(){
+            printf "\e]%s\e\\" "$1"
+        }
+        vterm_prompt_end() {
+            vterm_printf "51;A$(whoami)@$(hostname):$(pwd)";
+        }
+        setopt PROMPT_SUBST
+        PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
         source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
       '';
         };
@@ -2920,7 +3002,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         };
         activate-system.enable = true;
     } else {
-        activate-system.enable = mkForce false;
+        activate-system.enable = true;
     });
 
     nix = {
@@ -2937,6 +3019,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
       package = pkgs.nix;
     } // (if localconfig.hostname == "silicon" then {
         extraOptions = ''
+          system = aarch64-darwin
           extra-platforms = x86_64-darwin aarch64-darwin
         '';
     } else {});
@@ -2951,6 +3034,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         hyunggyujang = {
             name = "Hyunggyu Jang";
             home = "${hgj_home}";
+            shell = pkgs.zsh;
         };
     };
     fonts = if localconfig.hostname == "classic" then {
@@ -2962,11 +3046,13 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         pkgs.source-code-pro
       ];
     } else {};
-    homebrew = if localconfig.hostname == "classic" then {
-      enable = true;
-      autoUpdate = true;
-      cleanup = "zap";
-      global.brewfile = true;
+    homebrew =  {
+            enable = true;
+            autoUpdate = true;
+            cleanup = "zap";
+            global.brewfile = true;
+        } //
+    (if localconfig.hostname == "classic" then {
       taps = [
         "homebrew/cask"
         "homebrew/core"
@@ -2994,6 +3080,76 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         "macism"
       ];
     } else {
-        enable = false;
-    };
-  }
+      brewPrefix = "/opt/homebrew/bin";
+      taps = [
+        "homebrew/bundle"
+        "homebrew/cask"
+        "homebrew/core"
+        "homebrew/services"
+        "homebrew/cask-fonts"
+        "railwaycat/emacsmacport"
+        "koekeishiya/formulae"
+      ];
+      brews = [
+        "pngpaste"
+        "jq"
+        "notmuch"
+        "msmtp"
+        "aspell"
+        "graphviz"
+        "zstd"
+        "nodejs"
+        "isync"
+        "libvterm"
+        "ripgrep"
+        "git"
+        "gnupg"
+        "pass"
+        "rust"
+        "lua"
+        "luarocks"
+        "gmp"
+        "coreutils"
+        "gnuplot"
+        "imagemagick"
+        "octave"
+        "fzf"
+        "fd"
+        "pkg-config"
+        "poppler"
+        "automake"
+        "cmake"
+        "python"
+        "findutils"
+        "z3"
+        "coq"
+      ];
+      casks = [
+          "appcleaner"
+          "slack"
+          "basictex"
+          "kitty"
+          "altserver"
+          "anki"
+          "aquaskk"
+          "hammerspoon"
+          "karabiner-elements"
+          "microsoft-office"
+          "microsoft-teams"
+          "qutebrowser"
+          "ukelele"
+          "zotero"
+          "inkscape"
+          "font-et-book"
+          "font-sarasa-gothic"
+      ];
+      extraConfig = ''
+        brew "emacs-mac", args: ["with-no-title-bars"]
+        brew "yabai", args: ["HEAD"], restart_service: :changed
+        brew "skhd", args: ["HEAD"]
+        # Pinned lean via `brew pin lean`
+        brew "lean", args: ["HEAD"]
+        cask "firefox", args: { language: "en-KR" }
+      '';
+     });
+   }
