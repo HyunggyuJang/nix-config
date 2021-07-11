@@ -1952,16 +1952,13 @@ yabai -m config window_placement second_child
 yabai -m config window_shadow off
 yabai -m config window_topmost on
 yabai -m rule --add app="^System Preferences$" manage=off
-yabai -m rule --add app="^Karabiner-Elements$" manage=off
-yabai -m rule --add app="^Digital Paper App$" manage=off
-yabai -m rule --add app="Inkscape" title="TexText" manage=off
+yabai -m rule --add app="Inkscape" title="LaTeX (pdflatex)" manage=off
 yabai -m rule --add app=AquaSKK manage=off
 yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off
 yabai -m rule --add app=qutebrowser space=2
 yabai -m rule --add app=Anki space=3
 yabai -m rule --add app="^Microsoft Teams$" space=4
 yabai -m rule --add app="^zoom$" space=4
-yabai -m rule --add app="^Firefox$" space=5
 '';
               "skhd/skhdrc".text = ''
 ################################################################################
@@ -2622,7 +2619,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         loginShell = "${pkgs.zsh}/bin/zsh -l";
     } else {
         systemPackages = with pkgs; [
-            # nixfmt # Note that it needs ghc, which doesn't support silicon mac currently.
+            nixfmt
         ];
         shells = [
             pkgs.zsh
@@ -3089,6 +3086,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         "koekeishiya/formulae"
       ];
       brews = [
+        "maxima"
         "pngpaste"
         "jq"
         "notmuch"
@@ -3121,6 +3119,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         "findutils"
         "z3"
         "coq"
+        "pandoc"
       ];
       casks = [
           "appcleaner"
