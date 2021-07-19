@@ -42,34 +42,33 @@ in with lib;
     imports = [ <home-manager/nix-darwin> ];
 
     home-manager.useGlobalPkgs = true;
-    home-manager.users = let userconfig = rec {
-        home.packages = with pkgs; [ nix-zsh-completions ];
+    home-manager.users = let userconfig = { config, ...}: rec {
         home.file = {
-#             ".mail/.notmuch/hooks/pre-new" = {
-#                 text = ''
-# #!/bin/bash
-# filter="tag:deleted tag:trash AND folder:/account.nagoya/"
-# echo "$(notmuch count "$filter") trashed messages"
-# notmuch search --output=files --format=text0 "$filter" | ${if localconfig.hostname == "silicon" then "g" else ""}xargs -0 --no-run-if-empty rm
-#             '';
-#                 executable = true;
-#             };
+            #             ".mail/.notmuch/hooks/pre-new" = {
+            #                 text = ''
+            # #!/bin/bash
+            # filter="tag:deleted tag:trash AND folder:/account.nagoya/"
+            # echo "$(notmuch count "$filter") trashed messages"
+            # notmuch search --output=files --format=text0 "$filter" | ${if localconfig.hostname == "silicon" then "g" else ""}xargs -0 --no-run-if-empty rm
+            #             '';
+            #                 executable = true;
+            #             };
             ".latexmkrc".text = ''
 $dvipdf = 'dvipdfmx %O %S';
 $latex = 'uplatex';
 $bibtex = 'upbibtex';
                 '';
-          "${hgj_localbin}/eldev" = {
-            source = pkgs.fetchurl {
-              name = "eldev";
-              url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
-              sha256 = "0ikhhfxm1rz3wp37spsy8bcnx5071ard71pd1riw09rsybilxhgn";
+            "${hgj_localbin}/eldev" = {
+                source = pkgs.fetchurl {
+                    name = "eldev";
+                    url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
+                    sha256 = "0ikhhfxm1rz3wp37spsy8bcnx5071ard71pd1riw09rsybilxhgn";
+                };
+                executable = true;
             };
-            executable = true;
-          };
-          "${hgj_localbin}/uninstall-nix-osx" = {
-            executable = true;
-            text = ''
+            "${hgj_localbin}/uninstall-nix-osx" = {
+                executable = true;
+                text = ''
 #!usr/bin/env bash
 
 # !!WARNING!!
@@ -128,10 +127,10 @@ sudo rm -rf /var/root/.cache/nix
 # useful for finding hanging links
 # $ find . -type l -maxdepth 5 ! -exec test -e {} \; -print 2>/dev/null | xargs -I {} sh -c 'file -b {} | grep nix && echo {}'
             '';
-          };
-          "${hgj_localbin}/emacs-eru" = {
-            executable = true;
-            text = ''
+            };
+            "${hgj_localbin}/emacs-eru" = {
+                executable = true;
+                text = ''
               #!/usr/bin/env bash
 
               set -e
@@ -192,8 +191,8 @@ sudo rm -rf /var/root/.cache/nix
                   ;;
               esac
             '';
-          };
-          ".emacs-profiles.el".text = ''
+            };
+            ".emacs-profiles.el".text = ''
           (("doom" . ((user-emacs-directory . "${environment.variables.EMACSDIR}")))
            ("doom-experimental" . ((user-emacs-directory . "~/.doom.d_")
                                    (env . (("DOOMLOCALDIR" . "~/.doom_")
@@ -202,7 +201,27 @@ sudo rm -rf /var/root/.cache/nix
            ("d12frosted" . ((user-emacs-directory . "${xdg.configHome}/emacs")
                             (env . (("SHELL" . "${pkgs.fish}"))))))
           '';
-          ".qutebrowser/config.py".text = ''
+            ".tridactylrc".text = ''
+          set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12))" +%l:%c
+          bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
+          bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
+          bind --mode=ex <A-n> ex.next_history
+          bind --mode=ex <A-p> ex.prev_history
+          bind --mode=insert <C-p> !s skhd -k up
+          bind --mode=insert <C-n> !s skhd -k down
+          bind --mode=ex <C-p> ex.prev_completion
+          bind --mode=ex <C-n> ex.next_completion
+          # bind --mode=ex <C-k> text.kill_line # same as default setting
+          # bind --mode=ex <C-j> ex.next_completion # used for kakutei key in Aquaskk
+          bind --mode=ex <Tab> ex.insert_space_or_completion # ex.complete is buggy
+          unbind --mode=ex <Space>
+          bind --mode=insert <A-d> text.kill_word
+          bind --mode=insert <C-u> text.backward_kill_line
+          bind --mode=insert <A-f> text.forward_word
+          bind --mode=insert <A-b> text.backward_word
+          set theme dark
+          '';
+            ".qutebrowser/config.py".text = ''
           config.load_autoconfig(True)
           # c.window.hide_decoration = True
 
@@ -238,8 +257,8 @@ sudo rm -rf /var/root/.cache/nix
               # Plain old org capture
               "<Meta-p>": "open javascript:location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())",
               # Plain old org capture at current point
-              "<Meta-L>": "open javascript:location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())"
-              }
+              "<Meta-i>": "open javascript:location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())"
+                        }
 
           # Doom emacs like key binding
           c.bindings.commands['insert'] = {
@@ -259,7 +278,7 @@ sudo rm -rf /var/root/.cache/nix
               '<ctrl-w>': 'fake-key <alt-backspace>',
               '<ctrl-y>': 'insert-text',
               '<ctrl-shift-e>': 'edit-text'
-          }
+                                          }
 
           c.bindings.commands['caret'] = {
               # Org roam capture
@@ -268,18 +287,18 @@ sudo rm -rf /var/root/.cache/nix
               "<Meta-p>": "open javascript:location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())",
               # Plain old org capture at current point
               "<Meta-i>": "open javascript:location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())"
-          }
+                                          }
 
           c.bindings.commands['command'] = {
               '<ctrl-j>': 'completion-item-focus next',
               '<ctrl-k>': 'completion-item-focus prev',
               '<ctrl-d>': 'rl-delete-char'
-          }
+                                         }
 
           c.bindings.commands['prompt'] = {
               '<ctrl-j>': 'prompt-item-focus next',
               '<ctrl-k>': 'prompt-item-focus prev'
-          }
+                                           }
 
           # Universal Emacsien C-g alias for Escape
           config.bind('<Ctrl-g>', 'clear-keychain ;; search ;; fullscreen --leave')
@@ -298,9 +317,9 @@ sudo rm -rf /var/root/.cache/nix
           # I use `x` instead `d`.
           config.unbind("d")
 
-          config.bind(';;', 'hint inputs --first')  # easier to reach than ;t
+          # config.bind(';;', 'hint inputs --first')  # easier to reach than ;t -> can be inserted using gi
 
-          # Open in chrome
+          # Open in firefox
           config.bind(';g', 'hint links spawn open -na Firefox --args {hint-url}')
 
           c.aliases['readability-js'] = "spawn -u readability-js"
@@ -320,58 +339,58 @@ sudo rm -rf /var/root/.cache/nix
               }
           })
         '';
-          "Library/texmf/tex/latex/lstlean.tex".source = pkgs.fetchurl {
-              name = "Lean-syntax-tex-highlight";
-              url = "https://raw.githubusercontent.com/leanprover-community/lean/master/extras/latex/lstlean.tex";
-              sha256 = "0ig0r4zg9prfydzc4wbywjfj1yv4578zrd80bx34vbkfbgqvpq5m";
-          };
+            "Library/texmf/tex/latex/lstlean.tex".source = pkgs.fetchurl {
+                name = "Lean-syntax-tex-highlight";
+                url = "https://raw.githubusercontent.com/leanprover-community/lean/master/extras/latex/lstlean.tex";
+                sha256 = "0ig0r4zg9prfydzc4wbywjfj1yv4578zrd80bx34vbkfbgqvpq5m";
+            };
 
-          "Library/texmf/tex/latex/lstlangcoq.sty".source = pkgs.fetchurl {
-              name = "Coq-syntax-tex-highlight";
-              url = "https://raw.githubusercontent.com/PrincetonUniversity/VST/master/doc/lstlangcoq.sty";
-              sha256 = "12dg7yqfsh2hz74nmb0y0qvdr75dn06mj0inyz9assh55ixpljd4";
-          };
-          "Library/Application Support/Zotero/Profiles/z6bvhh6i.default/chrome/userChrome.css".source = pkgs.fetchurl {
-              name = "Zotero-Dark-theme";
-              url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
-              sha256 = "03hb64j6baj5kx24cf9y7vx4sdsv34553djsf4l3krz7aj7cwi7f";
-          };
-          ".qutebrowser/dracula".source = pkgs.fetchFromGitHub {
-            owner = "dracula";
-            repo = "qutebrowser";
-            rev = "ba5bd6589c4bb8ab35aaaaf7111906732f9764ef";
-            sha256 = "1mhckmyqc7ripzmz0d8466fq0njqhxkigzm3nz0yl05k0xlsbzka";
-          };
-          ".qutebrowser/userscripts/readability-js" = {
-            source = pkgs.fetchurl {
-              name = "readability-js";
-              url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability-js";
-              sha256 = "14hbaz9x9680l3cbv7v9pndnhvpff62j9wiadgg9gwvkxn179zd1";
+            "Library/texmf/tex/latex/lstlangcoq.sty".source = pkgs.fetchurl {
+                name = "Coq-syntax-tex-highlight";
+                url = "https://raw.githubusercontent.com/PrincetonUniversity/VST/master/doc/lstlangcoq.sty";
+                sha256 = "12dg7yqfsh2hz74nmb0y0qvdr75dn06mj0inyz9assh55ixpljd4";
             };
-            executable = true;
-          };
-          ".qutebrowser/userscripts/readability" = {
-            source = pkgs.fetchurl {
-              name = "readability";
-              url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability";
-              sha256 = "029538gkymh756qd14j6947r6qdyzww6chnkd240vc8v0pif58lk";
+            "Library/Application Support/Zotero/Profiles/z6bvhh6i.default/chrome/userChrome.css".source = pkgs.fetchurl {
+                name = "Zotero-Dark-theme";
+                url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
+                sha256 = "03hb64j6baj5kx24cf9y7vx4sdsv34553djsf4l3krz7aj7cwi7f";
             };
-            executable = true;
-          };
-          ".bash_profile".text = ". ${hgj_home}/.nix-profile/etc/profile.d/nix.sh";
-          ".gitconfig".text = ''
+            ".qutebrowser/dracula".source = pkgs.fetchFromGitHub {
+                owner = "dracula";
+                repo = "qutebrowser";
+                rev = "ba5bd6589c4bb8ab35aaaaf7111906732f9764ef";
+                sha256 = "1mhckmyqc7ripzmz0d8466fq0njqhxkigzm3nz0yl05k0xlsbzka";
+            };
+            ".qutebrowser/userscripts/readability-js" = {
+                source = pkgs.fetchurl {
+                    name = "readability-js";
+                    url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability-js";
+                    sha256 = "14hbaz9x9680l3cbv7v9pndnhvpff62j9wiadgg9gwvkxn179zd1";
+                };
+                executable = true;
+            };
+            ".qutebrowser/userscripts/readability" = {
+                source = pkgs.fetchurl {
+                    name = "readability";
+                    url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability";
+                    sha256 = "029538gkymh756qd14j6947r6qdyzww6chnkd240vc8v0pif58lk";
+                };
+                executable = true;
+            };
+            ".bash_profile".text = ". ${hgj_home}/.nix-profile/etc/profile.d/nix.sh";
+            ".gitconfig".text = ''
           [user]
             name = Hyunggyu Jang
             email = murasakipurplez5@gmail.com
         '';
-          ".mailcap".text = ''
+            ".mailcap".text = ''
           # HTML
           text/html; open %s; description=HTML Text; test=test -n "$DISPLAY";  nametemplate=%s.html
         '';
-          ".mailrc".text = ''
+            ".mailrc".text = ''
           set sendmail="/usr/local/bin/msmtp"
         '';
-          ".mbsyncrc".text = ''
+            ".mbsyncrc".text = ''
           IMAPAccount nagoya
           Host mail.j.mbox.nagoya-u.ac.jp
           User jang.hyunggyu@j.mbox.nagoya-u.ac.jp #not XXX@me.com etc.
@@ -400,7 +419,7 @@ sudo rm -rf /var/root/.cache/nix
           Group nagoya
           Channel nagoya-folders
         '';
-          ".msmtprc".text = ''
+            ".msmtprc".text = ''
           # Set default values for all following accounts.
           defaults
           auth           on
@@ -420,7 +439,7 @@ sudo rm -rf /var/root/.cache/nix
           # Set a default account
           account default : jang.hyunggyu@j.mbox.nagoya-u.ac.jp
         '';
-          ".notmuch-config".text = ''
+            ".notmuch-config".text = ''
           [database]
           path=${hgj_home}/.mail
           [user]
@@ -435,9 +454,9 @@ sudo rm -rf /var/root/.cache/nix
           [maildir]
           synchronize_flags=true
         '';
-                    "${hgj_localbin}/open_kitty" = {
-            executable = true;
-            text = ''
+            "${hgj_localbin}/open_kitty" = {
+                executable = true;
+                text = ''
 #!/usr/bin/env bash
 
 # https://github.com/noperator/dotfiles/blob/master/.config/kitty/launch-instance.sh
@@ -488,7 +507,59 @@ yabai -m signal --add \
 # focused display.
 kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
+            };
+            "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
+            "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
+            # Global Emacs keybindings
+            "Library/KeyBindings/DefaultKeyBinding.dict".text = ''
+      {
+          /* Ctrl shortcuts */
+          "^l"        = "centerSelectionInVisibleArea:";  /* C-l          Recenter */
+          "^/"        = "undo:";                          /* C-/          Undo */
+          "^_"        = "undo:";                          /* C-_          Undo */
+          "^ "        = "setMark:";                       /* C-Spc        Set mark */
+          "^\@"       = "setMark:";                       /* C-@          Set mark */
+          "^w"        = "deleteToMark:";                  /* C-w          Delete to mark */
+          "^u"        = "deleteToBeginningOfLine:";       /* C-u          Delete whole line backward */
+          /* Meta shortcuts */
+          "~y"        = "yankPop:";                       /* M-y          Yank kill ring */
+          "~f"        = "moveWordForward:";               /* M-f          Move forward word */
+          "~b"        = "moveWordBackward:";              /* M-b          Move backward word */
+          "~<"        = "moveToBeginningOfDocument:";     /* M-<          Move to beginning of document */
+          "~>"        = "moveToEndOfDocument:";           /* M->          Move to end of document */
+          "~v"        = "pageUp:";                        /* M-v          Page Up */
+          "~/"        = "complete:";                      /* M-/          Complete */
+          "~c"        = ( "capitalizeWord:",              /* M-c          Capitalize */
+                          "moveForward:",
+                          "moveForward:");
+          "~u"        = ( "uppercaseWord:",               /* M-u          Uppercase */
+                          "moveForward:",
+                          "moveForward:");
+          "~l"        = ( "lowercaseWord:",               /* M-l          Lowercase */
+                          "moveForward:",
+                          "moveForward:");
+          "~d"        = "deleteWordForward:";             /* M-d          Delete word forward */
+          "^~h"       = "deleteWordBackward:";            /* M-C-h        Delete word backward */
+          "~\U007F"   = "deleteWordBackward:";            /* M-Bksp       Delete word backward */
+          "~t"        = "transposeWords:";                /* M-t          Transpose words */
+          "~\@"       = ( "setMark:",                     /* M-@          Mark word */
+                          "moveWordForward:",
+                          "swapWithMark");
+          "~h"        = ( "setMark:",                     /* M-h          Mark paragraph */
+                          "moveToEndOfParagraph:",
+                          "swapWithMark");
+          /* C-x shortcuts */
+          "^x" = {
+              "u"     = "undo:";                          /* C-x u        Undo */
+              "k"     = "performClose:";                  /* C-x k        Close */
+              "^f"    = "openDocument:";                  /* C-x C-f      Open (find file) */
+              "^x"    = "swapWithMark:";                  /* C-x C-x      Swap with mark */
+              "^m"    = "selectToMark:";                  /* C-x C-m      Select to mark*/
+              "^s"    = "saveDocument:";                  /* C-x C-s      Save */
+              "^w"    = "saveDocumentAs:";                /* C-x C-w      Save as */
           };
+      }
+    '';
         } // (if localconfig.hostname == "silicon" then {
             # Need to clone yaskkserv2 repository to ~/test/yaskkserv2 first,
             # then build as instructed via `cargo build --release`
@@ -501,14 +572,63 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 executable = true;
             };
         } else {});
+        # https://github.com/nix-community/home-manager/blob/db00b39a9abec04245486a01b236b8d9734c9ad0/tests/modules/targets-darwin/default.nix
+        # Has to be set explicitly as it disabled by default, preferring nix-darwin
+        targets.darwin.keybindings = {
+            # Control shortcuts
+            "^l"        = "centerSelectionInVisibleArea:";
+            "^/"        = "undo:";
+            "^_"        = "undo:";
+            "^ "        = "setMark:";
+            "^\\@"       = "setMark:";
+            "^w"        = "deleteToMark:";
+            "^u"        = "deleteToBeginningOfLine:";
+            # Meta shortcuts
+            "~y"        = "yankPop:";
+            "~f"        = "moveWordForward:";
+            "~b"        = "moveWordBackward:";
+            # Excaping XML expressions should be done automatically!
+            "~&lt;"     = "moveToBeginningOfDocument:";
+            "~&gt;"     = "moveToEndOfDocument:";
+            "~v"        = "pageUp:";
+            "~/"        = "complete:";
+            "~c"        = [ "capitalizeWord:"
+                              "moveForward:"
+                              "moveForward:"];
+            "~u"        = [ "uppercaseWord:"
+                              "moveForward:"
+                              "moveForward:"];
+            "~l"        = [ "lowercaseWord:"
+                              "moveForward:"
+                              "moveForward:"];
+            "~d"        = "deleteWordForward:";
+            "^~h"       = "deleteWordBackward:";
+            "~t"        = "transposeWords:";
+            "~\\@"       = [ "setMark:"
+                              "moveWordForward:"
+                              "swapWithMark:"];
+            "~h"        = [ "setMark:"
+                              "moveToEndOfParagraph:"
+                              "swapWithMark:"];
+            # C-x shortcuts
+            "^x" = {
+                "u"     = "undo:";
+                "k"     = "performClose:";
+                "^f"    = "openDocument:";
+                "^x"    = "swapWithMark:";
+                "^m"    = "selectToMark:";
+                "^s"    = "saveDocument:";
+                "^w"    = "saveDocumentAs:";
+            };
+        };
         xdg = {
-          enable = true;
+            enable = true;
 
-          configHome = "${hgj_home}/.config";
-          dataHome = "${hgj_home}/.local/share";
-          cacheHome = "${hgj_home}/.cache";
-          configFile = {
-              "afew/config".text = ''
+            configHome = "${hgj_home}/.config";
+            dataHome = "${hgj_home}/.local/share";
+            cacheHome = "${hgj_home}/.cache";
+            configFile = {
+                "afew/config".text = ''
           [MailMover]
           folders = account.nagoya/Inbox account.nagoya/Trash
           rename = True
@@ -523,9 +643,9 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
           maildir_separator = /
         '';
 
-              "kitty/dracula.conf".source = "${kittyDracula}/dracula.conf";
-              "kitty/diff.conf".source = "${kittyDracula}/diff.conf";
-              "kitty/kitty.conf".text = ''
+                "kitty/dracula.conf".source = "${kittyDracula}/dracula.conf";
+                "kitty/diff.conf".source = "${kittyDracula}/diff.conf";
+                "kitty/kitty.conf".text = ''
           allow_remote_control yes
 
           hide_window_decorations yes
@@ -541,10 +661,10 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
 
           include dracula.conf
         '';
-              "zathura/zathurarc".text = "set selection-clipboard clipboard";
-              "nixpkgs".source = "${hgj_sync}/dotfiles/nixpkgs";
-          } // (if localconfig.hostname == "classic" then {
-              "fontconfig/fonts.conf".text = ''
+                "zathura/zathurarc".text = "set selection-clipboard clipboard";
+                "nixpkgs".source = "${hgj_sync}/dotfiles/nixpkgs";
+            } // (if localconfig.hostname == "classic" then {
+                "fontconfig/fonts.conf".text = ''
         <?xml version='1.0'?>
         <!-- Generated by Hyunggyu Jang. -->
         <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
@@ -554,7 +674,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
         </fontconfig>
       '';
 
-              "karabiner/karabiner.json".text = ''
+                "karabiner/karabiner.json".text = ''
 {
     "global": {
         "check_for_updates_on_startup": false,
@@ -1928,8 +2048,8 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
     ]
 }
 '';
-          } else {
-              "yabai/yabairc".text = ''
+            } else {
+                "yabai/yabairc".text = ''
 yabai -m config active_window_opacity 1.000000
 yabai -m config auto_balance on
 yabai -m config bottom_padding 0
@@ -1955,12 +2075,12 @@ yabai -m rule --add app="^System Preferences$" manage=off
 yabai -m rule --add app="Inkscape" title="LaTeX (pdflatex)" manage=off
 yabai -m rule --add app=AquaSKK manage=off
 yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off
-yabai -m rule --add app=qutebrowser space=2
+yabai -m rule --add app="^Firefox$" space=2
 yabai -m rule --add app=Anki space=3
 yabai -m rule --add app="^Microsoft Teams$" space=4
 yabai -m rule --add app="^zoom$" space=4
 '';
-              "skhd/skhdrc".text = ''
+                "skhd/skhdrc".text = ''
 ################################################################################
 #
 # window manipulation
@@ -2217,12 +2337,12 @@ open < t : skhd -k "ctrl - g"; open_kitty
 open < shift - t : skhd -k "ctrl - g"; open -a kitty
 
 # Internet Browser
-open < b : skhd -k "ctrl - g"; open -a "/Applications/qutebrowser.app"
+open < b : skhd -k "ctrl - g"; open -a "/Applications/firefox.app"
 ctrl + cmd - e : doom everywhere
 ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
 
 '';
-              "karabiner/karabiner.json".text = ''
+                "karabiner/karabiner.json".text = ''
 {
     "global": {
         "check_for_updates_on_startup": false,
@@ -2374,7 +2494,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                                     "modifiers": [
                                         "left_gui",
                                         "left_alt"
-                                        ]
+                                    ]
                                     }
                                 ],
                                 "type": "basic"
@@ -2419,8 +2539,151 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
     ]
 }
 '';
-          });
+            });
         };
+        programs.zsh = {
+            enable = true;
+            enableAutosuggestions = true;
+            enableCompletion = true;
+            defaultKeymap = "emacs";
+            sessionVariables = { RPROMPT = ""; };
+
+            oh-my-zsh.enable = true;
+
+            plugins = [
+                {
+                    name = "autopair";
+                    file = "autopair.zsh";
+                    src = pkgs.fetchFromGitHub {
+                        owner = "hlissner";
+                        repo = "zsh-autopair";
+                        rev = "4039bf142ac6d264decc1eb7937a11b292e65e24";
+                        sha256 = "02pf87aiyglwwg7asm8mnbf9b2bcm82pyi1cj50yj74z4kwil6d1";
+                    };
+                }
+                {
+                    name = "fast-syntax-highlighting";
+                    file = "fast-syntax-highlighting.plugin.zsh";
+                    src = pkgs.fetchFromGitHub {
+                        owner = "zdharma";
+                        repo = "fast-syntax-highlighting";
+                        rev = "v1.28";
+                        sha256 = "106s7k9n7ssmgybh0kvdb8359f3rz60gfvxjxnxb4fg5gf1fs088";
+                    };
+                }
+                {
+                    name = "z";
+                    file = "zsh-z.plugin.zsh";
+                    src = pkgs.fetchFromGitHub {
+                        owner = "agkozak";
+                        repo = "zsh-z";
+                        rev = "41439755cf06f35e8bee8dffe04f728384905077";
+                        sha256 = "1dzxbcif9q5m5zx3gvrhrfmkxspzf7b81k837gdb93c4aasgh6x6";
+                    };
+                }
+            ];
+            initExtraBeforeCompInit = let brewpath = if localconfig.hostname == "silicon" then "/opt/homebrew"
+                                                     else "/usr/local";
+                                      in ''
+        echo >&2 "Homebrew completion path..."
+        if [ -f ${brewpath}/bin/brew ]; then
+          PATH=${brewpath}/bin:$PATH fpath+=$(brew --prefix)/share/zsh/site-functions
+        else
+          echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
+        fi
+    '';
+            initExtra = ''
+        PROMPT=' %{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
+        local prompt_suffix="%(?:%{$fg_bold[green]%}❯ :%{$fg_bold[red]%}❯%{$reset_color%} "
+        function get_pwd(){
+            git_root=$PWD
+            while [[ $git_root != / && ! -e $git_root/.git ]]; do
+                git_root=$git_root:h
+            done
+            if [[ $git_root = / ]]; then
+                unset git_root
+                prompt_short_dir=%~
+            else
+                parent=''${git_root%\/*}
+                prompt_short_dir=''${PWD#$parent/}
+            fi
+            echo $prompt_short_dir
+        }
+        vterm_printf(){
+            if [ -n "$TMUX" ]; then
+                # Tell tmux to pass the escape sequences through
+                # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
+                printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+            elif [ "''${TERM%%-*}" = "screen" ]; then
+                # GNU screen (screen, screen-256color, screen-256color-bce)
+                printf "\eP\e]%s\007\e\\" "$1"
+            else
+                printf "\e]%s\e\\" "$1"
+            fi
+        }
+        '';
+        };
+
+        programs.fzf.enable = true;
+        programs.fzf.enableZshIntegration = true;
+        programs.browserpass.enable = true;
+        programs.browserpass.browsers = [ "firefox" ];
+        programs.firefox.enable = true;
+        programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
+        programs.firefox.extensions =
+            with nur.repos.rycee.firefox-addons; [
+                ublock-origin
+                browserpass
+                tridactyl
+                darkreader
+            ];
+        programs.firefox.profiles =
+            {
+                home = {
+                    id = 0;
+                    settings = {
+                        "app.update.auto" = false;
+                        "browser.startup.homepage" = "https://start.duckduckgo.com";
+                        "browser.search.region" = "KR";
+                        "browser.search.countryCode" = "KR";
+                        "browser.search.isUS" = true;
+                        "browser.ctrlTab.recentlyUsedOrder" = false;
+                        "browser.newtabpage.enabled" = false;
+                        "browser.bookmarks.showMobileBookmarks" = true;
+                        "browser.uidensity" = 1;
+                        "browser.urlbar.placeholderName" = "DuckDuckGo";
+                        "browser.urlbar.update1" = true;
+                        "distribution.searchplugins.defaultLocale" = "en-KR";
+                        "general.useragent.locale" = "en-KR";
+                        "identity.fxaccounts.account.device.name" = localconfig.hostname;
+                        "privacy.trackingprotection.enabled" = true;
+                        "privacy.trackingprotection.socialtracking.enabled" = true;
+                        "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+                        "reader.color_scheme" = "sepia";
+                        "services.sync.declinedEngines" = "addons,passwords,prefs";
+                        "services.sync.engine.addons" = false;
+                        "services.sync.engineStatusChanged.addons" = true;
+                        "services.sync.engine.passwords" = false;
+                        "services.sync.engine.prefs" = false;
+                        "services.sync.engineStatusChanged.prefs" = true;
+                        "signon.rememberSignons" = false;
+                        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+                    };
+                    userChrome = (
+                        builtins.readFile (
+                            pkgs.substituteAll {
+                                name = "homeUserChrome";
+                                src = pkgs.fetchurl {
+                                    name = "userChrome.css";
+                                    url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
+                                    sha256 = "1ia2azcrrbc70m8hcn7mph1allh2fly9k2kqmi4qy6mx5lf12kn8";
+                                };
+                                tabLineColour = "#5e81ac";
+                            }
+                        )
+                    );
+                };
+            };
     };
                          in
                            if localconfig.hostname == "classic" then {
@@ -2431,67 +2694,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                                    };
                                };
                            } else {
-                               hyunggyujang = { config, ...}: userconfig // {
-                                   home.file = userconfig.home.file // {
-                                       "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
-                                       "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
-                                   };
-                                   programs.firefox.enable = true;
-                                   programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
-                                   programs.firefox.extensions =
-                                       with nur.repos.rycee.firefox-addons; [
-                                        ublock-origin
-                                        # browserpass
-                                        vimium
-                                       ];
-                                       programs.firefox.profiles =
-        {
-          home = {
-            id = 0;
-            settings = {
-          "app.update.auto" = false;
-          "browser.startup.homepage" = "https://start.duckduckgo.com";
-          "browser.search.region" = "KR";
-          "browser.search.countryCode" = "KR";
-          "browser.search.isUS" = true;
-          "browser.ctrlTab.recentlyUsedOrder" = false;
-          "browser.newtabpage.enabled" = false;
-          "browser.bookmarks.showMobileBookmarks" = true;
-          "browser.uidensity" = 1;
-          "browser.urlbar.placeholderName" = "DuckDuckGo";
-          "browser.urlbar.update1" = true;
-          "distribution.searchplugins.defaultLocale" = "en-KR";
-          "general.useragent.locale" = "en-KR";
-          "identity.fxaccounts.account.device.name" = localconfig.hostname;
-          "privacy.trackingprotection.enabled" = true;
-          "privacy.trackingprotection.socialtracking.enabled" = true;
-          "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
-          "reader.color_scheme" = "sepia";
-          "services.sync.declinedEngines" = "addons,passwords,prefs";
-          "services.sync.engine.addons" = false;
-          "services.sync.engineStatusChanged.addons" = true;
-          "services.sync.engine.passwords" = false;
-          "services.sync.engine.prefs" = false;
-          "services.sync.engineStatusChanged.prefs" = true;
-          "signon.rememberSignons" = false;
-          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-        };
-            userChrome = (
-              builtins.readFile (
-                pkgs.substituteAll {
-                  name = "homeUserChrome";
-                  src = pkgs.fetchurl {
-                      name = "userChrome.css";
-                      url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
-                      sha256 = "17jlcdp2hw98mg8423ag8bmbrvj05ml5pb2z912clzjn51dfi6dr";
-                  };
-                  tabLineColour = "#5e81ac";
-                }
-              )
-            );
-          };
-        };
-                               };
+                               hyunggyujang = userconfig;
                            };
     system = if localconfig.hostname == "classic" then {
         defaults.NSGlobalDomain = {
@@ -2635,39 +2838,10 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             (attrNames (readDir path)));
 
     programs = {
-        zsh = {
-            enable = true;
-            enableFzfCompletion = true;
-            enableCompletion = true;
-            enableFzfHistory = true;
-            enableSyntaxHighlighting = true;
-            # For brew completions
-            interactiveShellInit = let brewpath = if localconfig.hostname == "silicon" then "/opt/homebrew"
-                                                  else "/usr/local";
-                                   in
-                                     ''
-        echo >&2 "Homebrew completion path..."
-        if [ -f ${brewpath}/bin/brew ]; then
-          PATH=${brewpath}/bin:$PATH fpath+=$(brew --prefix)/share/zsh/site-functions
-        else
-          echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
-        fi
-        vterm_printf(){
-            printf "\e]%s\e\\" "$1"
-        }
-        vterm_prompt_end() {
-            vterm_printf "51;A$(whoami)@$(hostname):$(pwd)";
-        }
-        setopt PROMPT_SUBST
-        PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
-        source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-      '';
-        };
+        zsh.enable = true;
     }
         // (if localconfig.hostname == "classic" then {
-        fish = {
-            enable = true;
-        };
+        fish.enable = true;
     } else {});
 
     # Manual setting for workaround of org-id: 7127dc6e-5a84-476c-8d31-59737a4f85f9
@@ -3086,7 +3260,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         "koekeishiya/formulae"
       ];
       brews = [
-        "maxima"
         "pngpaste"
         "jq"
         "notmuch"
@@ -3109,7 +3282,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         "gnuplot"
         "imagemagick"
         "octave"
-        "fzf"
         "fd"
         "pkg-config"
         "poppler"
@@ -3120,6 +3292,9 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         "z3"
         "coq"
         "pandoc"
+        # emacs-mac dependencies
+        "jansson"
+        "libxml2"
       ];
       casks = [
           "appcleaner"
@@ -3133,7 +3308,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
           "karabiner-elements"
           "microsoft-office"
           "microsoft-teams"
-          "qutebrowser"
           "ukelele"
           "zotero"
           "inkscape"
