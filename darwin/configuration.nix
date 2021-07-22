@@ -54,9 +54,11 @@ in with lib;
             #                 executable = true;
             #             };
             ".latexmkrc".text = ''
-$dvipdf = 'dvipdfmx %O %S';
-$latex = 'uplatex';
-$bibtex = 'upbibtex';
+$kanji      = "-kanji=$ENV{\"LATEXENC\"}" if defined $ENV{"LATEXENC"};
+$dvipdf     = 'dvipdfmx -o %D %S';
+$latex      = 'uplatex $kanji';
+$bibtex     = 'upbibtex $kanji';
+$pdf_mode   = 3;
                 '';
             "${hgj_localbin}/eldev" = {
                 source = pkgs.fetchurl {
@@ -580,9 +582,9 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             "^/"        = "undo:";
             "^_"        = "undo:";
             "^ "        = "setMark:";
-            "^\\@"       = "setMark:";
             "^w"        = "deleteToMark:";
             "^u"        = "deleteToBeginningOfLine:";
+            "^g"        = "_cancelKey:";
             # Meta shortcuts
             "~y"        = "yankPop:";
             "~f"        = "moveWordForward:";
@@ -2547,6 +2549,11 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             enableCompletion = true;
             defaultKeymap = "emacs";
             sessionVariables = { RPROMPT = ""; };
+            shellAliases =  {
+                dbuild = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
+                dswitch = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
+                drb = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+            };
 
             oh-my-zsh.enable = true;
 
@@ -2636,6 +2643,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 browserpass
                 tridactyl
                 darkreader
+                # Need to add zotero-connector
             ];
         programs.firefox.profiles =
             {
@@ -2722,11 +2730,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
 
     environment = {
         darwinConfig = "${hgj_sync}/dotfiles/nixpkgs/darwin/configuration.nix";
-        shellAliases =  {
-            dbuild = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
-            dswitch = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
-            drb = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
-        };
         variables = {
             EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
             VISUAL = "$EDITOR";
@@ -2822,7 +2825,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         loginShell = "${pkgs.zsh}/bin/zsh -l";
     } else {
         systemPackages = with pkgs; [
-            # nixfmt # wait https://github.com/NixOS/nixpkgs/pull/129427
+            # nixfmt # wait https://github.com/NixOS/nixpkgs/pull/126195
         ];
         shells = [
             pkgs.zsh
