@@ -4,7 +4,8 @@ let hgj_home = builtins.getEnv "HOME";
     hgj_sync = "${hgj_home}/Desktop";
     hgj_localbin = ".local/bin";
     localconfig = import <localconfig>;
-
+    brewpath = if localconfig.hostname == "silicon" then "/opt/homebrew"
+               else "/usr/local";
     mach-nix = import <mach-nix> {
       inherit pkgs;
       python = "python38";
@@ -53,6 +54,12 @@ in with lib;
             #             '';
             #                 executable = true;
             #             };
+            ".gnupg/gpg-agent.conf".text = ''
+            enable-ssh-support
+            default-cache-ttl 86400
+            max-cache-ttl 86400
+            pinentry-program ${brewpath}/bin/pinentry-mac
+            '';
             ".latexmkrc".text = ''
 $kanji      = "-kanji=$ENV{\"LATEXENC\"}" if defined $ENV{"LATEXENC"};
 $dvipdf     = 'dvipdfmx -o %D %S';
@@ -60,14 +67,6 @@ $latex      = 'uplatex $kanji';
 $bibtex     = 'upbibtex $kanji';
 $pdf_mode   = 3;
                 '';
-            "${hgj_localbin}/eldev" = {
-                source = pkgs.fetchurl {
-                    name = "eldev";
-                    url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
-                    sha256 = "0ikhhfxm1rz3wp37spsy8bcnx5071ard71pd1riw09rsybilxhgn";
-                };
-                executable = true;
-            };
             "${hgj_localbin}/uninstall-nix-osx" = {
                 executable = true;
                 text = ''
@@ -130,83 +129,17 @@ sudo rm -rf /var/root/.cache/nix
 # $ find . -type l -maxdepth 5 ! -exec test -e {} \; -print 2>/dev/null | xargs -I {} sh -c 'file -b {} | grep nix && echo {}'
             '';
             };
-            "${hgj_localbin}/emacs-eru" = {
-                executable = true;
-                text = ''
-              #!/usr/bin/env bash
-
-              set -e
-
-              ACTION=$1
-
-              emacs_d=$HOME/.config/emacs
-              if [[ -d "$XDG_CONFIG_HOME" ]]; then
-                emacs_d="$XDG_CONFIG_HOME/emacs"
-              fi
-
-              function print_usage() {
-                echo "Usage:
-                emacs-eru ACTION
-
-              Actions:
-                install               Install dependencies, compile and lint configurations
-                upgrade               Upgrade dependencies
-                test                  Test configurations
-                compile               Reflect minor changes by compiling
-              "
-              }
-
-              if [ -z "$ACTION" ]; then
-                echo "No ACTION is provided"
-                print_usage
-                exit 1
-              fi
-
-              case "$ACTION" in
-                install)
-                  cd "$emacs_d" && {
-                    make bootstrap compile lint roam
-                  }
-                  ;;
-
-                upgrade)
-                  cd "$emacs_d" && {
-                    make upgrade compile lint
-                  }
-                  ;;
-
-                test)
-                  cd "$emacs_d" && {
-                    make test
-                  }
-                  ;;
-
-                compile)
-                  cd "$emacs_d" && {
-                    make compile
-                  }
-                  ;;
-
-                *)
-                  echo "Unrecognized ACTION $ACTION"
-                  print_usage
-                  ;;
-              esac
-            '';
-            };
-            ".emacs-profiles.el".text = ''
-          (("doom" . ((user-emacs-directory . "${environment.variables.EMACSDIR}")))
-           ("doom-experimental" . ((user-emacs-directory . "~/.doom.d_")
-                                   (env . (("DOOMLOCALDIR" . "~/.doom_")
-                                           ("EMACSDIR" . "~/.doom.d_")
-                                           ("DOOMDIR" . "~/.doom-private")))))
-           ("d12frosted" . ((user-emacs-directory . "${xdg.configHome}/emacs")
-                            (env . (("SHELL" . "${pkgs.fish}"))))))
-          '';
             ".tridactylrc".text = ''
           set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12))" +%l:%c
           bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
+          bind --mode=browser <C-g> escapehatch
+          bind <C-g> composite mode normal ; hidecmdline
+          bind --mode=ex <C-g> ex.hide_and_clear
+          bind --mode=insert <C-g> composite unfocus | mode normal
+          bind --mode=input <C-g> composite unfocus | mode normal
+          bind --mode=hint <C-g> hint.reset
+          bind --mode=visual <C-g> composite js document.getSelection().empty(); mode normal; hidecmdline
           bind --mode=ex <A-n> ex.next_history
           bind --mode=ex <A-p> ex.prev_history
           bind --mode=insert <C-p> !s skhd -k up
@@ -512,56 +445,6 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             };
             "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
             "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
-            # Global Emacs keybindings
-            "Library/KeyBindings/DefaultKeyBinding.dict".text = ''
-      {
-          /* Ctrl shortcuts */
-          "^l"        = "centerSelectionInVisibleArea:";  /* C-l          Recenter */
-          "^/"        = "undo:";                          /* C-/          Undo */
-          "^_"        = "undo:";                          /* C-_          Undo */
-          "^ "        = "setMark:";                       /* C-Spc        Set mark */
-          "^\@"       = "setMark:";                       /* C-@          Set mark */
-          "^w"        = "deleteToMark:";                  /* C-w          Delete to mark */
-          "^u"        = "deleteToBeginningOfLine:";       /* C-u          Delete whole line backward */
-          /* Meta shortcuts */
-          "~y"        = "yankPop:";                       /* M-y          Yank kill ring */
-          "~f"        = "moveWordForward:";               /* M-f          Move forward word */
-          "~b"        = "moveWordBackward:";              /* M-b          Move backward word */
-          "~<"        = "moveToBeginningOfDocument:";     /* M-<          Move to beginning of document */
-          "~>"        = "moveToEndOfDocument:";           /* M->          Move to end of document */
-          "~v"        = "pageUp:";                        /* M-v          Page Up */
-          "~/"        = "complete:";                      /* M-/          Complete */
-          "~c"        = ( "capitalizeWord:",              /* M-c          Capitalize */
-                          "moveForward:",
-                          "moveForward:");
-          "~u"        = ( "uppercaseWord:",               /* M-u          Uppercase */
-                          "moveForward:",
-                          "moveForward:");
-          "~l"        = ( "lowercaseWord:",               /* M-l          Lowercase */
-                          "moveForward:",
-                          "moveForward:");
-          "~d"        = "deleteWordForward:";             /* M-d          Delete word forward */
-          "^~h"       = "deleteWordBackward:";            /* M-C-h        Delete word backward */
-          "~\U007F"   = "deleteWordBackward:";            /* M-Bksp       Delete word backward */
-          "~t"        = "transposeWords:";                /* M-t          Transpose words */
-          "~\@"       = ( "setMark:",                     /* M-@          Mark word */
-                          "moveWordForward:",
-                          "swapWithMark");
-          "~h"        = ( "setMark:",                     /* M-h          Mark paragraph */
-                          "moveToEndOfParagraph:",
-                          "swapWithMark");
-          /* C-x shortcuts */
-          "^x" = {
-              "u"     = "undo:";                          /* C-x u        Undo */
-              "k"     = "performClose:";                  /* C-x k        Close */
-              "^f"    = "openDocument:";                  /* C-x C-f      Open (find file) */
-              "^x"    = "swapWithMark:";                  /* C-x C-x      Swap with mark */
-              "^m"    = "selectToMark:";                  /* C-x C-m      Select to mark*/
-              "^s"    = "saveDocument:";                  /* C-x C-s      Save */
-              "^w"    = "saveDocumentAs:";                /* C-x C-w      Save as */
-          };
-      }
-    '';
         } // (if localconfig.hostname == "silicon" then {
             # Need to clone yaskkserv2 repository to ~/test/yaskkserv2 first,
             # then build as instructed via `cargo build --release`
@@ -589,6 +472,8 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             "~y"        = "yankPop:";
             "~f"        = "moveWordForward:";
             "~b"        = "moveWordBackward:";
+            "~p"        = "selectPreviousKeyView:";
+            "~n"        = "selectNextKeyView:";
             # Excaping XML expressions should be done automatically!
             "~&lt;"     = "moveToBeginningOfDocument:";
             "~&gt;"     = "moveToEndOfDocument:";
@@ -2589,9 +2474,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                     };
                 }
             ];
-            initExtraBeforeCompInit = let brewpath = if localconfig.hostname == "silicon" then "/opt/homebrew"
-                                                     else "/usr/local";
-                                      in ''
+            initExtraBeforeCompInit = ''
         echo >&2 "Homebrew completion path..."
         if [ -f ${brewpath}/bin/brew ]; then
           PATH=${brewpath}/bin:$PATH fpath+=$(brew --prefix)/share/zsh/site-functions
@@ -2735,7 +2618,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             VISUAL = "$EDITOR";
             LANG = "en_US.UTF-8";
             DOOMDIR = "${hgj_sync}/dotfiles/.doom.d";
-            EMACSDIR = "${hgj_home}/.doom.d";
+            EMACSDIR = "${hgj_home}/.emacs.d";
             DOOMLOCALDIR = "${hgj_home}/.doom";
         } //
         ( if localconfig.hostname == "classic" then {
@@ -3295,6 +3178,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         "z3"
         "coq"
         "pandoc"
+        "pinentry-mac"
         # emacs-mac dependencies
         "jansson"
         "libxml2"
