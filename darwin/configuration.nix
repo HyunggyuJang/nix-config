@@ -54,6 +54,77 @@ in with lib;
             #             '';
             #                 executable = true;
             #             };
+            ".emacs-profiles.el".text = ''
+                (("default" . ((user-emacs-directory . "~/test/doom-testbed/doom-emacs")
+                               (env . (("EMACSDIR" . "~/test/doom-testbed/doom-emacs")
+                                       ("DOOMDIR" . "~/test/doom-testbed/.doom.d")
+                                       ("DOOMLOCALDIR" . "~/test/doom-testbed/.doom"))))))
+            '';
+            "${hgj_localbin}/doomTest" = {
+                executable = true;
+                text = ''
+                cd $HOME/test/doom-testbed/doom-emacs/bin
+                DOOMDIR=../../.doom.d
+                EMACSDIR=../
+                DOOMLOCALDIR=../../.doom
+                ./doom $@
+              '';
+            };
+            "${hgj_localbin}/emacs-eru" = {
+                executable = true;
+                text = ''
+              #!/usr/bin/env bash
+              set -e
+              ACTION=$1
+              emacs_d=$HOME/.config/emacs
+              if [[ -d "$XDG_CONFIG_HOME" ]]; then
+                emacs_d="$XDG_CONFIG_HOME/emacs"
+              fi
+              function print_usage() {
+                echo "Usage:
+                emacs-eru ACTION
+              Actions:
+                install               Install dependencies, compile and lint configurations
+                upgrade               Upgrade dependencies
+                test                  Test configurations
+              "
+              }
+              if [ -z "$ACTION" ]; then
+                echo "No ACTION is provided"
+                print_usage
+                exit 1
+              fi
+              case "$ACTION" in
+                install)
+                  cd "$emacs_d" && {
+                    make bootstrap compile lint
+                  }
+                  ;;
+                upgrade)
+                  cd "$emacs_d" && {
+                    make upgrade compile lint
+                  }
+                  ;;
+                test)
+                  cd "$emacs_d" && {
+                    make test
+                  }
+                  ;;
+                *)
+                  echo "Unrecognized ACTION $ACTION"
+                  print_usage
+                  ;;
+              esac
+            '';
+            };
+            "${hgj_localbin}/eldev" = {
+                source = pkgs.fetchurl {
+                    name = "eldev";
+                    url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
+                    sha256 = "0ikhhfxm1rz3wp37spsy8bcnx5071ard71pd1riw09rsybilxhgn";
+                };
+                executable = true;
+            };
             ".gnupg/gpg-agent.conf".text = ''
             enable-ssh-support
             default-cache-ttl 86400
@@ -154,6 +225,11 @@ sudo rm -rf /var/root/.cache/nix
           bind --mode=insert <C-u> text.backward_kill_line
           bind --mode=insert <A-f> text.forward_word
           bind --mode=insert <A-b> text.backward_word
+          # For international language mode navigation -- specifically for Korean
+          bind --mode=insert <A-k> text.kill_line
+          bind --mode=insert <A-u> text.backward_kill_line
+          bind --mode=insert <A-a> text.beginning_of_line
+          bind --mode=insert <A-e> text.end_of_line
           set theme dark
           '';
             ".qutebrowser/config.py".text = ''
@@ -279,7 +355,10 @@ sudo rm -rf /var/root/.cache/nix
                 url = "https://raw.githubusercontent.com/leanprover-community/lean/master/extras/latex/lstlean.tex";
                 sha256 = "0ig0r4zg9prfydzc4wbywjfj1yv4578zrd80bx34vbkfbgqvpq5m";
             };
-
+            "Library/texmf/tex/latex/uplatex.cfg".text = ''
+                \RequirePackage{plautopatch}
+                \RequirePackage{exppl2e}
+            '';
             "Library/texmf/tex/latex/lstlangcoq.sty".source = pkgs.fetchurl {
                 name = "Coq-syntax-tex-highlight";
                 url = "https://raw.githubusercontent.com/PrincetonUniversity/VST/master/doc/lstlangcoq.sty";
@@ -329,7 +408,8 @@ sudo rm -rf /var/root/.cache/nix
           IMAPAccount nagoya
           Host mail.j.mbox.nagoya-u.ac.jp
           User jang.hyunggyu@j.mbox.nagoya-u.ac.jp #not XXX@me.com etc.
-          UseKeychain Yes
+          AuthMechs LOGIN
+          PassCmd "pass mail.j.mbox.nagoya-u.ac.jp"
           Port 993
           SSLType IMAPS
           SSLVersions TLSv1.2
@@ -353,6 +433,36 @@ sudo rm -rf /var/root/.cache/nix
 
           Group nagoya
           Channel nagoya-folders
+
+          IMAPAccount gmail
+          Host imap.gmail.com
+          SSLType IMAPS
+          AuthMechs LOGIN
+          User murasakipurplez5@gmail.com
+          PassCmd "pass email/gmail.com"
+          Port 993
+          Timeout 0
+          SSLType IMAPS
+          SSLVersions TLSv1.2
+
+          IMAPStore gmail-remote
+          Account gmail
+
+          MaildirStore gmail-local
+          Path ~/.mail/gmail/
+          Inbox ~/.mail/gmail/INBOX
+          Subfolders Verbatim
+
+          Channel gmail-folders
+          Far :gmail-remote:
+          Near :gmail-local:
+          Create Both
+          Expunge Both
+          Patterns * !"[Gmail]/All Mail" !"[Gmail]/Important" !"[Gmail]/Starred" !"[Gmail]/Bin"
+          SyncState *
+
+          Group gmail
+          Channel gmail-folders
         '';
             ".msmtprc".text = ''
           # Set default values for all following accounts.
@@ -367,12 +477,23 @@ sudo rm -rf /var/root/.cache/nix
           host           mail.j.mbox.nagoya-u.ac.jp
           port           587
           protocol       smtp
-          from	       jang.hyunggyu@j.mbox.nagoya-u.ac.jp
+          from	         jang.hyunggyu@j.mbox.nagoya-u.ac.jp
           user           jang.hyunggyu@j.mbox.nagoya-u.ac.jp
+          passwordeval   "pass mail.j.mbox.nagoya-u.ac.jp"
+          tls_starttls   on
+
+          # Gmail
+          account        murasakipurplez5@gmail.com
+          host           smtp.gmail.com
+          port           587
+          protocol       smtp
+          from	         murasakipurplez5@gmail.com
+          user           murasakipurplez5@gmail.com
+          passwordeval   "pass email/gmail.com"
           tls_starttls   on
 
           # Set a default account
-          account default : jang.hyunggyu@j.mbox.nagoya-u.ac.jp
+          account default : murasakipurplez5@gmail.com
         '';
             ".notmuch-config".text = ''
           [database]
@@ -537,7 +658,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
 
           hide_window_decorations yes
 
-          font_family      Sarasa Mono K
+          font_family      Jetbrains Mono
           font_size        14.0
 
           macos_thicken_font 0.5
@@ -2438,6 +2559,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 dbuild = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
                 dswitch = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
                 drb = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                emacsTest = "{mv ~/.emacs.d ~/.emacs. && emacs}&; sleep .1 && mv ~/.emacs. ~/.emacs.d";
             };
 
             oh-my-zsh.enable = true;
@@ -2708,7 +2830,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         loginShell = "${pkgs.zsh}/bin/zsh -l";
     } else {
         systemPackages = with pkgs; [
-            # nixfmt # wait https://github.com/NixOS/nixpkgs/pull/126195
+            # nixfmt # wait +https://github.com/NixOS/nixpkgs/pull/126195+ https://github.com/NixOS/nixpkgs/issues/95903#issuecomment-907611594
         ];
         shells = [
             pkgs.zsh
@@ -3148,7 +3270,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
       brews = [
         "pngpaste"
         "jq"
-        "notmuch"
         "msmtp"
         "aspell"
         "graphviz"
@@ -3179,9 +3300,16 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         "coq"
         "pandoc"
         "pinentry-mac"
+        # Fonts
+        "svn"
         # emacs-mac dependencies
         "jansson"
         "libxml2"
+        # suggested by Doom emacs
+        "pipenv"
+        "jupyter"
+        # For projectile
+        "ctags"
       ];
       casks = [
           "appcleaner"
@@ -3198,12 +3326,20 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
           "ukelele"
           "zotero"
           "inkscape"
-          "font-et-book"
-          "font-sarasa-gothic"
+          # elegant-emacs
+          "font-roboto-mono"
+          "font-roboto-mono-nerd-font"
+          "font-fira-code"
+          # test fonts
+          "font-jetbrains-mono"
+          "font-computer-modern"
+          # Korean mono space font
+          "font-d2coding"
       ];
       extraConfig = ''
-        brew "emacs-mac", args: ["with-no-title-bars"]
+        brew "emacs-mac", args: ["with-no-title-bars", "with-starter"]
         brew "yabai", args: ["HEAD"], restart_service: :changed
+        brew "notmuch", args: ["HEAD"]
         brew "skhd", args: ["HEAD"]
         # Pinned lean via `brew pin lean`
         brew "lean", args: ["HEAD"]
