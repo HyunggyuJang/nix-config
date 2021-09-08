@@ -57,14 +57,14 @@ in with lib;
             ".emacs-profiles.el".text = ''
                 (("default" . ((user-emacs-directory . "~/test/doom-testbed/doom-emacs")
                                (env . (("EMACSDIR" . "~/test/doom-testbed/doom-emacs")
-                                       ("DOOMDIR" . "~/test/doom-testbed/.doom.d")
+                                       ("DOOMDIR" . "~/notes/org/manager")
                                        ("DOOMLOCALDIR" . "~/test/doom-testbed/.doom"))))))
             '';
             "${hgj_localbin}/doomTest" = {
                 executable = true;
                 text = ''
                 cd $HOME/test/doom-testbed/doom-emacs/bin
-                DOOMDIR=../../.doom.d
+                DOOMDIR=~/notes/org/manager
                 EMACSDIR=../
                 DOOMLOCALDIR=../../.doom
                 ./doom $@
@@ -2739,7 +2739,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
             VISUAL = "$EDITOR";
             LANG = "en_US.UTF-8";
-            DOOMDIR = "${hgj_sync}/dotfiles/.doom.d";
+            DOOMDIR = "${hgj_home}/notes/org/manager";
             EMACSDIR = "${hgj_home}/.emacs.d";
             DOOMLOCALDIR = "${hgj_home}/.doom";
         } //
@@ -3329,8 +3329,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
           # elegant-emacs
           "font-roboto-mono"
           "font-roboto-mono-nerd-font"
-          "font-fira-code"
-          # test fonts
+          # test fonts -- doom specific
           "font-jetbrains-mono"
           "font-computer-modern"
           # Korean mono space font
