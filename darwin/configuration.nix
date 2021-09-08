@@ -2830,7 +2830,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         loginShell = "${pkgs.zsh}/bin/zsh -l";
     } else {
         systemPackages = with pkgs; [
-            # nixfmt # wait +https://github.com/NixOS/nixpkgs/pull/126195+ https://github.com/NixOS/nixpkgs/issues/95903#issuecomment-907611594
+            nixfmt
         ];
         shells = [
             pkgs.zsh
