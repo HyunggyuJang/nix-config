@@ -7,16 +7,16 @@ let hgj_home = builtins.getEnv "HOME";
     brewpath = if localconfig.hostname == "silicon" then "/opt/homebrew"
                else "/usr/local";
     mach-nix = import <mach-nix> {
-      inherit pkgs;
-      python = "python38";
+        inherit pkgs;
+        python = "python38";
     };
 
     nur = import <nur> {
-      inherit pkgs;
+        inherit pkgs;
     };
 
     myPython = mach-nix.mkPython {
-      requirements = ''
+        requirements = ''
         readability-lxml
         octave-kernel
         mathlibtools
@@ -24,55 +24,55 @@ let hgj_home = builtins.getEnv "HOME";
     };
 
     kittyDracula = with pkgs; stdenv.mkDerivation {
-      name = "kitty-dracula-theme";
-      src = fetchFromGitHub {
-        owner = "dracula";
-        repo = "kitty";
-        rev = "6d6239a";
-        sha256 = "1fyclzglw4jz0vrglwg6v644bhr7w7mb1d95lagy7iz14gybli0i";
-      };
-      installPhase = ''
+        name = "kitty-dracula-theme";
+        src = fetchFromGitHub {
+            owner = "dracula";
+            repo = "kitty";
+            rev = "6d6239a";
+            sha256 = "1fyclzglw4jz0vrglwg6v644bhr7w7mb1d95lagy7iz14gybli0i";
+        };
+        installPhase = ''
         mkdir -p $out
         cp dracula.conf diff.conf $out/
       '';
     };
 
 in with lib;
-  rec {
-    # Home manager
-    imports = [ <home-manager/nix-darwin> ];
+    rec {
+        # Home manager
+        imports = [ <home-manager/nix-darwin> ];
 
-    home-manager.useGlobalPkgs = true;
-    home-manager.users = let userconfig = { config, ...}: rec {
-        home.file = {
-            #             ".mail/.notmuch/hooks/pre-new" = {
-            #                 text = ''
-            # #!/bin/bash
-            # filter="tag:deleted tag:trash AND folder:/account.nagoya/"
-            # echo "$(notmuch count "$filter") trashed messages"
-            # notmuch search --output=files --format=text0 "$filter" | ${if localconfig.hostname == "silicon" then "g" else ""}xargs -0 --no-run-if-empty rm
-            #             '';
-            #                 executable = true;
-            #             };
-            ".emacs-profiles.el".text = ''
+        home-manager.useGlobalPkgs = true;
+        home-manager.users = let userconfig = { config, ...}: rec {
+            home.file = {
+                #             ".mail/.notmuch/hooks/pre-new" = {
+                #                 text = ''
+                # #!/bin/bash
+                # filter="tag:deleted tag:trash AND folder:/account.nagoya/"
+                # echo "$(notmuch count "$filter") trashed messages"
+                # notmuch search --output=files --format=text0 "$filter" | ${if localconfig.hostname == "silicon" then "g" else ""}xargs -0 --no-run-if-empty rm
+                #             '';
+                #                 executable = true;
+                #             };
+                ".emacs-profiles.el".text = ''
                 (("default" . ((user-emacs-directory . "~/test/doom-testbed/doom-emacs")
                                (env . (("EMACSDIR" . "~/test/doom-testbed/doom-emacs")
-                                       ("DOOMDIR" . "~/notes/org/manager")
+                                       ("DOOMDIR" . "~/Desktop/dotfiles/.doom.d")
                                        ("DOOMLOCALDIR" . "~/test/doom-testbed/.doom"))))))
             '';
-            "${hgj_localbin}/doomTest" = {
-                executable = true;
-                text = ''
+                "${hgj_localbin}/doomTest" = {
+                    executable = true;
+                    text = ''
                 cd $HOME/test/doom-testbed/doom-emacs/bin
-                DOOMDIR=~/notes/org/manager
+                DOOMDIR=~/Desktop/dotfiles/.doom.d
                 EMACSDIR=../
                 DOOMLOCALDIR=../../.doom
                 ./doom $@
               '';
-            };
-            "${hgj_localbin}/emacs-eru" = {
-                executable = true;
-                text = ''
+                };
+                "${hgj_localbin}/emacs-eru" = {
+                    executable = true;
+                    text = ''
               #!/usr/bin/env bash
               set -e
               ACTION=$1
@@ -116,31 +116,31 @@ in with lib;
                   ;;
               esac
             '';
-            };
-            "${hgj_localbin}/eldev" = {
-                source = pkgs.fetchurl {
-                    name = "eldev";
-                    url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
-                    sha256 = "0ikhhfxm1rz3wp37spsy8bcnx5071ard71pd1riw09rsybilxhgn";
                 };
-                executable = true;
-            };
-            ".gnupg/gpg-agent.conf".text = ''
+                "${hgj_localbin}/eldev" = {
+                    source = pkgs.fetchurl {
+                        name = "eldev";
+                        url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
+                        sha256 = "0ikhhfxm1rz3wp37spsy8bcnx5071ard71pd1riw09rsybilxhgn";
+                    };
+                    executable = true;
+                };
+                ".gnupg/gpg-agent.conf".text = ''
             enable-ssh-support
             default-cache-ttl 86400
             max-cache-ttl 86400
             pinentry-program ${brewpath}/bin/pinentry-mac
             '';
-            ".latexmkrc".text = ''
+                ".latexmkrc".text = ''
 $kanji      = "-kanji=$ENV{\"LATEXENC\"}" if defined $ENV{"LATEXENC"};
 $dvipdf     = 'dvipdfmx -o %D %S';
 $latex      = 'uplatex $kanji';
 $bibtex     = 'upbibtex $kanji';
 $pdf_mode   = 3;
                 '';
-            "${hgj_localbin}/uninstall-nix-osx" = {
-                executable = true;
-                text = ''
+                "${hgj_localbin}/uninstall-nix-osx" = {
+                    executable = true;
+                    text = ''
 #!usr/bin/env bash
 
 # !!WARNING!!
@@ -199,8 +199,8 @@ sudo rm -rf /var/root/.cache/nix
 # useful for finding hanging links
 # $ find . -type l -maxdepth 5 ! -exec test -e {} \; -print 2>/dev/null | xargs -I {} sh -c 'file -b {} | grep nix && echo {}'
             '';
-            };
-            ".tridactylrc".text = ''
+                };
+                ".tridactylrc".text = ''
           set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12))" +%l:%c
           bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
@@ -232,7 +232,7 @@ sudo rm -rf /var/root/.cache/nix
           bind --mode=insert <A-e> text.end_of_line
           set theme dark
           '';
-            ".qutebrowser/config.py".text = ''
+                ".qutebrowser/config.py".text = ''
           config.load_autoconfig(True)
           # c.window.hide_decoration = True
 
@@ -350,61 +350,61 @@ sudo rm -rf /var/root/.cache/nix
               }
           })
         '';
-            "Library/texmf/tex/latex/lstlean.tex".source = pkgs.fetchurl {
-                name = "Lean-syntax-tex-highlight";
-                url = "https://raw.githubusercontent.com/leanprover-community/lean/master/extras/latex/lstlean.tex";
-                sha256 = "0ig0r4zg9prfydzc4wbywjfj1yv4578zrd80bx34vbkfbgqvpq5m";
-            };
-            "Library/texmf/tex/latex/uplatex.cfg".text = ''
+                "Library/texmf/tex/latex/lstlean.tex".source = pkgs.fetchurl {
+                    name = "Lean-syntax-tex-highlight";
+                    url = "https://raw.githubusercontent.com/leanprover-community/lean/master/extras/latex/lstlean.tex";
+                    sha256 = "0ig0r4zg9prfydzc4wbywjfj1yv4578zrd80bx34vbkfbgqvpq5m";
+                };
+                "Library/texmf/tex/latex/uplatex.cfg".text = ''
                 \RequirePackage{plautopatch}
                 \RequirePackage{exppl2e}
             '';
-            "Library/texmf/tex/latex/lstlangcoq.sty".source = pkgs.fetchurl {
-                name = "Coq-syntax-tex-highlight";
-                url = "https://raw.githubusercontent.com/PrincetonUniversity/VST/master/doc/lstlangcoq.sty";
-                sha256 = "12dg7yqfsh2hz74nmb0y0qvdr75dn06mj0inyz9assh55ixpljd4";
-            };
-            "Library/Application Support/Zotero/Profiles/z6bvhh6i.default/chrome/userChrome.css".source = pkgs.fetchurl {
-                name = "Zotero-Dark-theme";
-                url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
-                sha256 = "03hb64j6baj5kx24cf9y7vx4sdsv34553djsf4l3krz7aj7cwi7f";
-            };
-            ".qutebrowser/dracula".source = pkgs.fetchFromGitHub {
-                owner = "dracula";
-                repo = "qutebrowser";
-                rev = "ba5bd6589c4bb8ab35aaaaf7111906732f9764ef";
-                sha256 = "1mhckmyqc7ripzmz0d8466fq0njqhxkigzm3nz0yl05k0xlsbzka";
-            };
-            ".qutebrowser/userscripts/readability-js" = {
-                source = pkgs.fetchurl {
-                    name = "readability-js";
-                    url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability-js";
-                    sha256 = "14hbaz9x9680l3cbv7v9pndnhvpff62j9wiadgg9gwvkxn179zd1";
+                "Library/texmf/tex/latex/lstlangcoq.sty".source = pkgs.fetchurl {
+                    name = "Coq-syntax-tex-highlight";
+                    url = "https://raw.githubusercontent.com/PrincetonUniversity/VST/master/doc/lstlangcoq.sty";
+                    sha256 = "12dg7yqfsh2hz74nmb0y0qvdr75dn06mj0inyz9assh55ixpljd4";
                 };
-                executable = true;
-            };
-            ".qutebrowser/userscripts/readability" = {
-                source = pkgs.fetchurl {
-                    name = "readability";
-                    url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability";
-                    sha256 = "029538gkymh756qd14j6947r6qdyzww6chnkd240vc8v0pif58lk";
+                "Library/Application Support/Zotero/Profiles/z6bvhh6i.default/chrome/userChrome.css".source = pkgs.fetchurl {
+                    name = "Zotero-Dark-theme";
+                    url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
+                    sha256 = "03hb64j6baj5kx24cf9y7vx4sdsv34553djsf4l3krz7aj7cwi7f";
                 };
-                executable = true;
-            };
-            ".bash_profile".text = ". ${hgj_home}/.nix-profile/etc/profile.d/nix.sh";
-            ".gitconfig".text = ''
+                ".qutebrowser/dracula".source = pkgs.fetchFromGitHub {
+                    owner = "dracula";
+                    repo = "qutebrowser";
+                    rev = "ba5bd6589c4bb8ab35aaaaf7111906732f9764ef";
+                    sha256 = "1mhckmyqc7ripzmz0d8466fq0njqhxkigzm3nz0yl05k0xlsbzka";
+                };
+                ".qutebrowser/userscripts/readability-js" = {
+                    source = pkgs.fetchurl {
+                        name = "readability-js";
+                        url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability-js";
+                        sha256 = "14hbaz9x9680l3cbv7v9pndnhvpff62j9wiadgg9gwvkxn179zd1";
+                    };
+                    executable = true;
+                };
+                ".qutebrowser/userscripts/readability" = {
+                    source = pkgs.fetchurl {
+                        name = "readability";
+                        url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability";
+                        sha256 = "029538gkymh756qd14j6947r6qdyzww6chnkd240vc8v0pif58lk";
+                    };
+                    executable = true;
+                };
+                ".bash_profile".text = ". ${hgj_home}/.nix-profile/etc/profile.d/nix.sh";
+                ".gitconfig".text = ''
           [user]
             name = Hyunggyu Jang
             email = murasakipurplez5@gmail.com
         '';
-            ".mailcap".text = ''
+                ".mailcap".text = ''
           # HTML
           text/html; open %s; description=HTML Text; test=test -n "$DISPLAY";  nametemplate=%s.html
         '';
-            ".mailrc".text = ''
+                ".mailrc".text = ''
           set sendmail="/usr/local/bin/msmtp"
         '';
-            ".mbsyncrc".text = ''
+                ".mbsyncrc".text = ''
           IMAPAccount nagoya
           Host mail.j.mbox.nagoya-u.ac.jp
           User jang.hyunggyu@j.mbox.nagoya-u.ac.jp #not XXX@me.com etc.
@@ -464,7 +464,7 @@ sudo rm -rf /var/root/.cache/nix
           Group gmail
           Channel gmail-folders
         '';
-            ".msmtprc".text = ''
+                ".msmtprc".text = ''
           # Set default values for all following accounts.
           defaults
           auth           on
@@ -495,7 +495,7 @@ sudo rm -rf /var/root/.cache/nix
           # Set a default account
           account default : murasakipurplez5@gmail.com
         '';
-            ".notmuch-config".text = ''
+                ".notmuch-config".text = ''
           [database]
           path=${hgj_home}/.mail
           [user]
@@ -510,9 +510,9 @@ sudo rm -rf /var/root/.cache/nix
           [maildir]
           synchronize_flags=true
         '';
-            "${hgj_localbin}/open_kitty" = {
-                executable = true;
-                text = ''
+                "${hgj_localbin}/open_kitty" = {
+                    executable = true;
+                    text = ''
 #!/usr/bin/env bash
 
 # https://github.com/noperator/dotfiles/blob/master/.config/kitty/launch-instance.sh
@@ -563,80 +563,80 @@ yabai -m signal --add \
 # focused display.
 kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
+                };
+                "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
+                "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
+            } // (if localconfig.hostname == "silicon" then {
+                # Need to clone yaskkserv2 repository to ~/test/yaskkserv2 first,
+                # then build as instructed via `cargo build --release`
+                "${hgj_localbin}/yaskkserv2" = {
+                    source = "${hgj_home}/test/yaskkserv2/target/release/yaskkserv2";
+                    executable = true;
+                };
+                "${hgj_localbin}/yaskkserv2_make_dictionary" = {
+                    source = "${hgj_home}/test/yaskkserv2/target/release/yaskkserv2_make_dictionary";
+                    executable = true;
+                };
+            } else {});
+            # https://github.com/nix-community/home-manager/blob/db00b39a9abec04245486a01b236b8d9734c9ad0/tests/modules/targets-darwin/default.nix
+            # Has to be set explicitly as it disabled by default, preferring nix-darwin
+            targets.darwin.keybindings = {
+                # Control shortcuts
+                "^l"        = "centerSelectionInVisibleArea:";
+                "^/"        = "undo:";
+                "^_"        = "undo:";
+                "^ "        = "setMark:";
+                "^w"        = "deleteToMark:";
+                "^u"        = "deleteToBeginningOfLine:";
+                "^g"        = "_cancelKey:";
+                # Meta shortcuts
+                "~y"        = "yankPop:";
+                "~f"        = "moveWordForward:";
+                "~b"        = "moveWordBackward:";
+                "~p"        = "selectPreviousKeyView:";
+                "~n"        = "selectNextKeyView:";
+                # Excaping XML expressions should be done automatically!
+                "~&lt;"     = "moveToBeginningOfDocument:";
+                "~&gt;"     = "moveToEndOfDocument:";
+                "~v"        = "pageUp:";
+                "~/"        = "complete:";
+                "~c"        = [ "capitalizeWord:"
+                                "moveForward:"
+                                "moveForward:"];
+                "~u"        = [ "uppercaseWord:"
+                                "moveForward:"
+                                "moveForward:"];
+                "~l"        = [ "lowercaseWord:"
+                                "moveForward:"
+                                "moveForward:"];
+                "~d"        = "deleteWordForward:";
+                "^~h"       = "deleteWordBackward:";
+                "~t"        = "transposeWords:";
+                "~\\@"       = [ "setMark:"
+                                 "moveWordForward:"
+                                 "swapWithMark:"];
+                "~h"        = [ "setMark:"
+                                "moveToEndOfParagraph:"
+                                "swapWithMark:"];
+                # C-x shortcuts
+                "^x" = {
+                    "u"     = "undo:";
+                    "k"     = "performClose:";
+                    "^f"    = "openDocument:";
+                    "^x"    = "swapWithMark:";
+                    "^m"    = "selectToMark:";
+                    "^s"    = "saveDocument:";
+                    "^w"    = "saveDocumentAs:";
+                };
             };
-            "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
-            "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
-        } // (if localconfig.hostname == "silicon" then {
-            # Need to clone yaskkserv2 repository to ~/test/yaskkserv2 first,
-            # then build as instructed via `cargo build --release`
-            "${hgj_localbin}/yaskkserv2" = {
-                source = "${hgj_home}/test/yaskkserv2/target/release/yaskkserv2";
-                executable = true;
-            };
-            "${hgj_localbin}/yaskkserv2_make_dictionary" = {
-                source = "${hgj_home}/test/yaskkserv2/target/release/yaskkserv2_make_dictionary";
-                executable = true;
-            };
-        } else {});
-        # https://github.com/nix-community/home-manager/blob/db00b39a9abec04245486a01b236b8d9734c9ad0/tests/modules/targets-darwin/default.nix
-        # Has to be set explicitly as it disabled by default, preferring nix-darwin
-        targets.darwin.keybindings = {
-            # Control shortcuts
-            "^l"        = "centerSelectionInVisibleArea:";
-            "^/"        = "undo:";
-            "^_"        = "undo:";
-            "^ "        = "setMark:";
-            "^w"        = "deleteToMark:";
-            "^u"        = "deleteToBeginningOfLine:";
-            "^g"        = "_cancelKey:";
-            # Meta shortcuts
-            "~y"        = "yankPop:";
-            "~f"        = "moveWordForward:";
-            "~b"        = "moveWordBackward:";
-            "~p"        = "selectPreviousKeyView:";
-            "~n"        = "selectNextKeyView:";
-            # Excaping XML expressions should be done automatically!
-            "~&lt;"     = "moveToBeginningOfDocument:";
-            "~&gt;"     = "moveToEndOfDocument:";
-            "~v"        = "pageUp:";
-            "~/"        = "complete:";
-            "~c"        = [ "capitalizeWord:"
-                              "moveForward:"
-                              "moveForward:"];
-            "~u"        = [ "uppercaseWord:"
-                              "moveForward:"
-                              "moveForward:"];
-            "~l"        = [ "lowercaseWord:"
-                              "moveForward:"
-                              "moveForward:"];
-            "~d"        = "deleteWordForward:";
-            "^~h"       = "deleteWordBackward:";
-            "~t"        = "transposeWords:";
-            "~\\@"       = [ "setMark:"
-                              "moveWordForward:"
-                              "swapWithMark:"];
-            "~h"        = [ "setMark:"
-                              "moveToEndOfParagraph:"
-                              "swapWithMark:"];
-            # C-x shortcuts
-            "^x" = {
-                "u"     = "undo:";
-                "k"     = "performClose:";
-                "^f"    = "openDocument:";
-                "^x"    = "swapWithMark:";
-                "^m"    = "selectToMark:";
-                "^s"    = "saveDocument:";
-                "^w"    = "saveDocumentAs:";
-            };
-        };
-        xdg = {
-            enable = true;
+            xdg = {
+                enable = true;
 
-            configHome = "${hgj_home}/.config";
-            dataHome = "${hgj_home}/.local/share";
-            cacheHome = "${hgj_home}/.cache";
-            configFile = {
-                "afew/config".text = ''
+                configHome = "${hgj_home}/.config";
+                dataHome = "${hgj_home}/.local/share";
+                cacheHome = "${hgj_home}/.cache";
+                configFile = {
+                    "afew/config".text = ''
           [MailMover]
           folders = account.nagoya/Inbox account.nagoya/Trash
           rename = True
@@ -651,9 +651,9 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
           maildir_separator = /
         '';
 
-                "kitty/dracula.conf".source = "${kittyDracula}/dracula.conf";
-                "kitty/diff.conf".source = "${kittyDracula}/diff.conf";
-                "kitty/kitty.conf".text = ''
+                    "kitty/dracula.conf".source = "${kittyDracula}/dracula.conf";
+                    "kitty/diff.conf".source = "${kittyDracula}/diff.conf";
+                    "kitty/kitty.conf".text = ''
           allow_remote_control yes
 
           hide_window_decorations yes
@@ -669,10 +669,10 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
 
           include dracula.conf
         '';
-                "zathura/zathurarc".text = "set selection-clipboard clipboard";
-                "nixpkgs".source = "${hgj_sync}/dotfiles/nixpkgs";
-            } // (if localconfig.hostname == "classic" then {
-                "fontconfig/fonts.conf".text = ''
+                    "zathura/zathurarc".text = "set selection-clipboard clipboard";
+                    "nixpkgs".source = "${hgj_sync}/dotfiles/nixpkgs";
+                } // (if localconfig.hostname == "classic" then {
+                    "fontconfig/fonts.conf".text = ''
         <?xml version='1.0'?>
         <!-- Generated by Hyunggyu Jang. -->
         <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
@@ -682,7 +682,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
         </fontconfig>
       '';
 
-                "karabiner/karabiner.json".text = ''
+                    "karabiner/karabiner.json".text = ''
 {
     "global": {
         "check_for_updates_on_startup": false,
@@ -2056,8 +2056,8 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
     ]
 }
 '';
-            } else {
-                "yabai/yabairc".text = ''
+                } else {
+                    "yabai/yabairc".text = ''
 yabai -m config active_window_opacity 1.000000
 yabai -m config auto_balance on
 yabai -m config bottom_padding 0
@@ -2088,269 +2088,7 @@ yabai -m rule --add app=Anki space=3
 yabai -m rule --add app="^Microsoft Teams$" space=4
 yabai -m rule --add app="^zoom$" space=4
 '';
-                "skhd/skhdrc".text = ''
-################################################################################
-#
-# window manipulation
-#
-
-# ^ = 0x18
-ctrl + cmd - 6 : yabai -m window --focus recent
-ctrl + cmd - h : yabai -m window --focus west
-ctrl + cmd - j : yabai -m window --focus south
-ctrl + cmd - k : yabai -m window --focus north
-ctrl + cmd - l : yabai -m window --focus east
-
-ctrl + cmd - r : yabai -m space --rotate 90
-ctrl + cmd + shift - r : yabai -m space --rotate 270
-
-:: mywindow @
-:: swap @
-:: warp @
-:: myinsert @
-
-ctrl + cmd - w ; mywindow
-mywindow < ctrl - g ; default
-
-mywindow < h : yabai -m window west --resize right:-20:0 2> /dev/null || yabai -m window --resize right:-20:0
-mywindow < j : yabai -m window north --resize bottom:0:20 2> /dev/null || yabai -m window --resize bottom:0:20
-mywindow < k : yabai -m window south --resize top:0:-20 2> /dev/null || yabai -m window --resize top:0:-20
-mywindow < l : yabai -m window east --resize left:20:0 2> /dev/null || yabai -m window --resize left:20:0
-mywindow < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
-  | xargs -I{} yabai -m window --focus {}
-
-mywindow < ctrl + cmd - w ; swap
-swap < ctrl - g ; default
-
-swap < n : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
-  | xargs -I{} yabai -m window --swap {}
-
-swap < p: yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
-  | xargs -I{} yabai -m window --swap {}
-
-swap < h : skhd -k "ctrl - g" ; yabai -m window --swap west
-swap < j : skhd -k "ctrl - g" ; yabai -m window --swap south
-swap < k : skhd -k "ctrl - g" ; yabai -m window --swap north
-swap < l : skhd -k "ctrl - g" ; yabai -m window --swap east
-
-swap < 0x18 : skhd -k "ctrl - g" ; yabai -m window --swap recent
-
-swap < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
-  | xargs -I{} yabai -m window --swap {}
-
-
-mywindow < w ; warp
-warp < ctrl - g ; default
-warp < h : skhd -k "ctrl - g" ; \
-  yabai -m window --warp west
-warp < j : skhd -k "ctrl - g" ; \
-  yabai -m window --warp south
-warp < k : skhd -k "ctrl - g" ; \
-  yabai -m window --warp north
-warp < l : skhd -k "ctrl - g" ; \
-  yabai -m window --warp east
-warp < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
-  | xargs -I{} yabai -m window --warp {}
-
-mywindow < i ; myinsert
-myinsert < ctrl - g ; default
-
-myinsert < h : skhd -k "ctrl - g"; yabai -m window --insert west
-myinsert < j : skhd -k "ctrl - g"; yabai -m window --insert south
-myinsert < k : skhd -k "ctrl - g"; yabai -m window --insert north
-myinsert < l : skhd -k "ctrl - g"; yabai -m window --insert east
-
-ctrl + cmd - return : yabai -m window --toggle zoom-fullscreen
-
-################################################################################
-#
-# space manipulation
-#
-
-# Move currently focused window to the specified space
-ctrl + cmd - 1 : yabai -m window --space 1; skhd -k "cmd - 1"
-ctrl + cmd - 2 : yabai -m window --space 2; skhd -k "cmd - 2"
-ctrl + cmd - 3 : yabai -m window --space 3; skhd -k "cmd - 3"
-ctrl + cmd - 4 : yabai -m window --space 4; skhd -k "cmd - 4"
-ctrl + cmd - 5 : yabai -m window --space 5; skhd -k "cmd - 5"
-ctrl + cmd - 6 : yabai -m window --space 6; skhd -k "cmd - 6"
-
-################################################################################
-#
-# Applications
-#
-
-ctrl + cmd - c [
-  "emacs" : skhd -k "ctrl - x" ; skhd -k "ctrl - c"
-  "finder" : skhd -k "cmd - w"
-  # "Google Chrome" : skhd -k "cmd - w" # I'll use chrome in app mode while using yabai!
-  "kitty" : skhd -k "cmd - w"
-  *       : skhd -k "cmd - q"
-]
-
-################################################################################
-#
-# Mode for opening applications
-#
-
-:: open @
-ctrl + cmd - o ; open
-open < ctrl - g ; default
-
-# emacs
-## Doom
-open < d : skhd -k "ctrl - g"; echo "doom" > $HOME/.emacs-profile; open -a Emacs
-## d12Frosted
-open < f : skhd -k "ctrl - g"; echo "doom-experimental" > $HOME/.emacs-profile; open -a Emacs
-open < e : skhd -k "ctrl - g"; open -a Emacs
-open < shift - e : skhd -k "ctrl - g"; DEBUG=1 open -a Emacs
-
-# kitty or terminal
-open < t : skhd -k "ctrl - g"; open_kitty
-open < shift - t : skhd -k "ctrl - g"; open -a kitty
-
-# Internet Browser
-open < b : skhd -k "ctrl - g"; open -a "/Applications/firefox.app"
-ctrl + cmd - e : doom everywhere
-ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
-
-'';
-                "karabiner/karabiner.json".text = ''
+                    "karabiner/karabiner.json".text = ''
 {
     "global": {
         "check_for_updates_on_startup": false,
@@ -2547,56 +2285,56 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
     ]
 }
 '';
-            });
-        };
-        programs.zsh = {
-            enable = true;
-            enableAutosuggestions = true;
-            enableCompletion = true;
-            defaultKeymap = "emacs";
-            sessionVariables = { RPROMPT = ""; };
-            shellAliases =  {
-                dbuild = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
-                dswitch = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
-                drb = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
-                emacsTest = "{mv ~/.emacs.d ~/.emacs. && emacs}&; sleep .1 && mv ~/.emacs. ~/.emacs.d";
+                });
             };
+            programs.zsh = {
+                enable = true;
+                enableAutosuggestions = true;
+                enableCompletion = true;
+                defaultKeymap = "emacs";
+                sessionVariables = { RPROMPT = ""; };
+                shellAliases =  {
+                    dbuild = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
+                    dswitch = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
+                    drb = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                    emacsTest = "{mv ~/.emacs.d ~/.emacs. && emacs}&; sleep .1 && mv ~/.emacs. ~/.emacs.d";
+                };
 
-            oh-my-zsh.enable = true;
+                oh-my-zsh.enable = true;
 
-            plugins = [
-                {
-                    name = "autopair";
-                    file = "autopair.zsh";
-                    src = pkgs.fetchFromGitHub {
-                        owner = "hlissner";
-                        repo = "zsh-autopair";
-                        rev = "4039bf142ac6d264decc1eb7937a11b292e65e24";
-                        sha256 = "02pf87aiyglwwg7asm8mnbf9b2bcm82pyi1cj50yj74z4kwil6d1";
-                    };
-                }
-                {
-                    name = "fast-syntax-highlighting";
-                    file = "fast-syntax-highlighting.plugin.zsh";
-                    src = pkgs.fetchFromGitHub {
-                        owner = "zdharma";
-                        repo = "fast-syntax-highlighting";
-                        rev = "v1.28";
-                        sha256 = "106s7k9n7ssmgybh0kvdb8359f3rz60gfvxjxnxb4fg5gf1fs088";
-                    };
-                }
-                {
-                    name = "z";
-                    file = "zsh-z.plugin.zsh";
-                    src = pkgs.fetchFromGitHub {
-                        owner = "agkozak";
-                        repo = "zsh-z";
-                        rev = "41439755cf06f35e8bee8dffe04f728384905077";
-                        sha256 = "1dzxbcif9q5m5zx3gvrhrfmkxspzf7b81k837gdb93c4aasgh6x6";
-                    };
-                }
-            ];
-            initExtraBeforeCompInit = ''
+                plugins = [
+                    {
+                        name = "autopair";
+                        file = "autopair.zsh";
+                        src = pkgs.fetchFromGitHub {
+                            owner = "hlissner";
+                            repo = "zsh-autopair";
+                            rev = "4039bf142ac6d264decc1eb7937a11b292e65e24";
+                            sha256 = "02pf87aiyglwwg7asm8mnbf9b2bcm82pyi1cj50yj74z4kwil6d1";
+                        };
+                    }
+                    {
+                        name = "fast-syntax-highlighting";
+                        file = "fast-syntax-highlighting.plugin.zsh";
+                        src = pkgs.fetchFromGitHub {
+                            owner = "zdharma";
+                            repo = "fast-syntax-highlighting";
+                            rev = "v1.28";
+                            sha256 = "106s7k9n7ssmgybh0kvdb8359f3rz60gfvxjxnxb4fg5gf1fs088";
+                        };
+                    }
+                    {
+                        name = "z";
+                        file = "zsh-z.plugin.zsh";
+                        src = pkgs.fetchFromGitHub {
+                            owner = "agkozak";
+                            repo = "zsh-z";
+                            rev = "41439755cf06f35e8bee8dffe04f728384905077";
+                            sha256 = "1dzxbcif9q5m5zx3gvrhrfmkxspzf7b81k837gdb93c4aasgh6x6";
+                        };
+                    }
+                ];
+                initExtraBeforeCompInit = ''
         echo >&2 "Homebrew completion path..."
         if [ -f ${brewpath}/bin/brew ]; then
           PATH=${brewpath}/bin:$PATH fpath+=$(brew --prefix)/share/zsh/site-functions
@@ -2604,7 +2342,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
           echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
         fi
     '';
-            initExtra = ''
+                initExtra = ''
         PROMPT=' %{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
         local prompt_suffix="%(?:%{$fg_bold[green]%}❯ :%{$fg_bold[red]%}❯%{$reset_color%} "
         function get_pwd(){
@@ -2620,7 +2358,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 prompt_short_dir=''${PWD#$parent/}
             fi
             echo $prompt_short_dir
-        }
+                                    }
         vterm_printf(){
             if [ -n "$TMUX" ]; then
                 # Tell tmux to pass the escape sequences through
@@ -2632,270 +2370,272 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             else
                 printf "\e]%s\e\\" "$1"
             fi
-        }
+                                                                          }
         '';
-        };
-
-        programs.fzf.enable = true;
-        programs.fzf.enableZshIntegration = true;
-        programs.browserpass.enable = true;
-        programs.browserpass.browsers = [ "firefox" ];
-        programs.firefox.enable = true;
-        programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
-        programs.firefox.extensions =
-            with nur.repos.rycee.firefox-addons; [
-                ublock-origin
-                browserpass
-                tridactyl
-                darkreader
-                # Need to add zotero-connector
-            ];
-        programs.firefox.profiles =
-            {
-                home = {
-                    id = 0;
-                    settings = {
-                        "app.update.auto" = false;
-                        "browser.startup.homepage" = "https://start.duckduckgo.com";
-                        "browser.search.region" = "KR";
-                        "browser.search.countryCode" = "KR";
-                        "browser.search.isUS" = true;
-                        "browser.ctrlTab.recentlyUsedOrder" = false;
-                        "browser.newtabpage.enabled" = false;
-                        "browser.bookmarks.showMobileBookmarks" = true;
-                        "browser.uidensity" = 1;
-                        "browser.urlbar.placeholderName" = "DuckDuckGo";
-                        "browser.urlbar.update1" = true;
-                        "distribution.searchplugins.defaultLocale" = "en-KR";
-                        "general.useragent.locale" = "en-KR";
-                        "identity.fxaccounts.account.device.name" = localconfig.hostname;
-                        "privacy.trackingprotection.enabled" = true;
-                        "privacy.trackingprotection.socialtracking.enabled" = true;
-                        "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
-                        "reader.color_scheme" = "sepia";
-                        "services.sync.declinedEngines" = "addons,passwords,prefs";
-                        "services.sync.engine.addons" = false;
-                        "services.sync.engineStatusChanged.addons" = true;
-                        "services.sync.engine.passwords" = false;
-                        "services.sync.engine.prefs" = false;
-                        "services.sync.engineStatusChanged.prefs" = true;
-                        "signon.rememberSignons" = false;
-                        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-                    };
-                    userChrome = (
-                        builtins.readFile (
-                            pkgs.substituteAll {
-                                name = "homeUserChrome";
-                                src = pkgs.fetchurl {
-                                    name = "userChrome.css";
-                                    url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
-                                    sha256 = "1ia2azcrrbc70m8hcn7mph1allh2fly9k2kqmi4qy6mx5lf12kn8";
-                                };
-                                tabLineColour = "#5e81ac";
-                            }
-                        )
-                    );
-                };
             };
-    };
-                         in
-                           if localconfig.hostname == "classic" then {
-                               hynggyujang = userconfig // {
-                                   home.sessionVariables = {
-                                       FONTCONFIG_FILE    = "${xdg.configHome}/fontconfig/fonts.conf";
-                                       FONTCONFIG_PATH    = "${xdg.configHome}/fontconfig";
-                                   };
-                               };
-                           } else {
-                               hyunggyujang = userconfig;
-                           };
-    system = if localconfig.hostname == "classic" then {
-        defaults.NSGlobalDomain = {
-            ApplePressAndHoldEnabled = false;
-            AppleKeyboardUIMode = 3;
-            AppleShowScrollBars = "WhenScrolling";
-            NSAutomaticCapitalizationEnabled = false;
-            NSAutomaticDashSubstitutionEnabled = false;
-            NSAutomaticPeriodSubstitutionEnabled = false;
-            NSAutomaticQuoteSubstitutionEnabled = false;
-            NSAutomaticSpellingCorrectionEnabled = false;
-            NSUseAnimatedFocusRing = false;
-            _HIHideMenuBar = true;
+
+            programs.fzf.enable = true;
+            programs.fzf.enableZshIntegration = true;
+            programs.browserpass.enable = true;
+            programs.browserpass.browsers = [ "firefox" ];
+            programs.firefox.enable = true;
+            programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
+            programs.firefox.extensions =
+                with nur.repos.rycee.firefox-addons; [
+                    ublock-origin
+                    browserpass
+                    tridactyl
+                    darkreader
+                    # Need to add zotero-connector
+                ];
+            programs.firefox.profiles =
+                {
+                    home = {
+                        id = 0;
+                        settings = {
+                            "app.update.auto" = false;
+                            "browser.startup.homepage" = "https://start.duckduckgo.com";
+                            "browser.search.region" = "KR";
+                            "browser.search.countryCode" = "KR";
+                            "browser.search.isUS" = true;
+                            "browser.ctrlTab.recentlyUsedOrder" = false;
+                            "browser.newtabpage.enabled" = false;
+                            "browser.bookmarks.showMobileBookmarks" = true;
+                            "browser.uidensity" = 1;
+                            "browser.urlbar.placeholderName" = "DuckDuckGo";
+                            "browser.urlbar.update1" = true;
+                            "distribution.searchplugins.defaultLocale" = "en-KR";
+                            "general.useragent.locale" = "en-KR";
+                            "identity.fxaccounts.account.device.name" = localconfig.hostname;
+                            "privacy.trackingprotection.enabled" = true;
+                            "privacy.trackingprotection.socialtracking.enabled" = true;
+                            "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+                            "reader.color_scheme" = "sepia";
+                            "services.sync.declinedEngines" = "addons,passwords,prefs";
+                            "services.sync.engine.addons" = false;
+                            "services.sync.engineStatusChanged.addons" = true;
+                            "services.sync.engine.passwords" = false;
+                            "services.sync.engine.prefs" = false;
+                            "services.sync.engineStatusChanged.prefs" = true;
+                            "signon.rememberSignons" = false;
+                            "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+                        };
+                        userChrome = (
+                            builtins.readFile (
+                                pkgs.substituteAll {
+                                    name = "homeUserChrome";
+                                    src = pkgs.fetchurl {
+                                        name = "userChrome.css";
+                                        url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
+                                        sha256 = "1ia2azcrrbc70m8hcn7mph1allh2fly9k2kqmi4qy6mx5lf12kn8";
+                                    };
+                                    tabLineColour = "#5e81ac";
+                                }
+                            )
+                        );
+                    };
+                };
         };
+                             in
+                               if localconfig.hostname == "classic" then {
+                                   hynggyujang = userconfig // {
+                                       home.sessionVariables = {
+                                           FONTCONFIG_FILE    = "${xdg.configHome}/fontconfig/fonts.conf";
+                                           FONTCONFIG_PATH    = "${xdg.configHome}/fontconfig";
+                                       };
+                                   };
+                               } else {
+                                   hyunggyujang = userconfig;
+                               };
+        system = if localconfig.hostname == "classic" then {
+            defaults.NSGlobalDomain = {
+                ApplePressAndHoldEnabled = false;
+                AppleKeyboardUIMode = 3;
+                AppleShowScrollBars = "WhenScrolling";
+                NSAutomaticCapitalizationEnabled = false;
+                NSAutomaticDashSubstitutionEnabled = false;
+                NSAutomaticPeriodSubstitutionEnabled = false;
+                NSAutomaticQuoteSubstitutionEnabled = false;
+                NSAutomaticSpellingCorrectionEnabled = false;
+                NSUseAnimatedFocusRing = false;
+                _HIHideMenuBar = true;
+            };
 
-        defaults.dock.orientation = "left";
+            defaults.dock.orientation = "left";
 
-        defaults.loginwindow.GuestEnabled = false;
+            defaults.loginwindow.GuestEnabled = false;
 
-    } else {};
-    # For single user hack
-    users.nix.configureBuildUsers = mkForce false;
-    users.knownGroups = mkForce [];
+        } else {};
+        # For single user hack
+        users.nix.configureBuildUsers = mkForce false;
+        users.knownGroups = mkForce [];
 
 
-    environment = {
-        darwinConfig = "${hgj_sync}/dotfiles/nixpkgs/darwin/configuration.nix";
-        variables = {
-            EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
-            VISUAL = "$EDITOR";
-            LANG = "en_US.UTF-8";
-            DOOMDIR = "${hgj_home}/notes/org/manager";
-            EMACSDIR = "${hgj_home}/.emacs.d";
-            DOOMLOCALDIR = "${hgj_home}/.doom";
-        } //
-        ( if localconfig.hostname == "classic" then {
-            SHELL = "${pkgs.zsh}/bin/zsh";
-            NODE_PATH =  "/run/current-system/sw/lib/node_modules";
+        environment = {
+            darwinConfig = "${hgj_sync}/dotfiles/nixpkgs/darwin/configuration.nix";
+            variables = {
+                EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
+                VISUAL = "$EDITOR";
+                LANG = "en_US.UTF-8";
+                DOOMDIR = "${hgj_home}/notes/org/manager";
+                EMACSDIR = "${hgj_home}/.emacs.d";
+                DOOMLOCALDIR = "${hgj_home}/.doom";
+            } //
+            ( if localconfig.hostname == "classic" then {
+                SHELL = "${pkgs.zsh}/bin/zsh";
+                NODE_PATH =  "/run/current-system/sw/lib/node_modules";
+            } else {
+                LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
+            });
+            systemPath = [
+                "$HOME/${hgj_localbin}"
+                # Easy access to Doom
+                # SystemPath added before to the variables, it can be inspected at /etc/static/zshenv,
+                # which source *-set-environment file.
+                "${environment.variables.EMACSDIR}/bin"
+                "${brewpath}/bin"
+            ];
+            profiles = mkForce ([ "$HOME/.nix-profile" "/run/current-system/sw" ]);
+        } // (if localconfig.hostname == "classic" then {
+            systemPackages = with pkgs; [
+                git
+                ((emacsPackagesNgGen emacs).emacsWithPackages (epkgs: with epkgs; [
+                    vterm
+                ]))
+                afew
+                notmuch
+                msmtp
+                # From doom
+                (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
+                jq
+                fd
+                djvulibre
+                graphviz
+                zstd
+                coreutils-prefixed
+                nodejs
+                isync
+                nixfmt
+                shellcheck
+                ripgrep
+                # desktop-file-utils
+                # inkscape
+                gmailieer
+                findutils
+                fontconfig
+                kitty
+                fzf
+                bashInteractive
+                nodePackages.node2nix
+                # qutebrowser
+                # for qutebrowser userscript packages
+                nodePackages.qutejs
+                nodePackages.jsdom
+                nodePackages."@mozilla/readability"
+                # readability packages
+                mach-nix.mach-nix
+                myPython
+                proselint
+                texlive.combined.scheme-medium
+                imagemagick
+                # For octave
+                ((octave.override {inherit (pkgs) gnuplot;}).withPackages (opkgs: with opkgs; [ control geometry ]))
+                gnuplot
+                epstool
+                lean
+                pandoc
+                # for pdf-tools
+                gcc gnumake automake autoconf pkgconfig libpng zlib poppler
+                (lua5_3.withPackages (ps: with ps; [fennel]))
+                gnupg
+                pass
+                # fish
+                yaskkserv2 #→ Cannot build
+                cargo
+                skhd
+            ];
+            shells = [
+                pkgs.bashInteractive
+                pkgs.zsh
+            ];
+            pathsToLink = [
+                "/lib/node_modules"
+                "/share/emacs"
+                "/share/lua"
+                "/lib/lua"
+            ];
+            loginShell = "${pkgs.zsh}/bin/zsh -l";
         } else {
-            LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
+            systemPackages = with pkgs; [
+                nixfmt
+                skhd
+                # shellcheck # Not yet available
+                # octave # nix-build-qrupdate aren't ready
+            ];
+            shells = [
+                pkgs.zsh
+            ];
         });
-        systemPath = [
-            "$HOME/${hgj_localbin}"
-            # Easy access to Doom
-            # SystemPath added before to the variables, it can be inspected at /etc/static/zshenv,
-            # which source *-set-environment file.
-            "${environment.variables.EMACSDIR}/bin"
-            # Elan
-            "$HOME/.elan/bin"
-        ];
-        profiles = mkForce ([ "$HOME/.nix-profile" "/run/current-system/sw" ]);
-    } // (if localconfig.hostname == "classic" then {
-        systemPackages = with pkgs; [
-            git
-            ((emacsPackagesNgGen emacs).emacsWithPackages (epkgs: with epkgs; [
-                vterm
-            ]))
-            afew
-            notmuch
-            msmtp
-            # From doom
-            (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
-            jq
-            fd
-            djvulibre
-            graphviz
-            zstd
-            coreutils-prefixed
-            nodejs
-            isync
-            nixfmt
-            shellcheck
-            ripgrep
-            # desktop-file-utils
-            # inkscape
-            gmailieer
-            findutils
-            fontconfig
-            kitty
-            fzf
-            bashInteractive
-            nodePackages.node2nix
-            # qutebrowser
-            # for qutebrowser userscript packages
-            nodePackages.qutejs
-            nodePackages.jsdom
-            nodePackages."@mozilla/readability"
-            # readability packages
-            mach-nix.mach-nix
-            myPython
-            proselint
-            texlive.combined.scheme-medium
-            imagemagick
-            # For octave
-            ((octave.override {inherit (pkgs) gnuplot;}).withPackages (opkgs: with opkgs; [ control geometry ]))
-            gnuplot
-            epstool
-            lean
-            pandoc
-            # for pdf-tools
-            gcc gnumake automake autoconf pkgconfig libpng zlib poppler
-            (lua5_3.withPackages (ps: with ps; [fennel]))
-            gnupg
-            pass
-            # fish
-            yaskkserv2 #→ Cannot build
-            cargo
-            skhd
-        ];
-        shells = [
-            pkgs.bashInteractive
-            pkgs.zsh
-        ];
-        pathsToLink = [
-            "/lib/node_modules"
-            "/share/emacs"
-            "/share/lua"
-            "/lib/lua"
-        ];
-        loginShell = "${pkgs.zsh}/bin/zsh -l";
-    } else {
-        systemPackages = with pkgs; [
-            nixfmt
-        ];
-        shells = [
-            pkgs.zsh
-        ];
-    });
 
-    nixpkgs.overlays =
-      let path = ../overlays;
-      in with builtins;
-        map (n: import (path + ("/" + n)))
-          (filter (n: match ".*\\.nix" n != null ||
-                      pathExists (path + ("/" + n + "/default.nix")))
-            (attrNames (readDir path)));
+        nixpkgs.overlays =
+            let path = ../overlays;
+            in with builtins;
+                map (n: import (path + ("/" + n)))
+                    (filter (n: match ".*\\.nix" n != null ||
+                                pathExists (path + ("/" + n + "/default.nix")))
+                        (attrNames (readDir path)));
 
-    programs = {
-        zsh.enable = true;
-    }
+        programs = {
+            zsh.enable = true;
+        }
         // (if localconfig.hostname == "classic" then {
-        fish.enable = true;
-    } else {});
+            fish.enable = true;
+        } else {});
 
-    # Manual setting for workaround of org-id: 7127dc6e-5a84-476c-8d31-59737a4f85f9
-    launchd.daemons = if localconfig.hostname == "classic" then {
-      yabai-sa = {
-        script = ''
+        # Manual setting for workaround of org-id: 7127dc6e-5a84-476c-8d31-59737a4f85f9
+        launchd.daemons = if localconfig.hostname == "classic" then {
+            yabai-sa = {
+                script = ''
           ${pkgs.yabai}/bin/yabai --check-sa || ${pkgs.yabai}/bin/yabai --install-sa
         '';
 
-        serviceConfig.RunAtLoad = true;
-        serviceConfig.KeepAlive.SuccessfulExit = false;
-      };
-    } else {};
-    services = {
-      nix-daemon.enable =false;
-    } //
-    (if localconfig.hostname == "classic" then {
-        yabai = {
-            enable = true;
-            package = pkgs.yabai;
-            config = {
-                mouse_follows_focus        = "off";
-                focus_follows_mouse        = "off";
-                window_placement           = "second_child";
-                window_topmost             = "on";
-                window_opacity             = "on";
-                window_opacity_duration    = 0.0;
-                active_window_opacity      = 1.0;
-                normal_window_opacity      = 0.90;
-                window_shadow              = "off";
-                window_border              = "off";
-                split_ratio                = 0.50;
-                auto_balance               = "on";
-                mouse_modifier             = "fn";
-                mouse_action1              = "move";
-                mouse_action2              = "resize";
-
-                # general space settings;
-                layout                     = "bsp";
-                top_padding                = 0;
-                bottom_padding             = 0;
-                left_padding               = 0;
-                right_padding              = 0;
-                window_gap                 = 0;
+                serviceConfig.RunAtLoad = true;
+                serviceConfig.KeepAlive.SuccessfulExit = false;
             };
-            extraConfig = ''
+        } else {};
+        services = {
+            nix-daemon.enable =false;
+        } //
+        (if localconfig.hostname == "classic" then {
+            yabai = {
+                enable = true;
+                package = pkgs.yabai;
+                config = {
+                    mouse_follows_focus        = "off";
+                    focus_follows_mouse        = "off";
+                    window_placement           = "second_child";
+                    window_topmost             = "on";
+                    window_opacity             = "on";
+                    window_opacity_duration    = 0.0;
+                    active_window_opacity      = 1.0;
+                    normal_window_opacity      = 0.90;
+                    window_shadow              = "off";
+                    window_border              = "off";
+                    split_ratio                = 0.50;
+                    auto_balance               = "on";
+                    mouse_modifier             = "fn";
+                    mouse_action1              = "move";
+                    mouse_action2              = "resize";
+
+                    # general space settings;
+                    layout                     = "bsp";
+                    top_padding                = 0;
+                    bottom_padding             = 0;
+                    left_padding               = 0;
+                    right_padding              = 0;
+                    window_gap                 = 0;
+                };
+                extraConfig = ''
           yabai -m rule --add app="^System Preferences$" manage=off
           yabai -m rule --add app="^Karabiner-Elements$" manage=off
           yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off sticky=on
@@ -2906,10 +2646,10 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
           yabai -m rule --add app=zoom space=4
           yabai -m rule --add app="Google Chrome" space=5
         '';
-        };
-        skhd = {
-            enable = true;
-            skhdConfig = ''
+            };
+            skhd = {
+                enable = true;
+                skhdConfig = ''
           ################################################################################
           #
           # window manipulation
@@ -3176,173 +2916,436 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
           ctrl + cmd - e : doom everywhere
           ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         '';
-        };
-        activate-system.enable = true;
-    } else {
-        activate-system.enable = true;
-    });
+            };
+            activate-system.enable = true;
+        } else {
+            skhd = {
+                enable = true;
+                skhdConfig = ''
+################################################################################
+#
+# window manipulation
+#
 
-    nix = {
-      trustedUsers = [ "@admin" ] ++ (if localconfig.hostname == "classic" then [
-        "hynggyujang"
-      ] else if localconfig.hostname == "silicon" then [
-        "hyunggyujang"
-      ] else []);
-      # See Fix ⚠️ — Unnecessary NIX_PATH entry for single user installation in nix_darwin.org
-      nixPath = mkForce [
-        { darwin-config = "${config.environment.darwinConfig}"; }
-        "$HOME/.nix-defexpr/channels"
-      ];
-      package = pkgs.nix;
-    } // (if localconfig.hostname == "silicon" then {
-        extraOptions = ''
+# ^ = 0x18
+ctrl + cmd - 6 : yabai -m window --focus recent
+ctrl + cmd - h : yabai -m window --focus west
+ctrl + cmd - j : yabai -m window --focus south
+ctrl + cmd - k : yabai -m window --focus north
+ctrl + cmd - l : yabai -m window --focus east
+
+ctrl + cmd - r : yabai -m space --rotate 90
+ctrl + cmd + shift - r : yabai -m space --rotate 270
+
+:: mywindow @
+:: swap @
+:: warp @
+:: myinsert @
+
+ctrl + cmd - w ; mywindow
+mywindow < ctrl - g ; default
+
+mywindow < h : yabai -m window west --resize right:-20:0 2> /dev/null || yabai -m window --resize right:-20:0
+mywindow < j : yabai -m window north --resize bottom:0:20 2> /dev/null || yabai -m window --resize bottom:0:20
+mywindow < k : yabai -m window south --resize top:0:-20 2> /dev/null || yabai -m window --resize top:0:-20
+mywindow < l : yabai -m window east --resize left:20:0 2> /dev/null || yabai -m window --resize left:20:0
+mywindow < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
+  | xargs -I{} yabai -m window --focus {}
+mywindow < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
+  | xargs -I{} yabai -m window --focus {}
+
+mywindow < ctrl + cmd - w ; swap
+swap < ctrl - g ; default
+
+swap < n : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
+  | xargs -I{} yabai -m window --swap {}
+
+swap < p: yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
+  | xargs -I{} yabai -m window --swap {}
+
+swap < h : skhd -k "ctrl - g" ; yabai -m window --swap west
+swap < j : skhd -k "ctrl - g" ; yabai -m window --swap south
+swap < k : skhd -k "ctrl - g" ; yabai -m window --swap north
+swap < l : skhd -k "ctrl - g" ; yabai -m window --swap east
+
+swap < 0x18 : skhd -k "ctrl - g" ; yabai -m window --swap recent
+
+swap < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
+  | xargs -I{} yabai -m window --swap {}
+swap < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
+  | xargs -I{} yabai -m window --swap {}
+
+
+mywindow < w ; warp
+warp < ctrl - g ; default
+warp < h : skhd -k "ctrl - g" ; \
+  yabai -m window --warp west
+warp < j : skhd -k "ctrl - g" ; \
+  yabai -m window --warp south
+warp < k : skhd -k "ctrl - g" ; \
+  yabai -m window --warp north
+warp < l : skhd -k "ctrl - g" ; \
+  yabai -m window --warp east
+warp < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
+  | xargs -I{} yabai -m window --warp {}
+warp < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
+  | jq -re ".[] | select(.visible == 1).index" \
+  | xargs -I{} yabai -m query --windows --space {} \
+  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
+  | xargs -I{} yabai -m window --warp {}
+
+mywindow < i ; myinsert
+myinsert < ctrl - g ; default
+
+myinsert < h : skhd -k "ctrl - g"; yabai -m window --insert west
+myinsert < j : skhd -k "ctrl - g"; yabai -m window --insert south
+myinsert < k : skhd -k "ctrl - g"; yabai -m window --insert north
+myinsert < l : skhd -k "ctrl - g"; yabai -m window --insert east
+
+ctrl + cmd - return : yabai -m window --toggle zoom-fullscreen
+
+################################################################################
+#
+# space manipulation
+#
+
+# Move currently focused window to the specified space
+ctrl + cmd - 1 : yabai -m window --space 1; skhd -k "cmd - 1"
+ctrl + cmd - 2 : yabai -m window --space 2; skhd -k "cmd - 2"
+ctrl + cmd - 3 : yabai -m window --space 3; skhd -k "cmd - 3"
+ctrl + cmd - 4 : yabai -m window --space 4; skhd -k "cmd - 4"
+ctrl + cmd - 5 : yabai -m window --space 5; skhd -k "cmd - 5"
+ctrl + cmd - 6 : yabai -m window --space 6; skhd -k "cmd - 6"
+
+################################################################################
+#
+# Applications
+#
+
+ctrl + cmd - c [
+  "emacs" : skhd -k "ctrl - x" ; skhd -k "ctrl - c"
+  "finder" : skhd -k "cmd - w"
+  # "Google Chrome" : skhd -k "cmd - w" # I'll use chrome in app mode while using yabai!
+  "kitty" : skhd -k "cmd - w"
+  *       : skhd -k "cmd - q"
+]
+
+################################################################################
+#
+# Mode for opening applications
+#
+
+:: open @
+ctrl + cmd - o ; open
+open < ctrl - g ; default
+
+# emacs
+## Doom
+open < d : skhd -k "ctrl - g"; echo "doom" > $HOME/.emacs-profile; open -a Emacs
+## d12Frosted
+open < f : skhd -k "ctrl - g"; echo "doom-experimental" > $HOME/.emacs-profile; open -a Emacs
+open < e : skhd -k "ctrl - g"; open -a Emacs
+open < shift - e : skhd -k "ctrl - g"; DEBUG=1 open -a Emacs
+
+# kitty or terminal
+open < t : skhd -k "ctrl - g"; open_kitty
+open < shift - t : skhd -k "ctrl - g"; open -a kitty
+
+# Internet Browser
+open < b : skhd -k "ctrl - g"; open -a "/Applications/firefox.app"
+ctrl + cmd - e : doom everywhere
+ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
+
+'';
+            };
+            activate-system.enable = true;
+        });
+
+        nix = {
+            trustedUsers = [ "@admin" ] ++ (if localconfig.hostname == "classic" then [
+                "hynggyujang"
+            ] else if localconfig.hostname == "silicon" then [
+                "hyunggyujang"
+            ] else []);
+            # See Fix ⚠️ — Unnecessary NIX_PATH entry for single user installation in nix_darwin.org
+            nixPath = mkForce [
+                { darwin-config = "${config.environment.darwinConfig}"; }
+                "$HOME/.nix-defexpr/channels"
+            ];
+            package = pkgs.nix;
+        } // (if localconfig.hostname == "silicon" then {
+            extraOptions = ''
           system = aarch64-darwin
           extra-platforms = x86_64-darwin aarch64-darwin
         '';
-    } else {});
+        } else {});
 
-    users.users = if localconfig.hostname == "classic" then {
-        hynggyujang = {
-            name = "Hyunggyu Jang";
-            home = "${hgj_home}";
-            shell = pkgs.zsh;
+        users.users = if localconfig.hostname == "classic" then {
+            hynggyujang = {
+                name = "Hyunggyu Jang";
+                home = "${hgj_home}";
+                shell = pkgs.zsh;
+            };
+        } else {
+            hyunggyujang = {
+                name = "Hyunggyu Jang";
+                home = "${hgj_home}";
+                shell = pkgs.zsh;
+            };
         };
-    } else {
-        hyunggyujang = {
-            name = "Hyunggyu Jang";
-            home = "${hgj_home}";
-            shell = pkgs.zsh;
-        };
-    };
-    fonts = if localconfig.hostname == "classic" then {
-      enableFontDir = true;
-      fonts = [
-        pkgs.sarasa-gothic
-        pkgs.etBook
-        pkgs.emacs-all-the-icons-fonts
-        pkgs.source-code-pro
-      ];
-    } else {};
-    homebrew =  {
+        fonts = if localconfig.hostname == "classic" then {
+            enableFontDir = true;
+            fonts = [
+                pkgs.sarasa-gothic
+                pkgs.etBook
+                pkgs.emacs-all-the-icons-fonts
+                pkgs.source-code-pro
+            ];
+        } else {};
+        homebrew =  {
             enable = true;
             autoUpdate = true;
             cleanup = "zap";
             global.brewfile = true;
         } //
-    (if localconfig.hostname == "classic" then {
-      taps = [
-        "homebrew/cask"
-        "homebrew/core"
-        "homebrew/services"
-        "laishulu/macism"
-        "laishulu/cask-fonts"
-      ];
-      casks = [
-        "altserver"
-        "calibre"
-        "font-sarasa-nerd"
-        "google-chrome"
-        "karabiner-elements"
-        "microsoft-office"
-        "zotero"
-        "microsoft-teams"
-        "zoom"
-        "anki"
-        "ukelele"
-        "qutebrowser"
-        "hammerspoon"
-      ];
-      brews = [
-        "pngpaste"
-        "macism"
-      ];
-    } else {
-      brewPrefix = "/opt/homebrew/bin";
-      taps = [
-        "homebrew/bundle"
-        "homebrew/cask"
-        "homebrew/core"
-        "homebrew/services"
-        "homebrew/cask-fonts"
-        "railwaycat/emacsmacport"
-        "koekeishiya/formulae"
-      ];
-      brews = [
-        "pngpaste"
-        "jq"
-        "msmtp"
-        "aspell"
-        "graphviz"
-        "zstd"
-        "nodejs"
-        "isync"
-        "libvterm"
-        "ripgrep"
-        "git"
-        "gnupg"
-        "pass"
-        "rust"
-        "lua"
-        "luarocks"
-        "gmp"
-        "coreutils"
-        "gnuplot"
-        "imagemagick"
-        "octave"
-        "fd"
-        "pkg-config"
-        "poppler"
-        "automake"
-        "cmake"
-        "python"
-        "findutils"
-        "z3"
-        "coq"
-        "pandoc"
-        "pinentry-mac"
-        # Fonts
-        "svn"
-        # emacs-mac dependencies
-        "jansson"
-        "libxml2"
-        # suggested by Doom emacs
-        "pipenv"
-        "jupyter"
-        # For projectile
-        "ctags"
-      ];
-      casks = [
-          "appcleaner"
-          "slack"
-          "basictex"
-          "kitty"
-          "altserver"
-          "anki"
-          "aquaskk"
-          "hammerspoon"
-          "karabiner-elements"
-          "microsoft-office"
-          "microsoft-teams"
-          "ukelele"
-          "zotero"
-          "inkscape"
-          # elegant-emacs
-          "font-roboto-mono"
-          "font-roboto-mono-nerd-font"
-          # test fonts -- doom specific
-          "font-jetbrains-mono"
-          "font-computer-modern"
-          # Korean mono space font
-          "font-d2coding"
-      ];
-      extraConfig = ''
+        (if localconfig.hostname == "classic" then {
+            taps = [
+                "homebrew/cask"
+                "homebrew/core"
+                "homebrew/services"
+                "laishulu/macism"
+                "laishulu/cask-fonts"
+            ];
+            casks = [
+                "altserver"
+                "calibre"
+                "font-sarasa-nerd"
+                "google-chrome"
+                "karabiner-elements"
+                "microsoft-office"
+                "zotero"
+                "microsoft-teams"
+                "zoom"
+                "anki"
+                "ukelele"
+                "qutebrowser"
+                "hammerspoon"
+            ];
+            brews = [
+                "pngpaste"
+                "macism"
+            ];
+        } else {
+            brewPrefix = "/opt/homebrew/bin";
+            taps = [
+                "homebrew/bundle"
+                "homebrew/cask"
+                "homebrew/core"
+                "homebrew/services"
+                "homebrew/cask-fonts"
+                "railwaycat/emacsmacport"
+                "koekeishiya/formulae"
+            ];
+            brews = [
+                "pngpaste"
+                "jq"
+                "msmtp"
+                "aspell"
+                "graphviz"
+                "zstd"
+                "nodejs"
+                "isync"
+                "libvterm"
+                "ripgrep"
+                "git"
+                "gnupg"
+                "pass"
+                "rust"
+                "lua"
+                "luarocks"
+                "gmp"
+                "coreutils"
+                "gnuplot"
+                "imagemagick"
+                "octave"
+                "fd"
+                "pkg-config"
+                "poppler"
+                "automake"
+                "cmake"
+                "python"
+                "findutils"
+                "z3"
+                "coq"
+                "pandoc"
+                "pinentry-mac"
+                # Fonts
+                "svn"
+                # emacs-mac dependencies
+                "jansson"
+                "libxml2"
+                # suggested by Doom emacs
+                "pipenv"
+                "jupyter"
+                # For projectile
+                "ctags"
+            ];
+            casks = [
+                "appcleaner"
+                "slack"
+                "basictex"
+                "kitty"
+                "altserver"
+                "anki"
+                "aquaskk"
+                "hammerspoon"
+                "karabiner-elements"
+                "microsoft-office"
+                "microsoft-teams"
+                "ukelele"
+                "zotero"
+                "inkscape"
+                # elegant-emacs
+                "font-roboto-mono"
+                "font-roboto-mono-nerd-font"
+                "font-ibm-plex-sans"
+                # test fonts -- doom specific
+                "font-jetbrains-mono"
+                "font-computer-modern"
+                # Korean mono space font
+                "font-d2coding"
+            ];
+            extraConfig = ''
         brew "emacs-mac", args: ["with-no-title-bars", "with-starter"]
         brew "yabai", args: ["HEAD"], restart_service: :changed
         brew "notmuch", args: ["HEAD"]
-        brew "skhd", args: ["HEAD"]
-        # Pinned lean via `brew pin lean`
-        brew "lean", args: ["HEAD"]
         cask "firefox", args: { language: "en-KR" }
       '';
-     });
-   }
+        });
+    }
