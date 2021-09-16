@@ -1,4 +1,4 @@
-NIX_CONF = $(HOME)/Desktop/dotfiles/nixpkgs/darwin
+NIX_CONF = $(HOME)/nixpkgs/darwin
 NIXPATH = "$(NIX_PATH):localconfig=$(NIX_CONF)/$(HOSTNAME).nix:darwin-config=$(NIX_CONF)/configuration.nix"
 PRENIX = PATH="/nix/var/nix/profiles/system/sw/bin:$(PATH)" NIX_PATH="$(NIXPATH)"
 

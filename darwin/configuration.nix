@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let hgj_home = builtins.getEnv "HOME";
-    hgj_sync = "${hgj_home}/Desktop";
+    hgj_sync = hgj_home;
     hgj_localbin = ".local/bin";
     localconfig = import <localconfig>;
     brewpath = if localconfig.hostname == "silicon" then "/opt/homebrew"
@@ -57,15 +57,18 @@ in with lib;
                 ".emacs-profiles.el".text = ''
                 (("default" . ((user-emacs-directory . "~/test/doom-testbed/doom-emacs")
                                (env . (("EMACSDIR" . "~/test/doom-testbed/doom-emacs")
-                                       ("DOOMDIR" . "~/Desktop/dotfiles/.doom.d")
+                                       ("DOOMDIR" . ;"${hgj_sync}/.doom.d"
+                                        "~/test/doom-testbed/.doom.d"
+                                       )
                                        ("DOOMLOCALDIR" . "~/test/doom-testbed/.doom"))))))
             '';
                 "${hgj_localbin}/doomTest" = {
                     executable = true;
                     text = ''
                 cd $HOME/test/doom-testbed/doom-emacs/bin
-                DOOMDIR=~/Desktop/dotfiles/.doom.d
+                # DOOMDIR=${hgj_sync}/.doom.d
                 EMACSDIR=../
+                DOOMDIR=../../.doom.d
                 DOOMLOCALDIR=../../.doom
                 ./doom $@
               '';
@@ -201,7 +204,7 @@ sudo rm -rf /var/root/.cache/nix
             '';
                 };
                 ".tridactylrc".text = ''
-          set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12))" +%l:%c
+          set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12) (internal-border-width . 0))" +%l:%c
           bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           bind --mode=browser <C-g> escapehatch
@@ -658,7 +661,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
 
           hide_window_decorations yes
 
-          font_family      Jetbrains Mono
+          font_family      Roboto Mono
           font_size        14.0
 
           macos_thicken_font 0.5
@@ -670,7 +673,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
           include dracula.conf
         '';
                     "zathura/zathurarc".text = "set selection-clipboard clipboard";
-                    "nixpkgs".source = "${hgj_sync}/dotfiles/nixpkgs";
+                    "nixpkgs".source = "${hgj_sync}/nixpkgs";
                 } // (if localconfig.hostname == "classic" then {
                     "fontconfig/fonts.conf".text = ''
         <?xml version='1.0'?>
@@ -2294,9 +2297,9 @@ yabai -m rule --add app="^zoom$" space=4
                 defaultKeymap = "emacs";
                 sessionVariables = { RPROMPT = ""; };
                 shellAliases =  {
-                    dbuild = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
-                    dswitch = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
-                    drb = "cd ${hgj_sync}/dotfiles/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                    dbuild = "cd ${hgj_sync}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
+                    dswitch = "cd ${hgj_sync}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
+                    drb = "cd ${hgj_sync}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
                     emacsTest = "{mv ~/.emacs.d ~/.emacs. && emacs}&; sleep .1 && mv ~/.emacs. ~/.emacs.d";
                 };
 
@@ -2472,7 +2475,7 @@ yabai -m rule --add app="^zoom$" space=4
 
 
         environment = {
-            darwinConfig = "${hgj_sync}/dotfiles/nixpkgs/darwin/configuration.nix";
+            darwinConfig = "${hgj_sync}/nixpkgs/darwin/configuration.nix";
             variables = {
                 EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
                 VISUAL = "$EDITOR";
@@ -3315,6 +3318,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "jupyter"
                 # For projectile
                 "ctags"
+                # Lexic
+                "sdcv"
             ];
             casks = [
                 "appcleaner"
@@ -3333,13 +3338,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "inkscape"
                 # elegant-emacs
                 "font-roboto-mono"
-                "font-roboto-mono-nerd-font"
-                "font-ibm-plex-sans"
-                # test fonts -- doom specific
-                "font-jetbrains-mono"
-                "font-computer-modern"
-                # Korean mono space font
-                "font-d2coding"
+                "font-roboto-slab"
             ];
             extraConfig = ''
         brew "emacs-mac", args: ["with-no-title-bars", "with-starter"]
