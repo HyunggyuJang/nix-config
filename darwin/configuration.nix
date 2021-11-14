@@ -124,7 +124,7 @@ in with lib;
                     source = pkgs.fetchurl {
                         name = "eldev";
                         url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
-                        sha256 = "0ikhhfxm1rz3wp37spsy8bcnx5071ard71pd1riw09rsybilxhgn";
+                        sha256 = "0y3ri82cxxx4c29hb39jp655vrj88vcvwqxz5mad8rcqlh68aiy4";
                     };
                     executable = true;
                 };
@@ -205,8 +205,8 @@ sudo rm -rf /var/root/.cache/nix
                 };
                 ".tridactylrc".text = ''
           set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12) (internal-border-width . 0))" +%l:%c
-          bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
-          bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
+          # bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
+          # bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           bind --mode=browser <C-g> escapehatch
           bind <C-g> composite mode normal ; hidecmdline
           bind --mode=ex <C-g> ex.hide_and_clear
@@ -2455,6 +2455,7 @@ yabai -m rule --add app="^zoom$" space=4
                 ApplePressAndHoldEnabled = false;
                 AppleKeyboardUIMode = 3;
                 AppleShowScrollBars = "WhenScrolling";
+                AppleInterfaceStyleSwitchesAutomatically = true;
                 NSAutomaticCapitalizationEnabled = false;
                 NSAutomaticDashSubstitutionEnabled = false;
                 NSAutomaticPeriodSubstitutionEnabled = false;
@@ -3320,6 +3321,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "ctags"
                 # Lexic
                 "sdcv"
+                # Prover
+                "lean"
             ];
             casks = [
                 "appcleaner"
@@ -3333,12 +3336,18 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "karabiner-elements"
                 "microsoft-office"
                 "microsoft-teams"
+                "zoom"
                 "ukelele"
                 "zotero"
                 "inkscape"
                 # elegant-emacs
                 "font-roboto-mono"
                 "font-roboto-slab"
+                # math font
+                "font-dejavu"
+                # beamer with xelatex
+                "font-fira-sans"
+                "font-fira-mono"
             ];
             extraConfig = ''
         brew "emacs-mac", args: ["with-no-title-bars", "with-starter"]
