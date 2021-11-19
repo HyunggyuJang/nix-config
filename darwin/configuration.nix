@@ -2293,7 +2293,7 @@ yabai -m rule --add app="^zoom$" space=4
             programs.zsh = {
                 enable = true;
                 enableAutosuggestions = true;
-                enableCompletion = true;
+                enableCompletion = false; # See https://github.com/NixOS/nix/issues/5445
                 defaultKeymap = "emacs";
                 sessionVariables = { RPROMPT = ""; };
                 shellAliases =  {
