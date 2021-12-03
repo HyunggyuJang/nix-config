@@ -2337,6 +2337,25 @@ yabai -m rule --add app="^zoom$" space=4
                             sha256 = "1dzxbcif9q5m5zx3gvrhrfmkxspzf7b81k837gdb93c4aasgh6x6";
                         };
                     }
+                    rec {
+                        name = "system-wide-clipboard";
+                        file = "system-wide-clipboard.zsh";
+                        src = pkgs.stdenv.mkDerivation rec {
+                            name    = "system-wide-clipboard";
+                            src = pkgs.fetchurl {
+                                name = "system-wide-clipboard.zsh";
+                                url = "https://gist.githubusercontent.com/varenc/e4a22145c484771f254fa20982e2cd7f/raw/c2f17f411b38c7deda31ee35ff5ae980dff6ef10/system-wide-clipboard.zsh";
+                                sha256 = "09disbcgpgdckmzds8lsbyvn0m8187np5r1qs9cdza3412wcm9sl";
+                            };
+
+                            phases = "installPhase";
+
+                            installPhase = ''
+                            mkdir -p $out
+                            cp ${src} $out/${file}
+                            '';
+                        };
+                    }
                 ];
                 initExtraBeforeCompInit = ''
         echo >&2 "Homebrew completion path..."
@@ -2375,68 +2394,6 @@ yabai -m rule --add app="^zoom$" space=4
                 printf "\e]%s\e\\" "$1"
             fi
                                                                           }
-         ## 2020-05-16: Changed `echo` to `printf` so that backslashes are not interpretted by echo
-         ##             and so that CUTBUFFER shows up exactly in the pasteboard without modification
-
-         pb-kill-line () {
-           zle kill-line
-             printf '%s' $CUTBUFFER | pbcopy
-         }
-
-         pb-kill-whole-line () {
-           zle kill-whole-line
-             printf '%s' $CUTBUFFER | pbcopy
-         }
-
-         pb-backward-kill-word () {
-           zle backward-kill-word
-             printf '%s' $CUTBUFFER | pbcopy
-         }
-
-         pb-kill-word () {
-           zle kill-word
-             printf '%s' $CUTBUFFER | pbcopy
-         }
-
-         pb-kill-buffer () {
-           zle kill-buffer
-             printf '%s' $CUTBUFFER | pbcopy
-         }
-
-         pb-copy-region-as-kill-deactivate-mark () {
-           zle copy-region-as-kill
-             zle set-mark-command -n -1
-               printf '%s' $CUTBUFFER | pbcopy
-         }
-
-         pb-yank () {
-           CUTBUFFER=$(pbpaste)
-             zle yank
-         }
-
-         zle -N pb-kill-line
-         zle -N pb-kill-whole-line
-         zle -N pb-backward-kill-word
-         zle -N pb-kill-word
-         zle -N pb-kill-buffer
-         zle -N pb-copy-region-as-kill-deactivate-mark
-         zle -N pb-yank
-
-         bindkey '^K'   pb-kill-line
-
-         ## optionally, remove the above and uncomment this only do special pasteboard kill on Ctrl+Alt+k
-         #bindkey '^[^K'   pb-kill-line
-
-         bindkey '^U'   pb-kill-whole-line
-         bindkey '\e^?' pb-backward-kill-word
-         bindkey '\e^H' pb-backward-kill-word
-         bindkey '^W'   pb-backward-kill-word
-         bindkey '\ed'  pb-kill-word
-         bindkey '\eD'  pb-kill-word
-         bindkey '^X^K' pb-kill-buffer
-         bindkey '\ew'  pb-copy-region-as-kill-deactivate-mark
-         bindkey '\eW'  pb-copy-region-as-kill-deactivate-mark
-         bindkey '^Y'   pb-yank
         '';
             };
 
