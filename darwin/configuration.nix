@@ -2338,13 +2338,12 @@ yabai -m rule --add app="^zoom$" space=4
                         };
                     }
                     {
-                        name = "zsh-system-clipboard";
-                        file = "zsh-system-clipboard.zsh";
-                        src = pkgs.fetchFromGitHub {
-                            owner = "kutsan";
-                            repo = "zsh-system-clipboard";
-                            rev = "d7c20a90de9f9f23cf14ee98ba32acabd905b1be";
-                            sha256 = "0pzvhp26m7fxxcg58rlpp1rqdm3nh0ybyj83wn2bzzi4gr35saz7";
+                        name = "zsh-wide-clipboard";
+                        file = "zsh-wide-clipboard.zsh";
+                        src = pkgs.fetchurl {
+                            name = "system-wide-clipboard.zsh";
+                            url = "https://gist.githubusercontent.com/varenc/e4a22145c484771f254fa20982e2cd7f/raw/c2f17f411b38c7deda31ee35ff5ae980dff6ef10/system-wide-clipboard.zsh";
+                            sha256 = "09disbcgpgdckmzds8lsbyvn0m8187np5r1qs9cdza3412wcm9sl";
                         };
                     }
                 ];
