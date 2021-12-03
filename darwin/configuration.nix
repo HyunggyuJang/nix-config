@@ -2086,6 +2086,7 @@ yabai -m rule --add app="^System Preferences$" manage=off
 yabai -m rule --add app="Inkscape" title="LaTeX (pdflatex)" manage=off
 yabai -m rule --add app=AquaSKK manage=off
 yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off
+yabai -m rule --add app="^Emacs$" space=1
 yabai -m rule --add app="^Firefox$" space=2
 yabai -m rule --add app=Anki space=3
 yabai -m rule --add app="^Microsoft Teams$" space=4
@@ -3170,10 +3171,6 @@ ctrl + cmd - o ; open
 open < ctrl - g ; default
 
 # emacs
-## Doom
-open < d : skhd -k "ctrl - g"; echo "doom" > $HOME/.emacs-profile; open -a Emacs
-## d12Frosted
-open < f : skhd -k "ctrl - g"; echo "doom-experimental" > $HOME/.emacs-profile; open -a Emacs
 open < e : skhd -k "ctrl - g"; open -a Emacs
 open < shift - e : skhd -k "ctrl - g"; DEBUG=1 open -a Emacs
 
@@ -3334,7 +3331,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "aquaskk"
                 "hammerspoon"
                 "karabiner-elements"
-                "microsoft-office"
+                "microsoft-powerpoint"
+                "onedrive"
                 "microsoft-teams"
                 "zoom"
                 "ukelele"
