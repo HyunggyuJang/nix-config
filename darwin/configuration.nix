@@ -2337,6 +2337,16 @@ yabai -m rule --add app="^zoom$" space=4
                             sha256 = "1dzxbcif9q5m5zx3gvrhrfmkxspzf7b81k837gdb93c4aasgh6x6";
                         };
                     }
+                    {
+                        name = "zsh-system-clipboard";
+                        file = "zsh-system-clipboard.zsh";
+                        src = pkgs.fetchFromGitHub {
+                            owner = "kutsan";
+                            repo = "zsh-system-clipboard";
+                            rev = "d7c20a90de9f9f23cf14ee98ba32acabd905b1be";
+                            sha256 = "0pzvhp26m7fxxcg58rlpp1rqdm3nh0ybyj83wn2bzzi4gr35saz7";
+                        };
+                    }
                 ];
                 initExtraBeforeCompInit = ''
         echo >&2 "Homebrew completion path..."
