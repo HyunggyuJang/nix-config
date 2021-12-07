@@ -11,8 +11,6 @@ let localconfig = import <localconfig>;
       system = builtins.currentSystem;
       pkgs = import nixpkgs { inherit system; };
     };
-    darwin =  if localconfig.hostname == "classic"
-              then default
-              else default;
+    darwin = default;
 in
 darwin.installer

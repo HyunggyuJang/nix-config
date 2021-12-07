@@ -2489,11 +2489,18 @@ yabai -m rule --add app="^zoom$" space=4
             defaults.loginwindow.GuestEnabled = false;
 
         } else {};
-        users = if localconfig.hostname == "silicon" then {
-        # For single user hack
+        users = {
+            hyunggyujang = {
+                name = "Hyunggyu Jang";
+                home = "${hgj_home}";
+                shell = pkgs.zsh;
+            };
+        } //
+        (if localconfig.hostname == "silicon" then {
+            # For single user hack
             nix.configureBuildUsers = mkForce false;
             knownGroups = mkForce [];
-        } else {};
+        } else {});
 
         environment = {
             darwinConfig = "${hgj_sync}/nixpkgs/darwin/configuration.nix";
