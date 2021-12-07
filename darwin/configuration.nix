@@ -2301,7 +2301,6 @@ yabai -m rule --add app="^zoom$" space=4
                     dbuild = "cd ${hgj_sync}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
                     dswitch = "cd ${hgj_sync}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
                     drb = "cd ${hgj_sync}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
-                    emacsTest = "{mv ~/.emacs.d ~/.emacs. && emacs}&; sleep .1 && mv ~/.emacs. ~/.emacs.d";
                 };
 
                 oh-my-zsh.enable = true;
@@ -2490,10 +2489,11 @@ yabai -m rule --add app="^zoom$" space=4
             defaults.loginwindow.GuestEnabled = false;
 
         } else {};
+        users = if localconfig.hostname == "silicon" then {
         # For single user hack
-        users.nix.configureBuildUsers = mkForce false;
-        users.knownGroups = mkForce [];
-
+            nix.configureBuildUsers = mkForce false;
+            knownGroups = mkForce [];
+        } else {};
 
         environment = {
             darwinConfig = "${hgj_sync}/nixpkgs/darwin/configuration.nix";
@@ -2611,10 +2611,7 @@ yabai -m rule --add app="^zoom$" space=4
 
         programs = {
             zsh.enable = true;
-        }
-        // (if localconfig.hostname == "classic" then {
-            fish.enable = true;
-        } else {});
+        };
 
         # Manual setting for workaround of org-id: 7127dc6e-5a84-476c-8d31-59737a4f85f9
         launchd.daemons = if localconfig.hostname == "classic" then {
@@ -2627,39 +2624,37 @@ yabai -m rule --add app="^zoom$" space=4
                 serviceConfig.KeepAlive.SuccessfulExit = false;
             };
         } else {};
-        services = {
-            nix-daemon.enable =false;
-        } //
-        (if localconfig.hostname == "classic" then {
-            yabai = {
-                enable = true;
-                package = pkgs.yabai;
-                config = {
-                    mouse_follows_focus        = "off";
-                    focus_follows_mouse        = "off";
-                    window_placement           = "second_child";
-                    window_topmost             = "on";
-                    window_opacity             = "on";
-                    window_opacity_duration    = 0.0;
-                    active_window_opacity      = 1.0;
-                    normal_window_opacity      = 0.90;
-                    window_shadow              = "off";
-                    window_border              = "off";
-                    split_ratio                = 0.50;
-                    auto_balance               = "on";
-                    mouse_modifier             = "fn";
-                    mouse_action1              = "move";
-                    mouse_action2              = "resize";
+        services =
+            (if localconfig.hostname == "classic" then {
+                yabai = {
+                    enable = true;
+                    package = pkgs.yabai;
+                    config = {
+                        mouse_follows_focus        = "off";
+                        focus_follows_mouse        = "off";
+                        window_placement           = "second_child";
+                        window_topmost             = "on";
+                        window_opacity             = "on";
+                        window_opacity_duration    = 0.0;
+                        active_window_opacity      = 1.0;
+                        normal_window_opacity      = 0.90;
+                        window_shadow              = "off";
+                        window_border              = "off";
+                        split_ratio                = 0.50;
+                        auto_balance               = "on";
+                        mouse_modifier             = "fn";
+                        mouse_action1              = "move";
+                        mouse_action2              = "resize";
 
-                    # general space settings;
-                    layout                     = "bsp";
-                    top_padding                = 0;
-                    bottom_padding             = 0;
-                    left_padding               = 0;
-                    right_padding              = 0;
-                    window_gap                 = 0;
-                };
-                extraConfig = ''
+                        # general space settings;
+                        layout                     = "bsp";
+                        top_padding                = 0;
+                        bottom_padding             = 0;
+                        left_padding               = 0;
+                        right_padding              = 0;
+                        window_gap                 = 0;
+                    };
+                    extraConfig = ''
           yabai -m rule --add app="^System Preferences$" manage=off
           yabai -m rule --add app="^Karabiner-Elements$" manage=off
           yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off sticky=on
@@ -2670,10 +2665,10 @@ yabai -m rule --add app="^zoom$" space=4
           yabai -m rule --add app=zoom space=4
           yabai -m rule --add app="Google Chrome" space=5
         '';
-            };
-            skhd = {
-                enable = true;
-                skhdConfig = ''
+                };
+                skhd = {
+                    enable = true;
+                    skhdConfig = ''
           ################################################################################
           #
           # window manipulation
@@ -2940,12 +2935,12 @@ yabai -m rule --add app="^zoom$" space=4
           ctrl + cmd - e : doom everywhere
           ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         '';
-            };
-            activate-system.enable = true;
-        } else {
-            skhd = {
-                enable = true;
-                skhdConfig = ''
+                };
+            } else {
+                nix-daemon.enable = false;
+                skhd = {
+                    enable = true;
+                    skhdConfig = ''
 ################################################################################
 #
 # window manipulation
@@ -3203,16 +3198,10 @@ ctrl + cmd - e : doom everywhere
 ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
 
 '';
-            };
-            activate-system.enable = true;
-        });
-
+                };
+            });
         nix = {
-            trustedUsers = [ "@admin" ] ++ (if localconfig.hostname == "classic" then [
-                "hynggyujang"
-            ] else if localconfig.hostname == "silicon" then [
-                "hyunggyujang"
-            ] else []);
+            trustedUsers = [ "@admin" "hyunggyujang"];
             # See Fix ⚠️ — Unnecessary NIX_PATH entry for single user installation in nix_darwin.org
             nixPath = mkForce [
                 { darwin-config = "${config.environment.darwinConfig}"; }
@@ -3226,19 +3215,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         '';
         } else {});
 
-        users.users = if localconfig.hostname == "classic" then {
-            hynggyujang = {
-                name = "Hyunggyu Jang";
-                home = "${hgj_home}";
-                shell = pkgs.zsh;
-            };
-        } else {
-            hyunggyujang = {
-                name = "Hyunggyu Jang";
-                home = "${hgj_home}";
-                shell = pkgs.zsh;
-            };
-        };
         fonts = if localconfig.hostname == "classic" then {
             enableFontDir = true;
             fonts = [
@@ -3259,27 +3235,19 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "homebrew/cask"
                 "homebrew/core"
                 "homebrew/services"
-                "laishulu/macism"
-                "laishulu/cask-fonts"
             ];
             casks = [
                 "altserver"
-                "calibre"
-                "font-sarasa-nerd"
-                "google-chrome"
                 "karabiner-elements"
-                "microsoft-office"
                 "zotero"
                 "microsoft-teams"
                 "zoom"
                 "anki"
                 "ukelele"
-                "qutebrowser"
-                "hammerspoon"
+                "aquaskk"
             ];
             brews = [
                 "pngpaste"
-                "macism"
             ];
         } else {
             brewPrefix = "/opt/homebrew/bin";
