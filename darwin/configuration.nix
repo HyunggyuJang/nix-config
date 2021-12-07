@@ -2490,7 +2490,7 @@ yabai -m rule --add app="^zoom$" space=4
 
         } else {};
         users = {
-            hyunggyujang = {
+            users.hyunggyujang = {
                 name = "Hyunggyu Jang";
                 home = "${hgj_home}";
                 shell = pkgs.zsh;
