@@ -570,8 +570,8 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 ".hammerspoon".source = pkgs.fetchFromGitHub {
                     owner = "HyunggyuJang";
                     repo = "spacehammer";
-                    rev = "dbb12cded518c7a7960fcf885ba2e92521e913a1";
-                    sha256 = "08c0rni1sf8yw6lkw07bsicb9ss99n0w2r0ri0b1q64nkfyximww";
+                    rev = "ab2714a56e5267be9e9f0de96655335eae0016b6";
+                    sha256 = "0ifhrqa0qcgxg2dx4qi13mws6nsd32s8gml3cvpiidgyny8gz23x";
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
                 "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
@@ -2605,7 +2605,7 @@ yabai -m rule --add app="^zoom$" space=4
         } else {
             systemPackages = with pkgs; [
                 nixfmt
-                skhd
+                # skhd
                 # shellcheck # Not yet available
                 # octave # nix-build-qrupdate aren't ready
             ];
@@ -2952,7 +2952,7 @@ yabai -m rule --add app="^zoom$" space=4
             } else {
                 nix-daemon.enable = false;
                 skhd = {
-                    enable = true;
+                    enable = false;
                     skhdConfig = ''
 ################################################################################
 #
@@ -3349,7 +3349,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             ];
             extraConfig = ''
         brew "emacs-mac", args: ["with-no-title-bars", "with-starter"]
-        brew "yabai", args: ["HEAD"], restart_service: :changed
         brew "notmuch", args: ["HEAD"]
         cask "firefox", args: { language: "en-KR" }
       '';
