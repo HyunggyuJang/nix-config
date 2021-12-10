@@ -567,6 +567,12 @@ yabai -m signal --add \
 kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
                 };
+                ".hammerspoon".source = pkgs.fetchFromGitHub {
+                    owner = "HyunggyuJang";
+                    repo = "spacehammer";
+                    rev = "dbb12cded518c7a7960fcf885ba2e92521e913a1";
+                    sha256 = "08c0rni1sf8yw6lkw07bsicb9ss99n0w2r0ri0b1q64nkfyximww";
+                };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
                 "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
             } // (if localconfig.hostname == "silicon" then {
