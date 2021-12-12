@@ -570,8 +570,8 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 ".hammerspoon".source = pkgs.fetchFromGitHub {
                     owner = "HyunggyuJang";
                     repo = "spacehammer";
-                    rev = "ab2714a56e5267be9e9f0de96655335eae0016b6";
-                    sha256 = "0ifhrqa0qcgxg2dx4qi13mws6nsd32s8gml3cvpiidgyny8gz23x";
+                    rev = "4dd1d391699f818cef1478a96c7910c490810b1e";
+                    sha256 = "18sc9v5x4riyh48wjdqmnykv1mazaimlhdp1s85mkrwln5ark562";
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
                 "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
@@ -2605,6 +2605,8 @@ yabai -m rule --add app="^zoom$" space=4
         } else {
             systemPackages = with pkgs; [
                 nixfmt
+                clojure
+                leiningen
                 # skhd
                 # shellcheck # Not yet available
                 # octave # nix-build-qrupdate aren't ready
@@ -3271,7 +3273,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "homebrew/services"
                 "homebrew/cask-fonts"
                 "railwaycat/emacsmacport"
-                "koekeishiya/formulae"
+                "borkdude/brew"
             ];
             brews = [
                 "pngpaste"
@@ -3320,6 +3322,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "sdcv"
                 # Prover
                 "lean"
+                # Clojure
+                "clj-kondo"
             ];
             casks = [
                 "appcleaner"
