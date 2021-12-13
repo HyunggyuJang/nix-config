@@ -2315,10 +2315,10 @@ yabai -m rule --add app="^zoom$" space=4
                         name = "fast-syntax-highlighting";
                         file = "fast-syntax-highlighting.plugin.zsh";
                         src = pkgs.fetchFromGitHub {
-                            owner = "zdharma";
+                            owner = "zdharma-continuum";
                             repo = "fast-syntax-highlighting";
-                            rev = "v1.28";
-                            sha256 = "106s7k9n7ssmgybh0kvdb8359f3rz60gfvxjxnxb4fg5gf1fs088";
+                            rev = "585c089968caa1c904cbe926ff04a1be9e3d8f42";
+                            sha256 = "sha256-x+4C2u03RueNo6/ZXsueqmYoPIpDHnKAZXP5IiKsidE=";
                         };
                     }
                     {
