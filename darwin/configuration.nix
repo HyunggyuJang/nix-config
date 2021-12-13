@@ -3203,7 +3203,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
 
 '';
                 };
-            }));
+            } else {}));
         nix = {
             trustedUsers = [ "@admin" "hyunggyujang"];
             package = pkgs.nix;
