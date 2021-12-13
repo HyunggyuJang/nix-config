@@ -7,12 +7,12 @@ with prev;
     src = fetchFromGitHub {
       owner = "wachikun";
       repo = pname;
-      rev = "818fa43b09a1967a38c246626b570b3da33da555";
-      sha256 = "0pnh8ss15c644qc1mhz4zil4r4qnmr3nxw7mdm6dnwqa44byig19";
+      rev = "982845af2dd8eca6675dc3c9eded24570a205142";
+      sha256 = "13nadqm977rc6z7zka7ymdrh717r62w3s6k15dll4way6djvp3y6";
     };
-    target = "x86_64-apple-darwin";
+    # target = "x86_64-apple-darwin";
 
-    cargoSha256 = "00r00h3kgps9bknrqrjqz2f07n2c31cjn1ks2vqwf7dvm4k2f312";
+    cargoSha256 = "sha256-IgwnJqm7HcfxFnoGK1kYTNgDnPhYZpztXEnfNwcEIAM=";
 
     buildInputs = [ darwin.apple_sdk.frameworks.Security ];
 

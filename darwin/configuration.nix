@@ -575,18 +575,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
                 "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
-            } // (if localconfig.hostname == "silicon" then {
-                # Need to clone yaskkserv2 repository to ~/test/yaskkserv2 first,
-                # then build as instructed via `cargo build --release`
-                "${hgj_localbin}/yaskkserv2" = {
-                    source = "${hgj_home}/test/yaskkserv2/target/release/yaskkserv2";
-                    executable = true;
-                };
-                "${hgj_localbin}/yaskkserv2_make_dictionary" = {
-                    source = "${hgj_home}/test/yaskkserv2/target/release/yaskkserv2_make_dictionary";
-                    executable = true;
-                };
-            } else {});
+            };
             # https://github.com/nix-community/home-manager/blob/db00b39a9abec04245486a01b236b8d9734c9ad0/tests/modules/targets-darwin/default.nix
             # Has to be set explicitly as it disabled by default, preferring nix-darwin
             targets.darwin.keybindings = {
@@ -2607,6 +2596,7 @@ yabai -m rule --add app="^zoom$" space=4
                 nixfmt
                 clojure
                 leiningen
+                yaskkserv2 #→ Cannot build
                 # skhd
                 # shellcheck # Not yet available
                 # octave # nix-build-qrupdate aren't ready
