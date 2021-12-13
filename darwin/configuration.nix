@@ -668,7 +668,6 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
           include dracula.conf
         '';
                     "zathura/zathurarc".text = "set selection-clipboard clipboard";
-                    "nixpkgs".source = "${hgj_sync}/nixpkgs";
                 } // (if localconfig.hostname == "classic" then {
                     "fontconfig/fonts.conf".text = ''
         <?xml version='1.0'?>
