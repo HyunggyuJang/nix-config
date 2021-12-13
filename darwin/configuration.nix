@@ -4,8 +4,8 @@ let hgj_home = builtins.getEnv "HOME";
     hgj_sync = hgj_home;
     hgj_localbin = ".local/bin";
     localconfig = import <localconfig>;
-    brewpath = if localconfig.hostname == "silicon" then "/opt/homebrew"
-               else "/usr/local";
+    brewpath = if localconfig.hostname == "classic" then "/usr/local"
+               else "/opt/homebrew";
     mach-nix = import <mach-nix> {
         inherit pkgs;
         python = "python38";
@@ -2940,7 +2940,7 @@ yabai -m rule --add app="^zoom$" space=4
           ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         '';
                 };
-            } else {
+            } else (if localconfig.hostname == "silicon" then {
                 nix-daemon.enable = false;
                 skhd = {
                     enable = false;
@@ -3203,20 +3203,16 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
 
 '';
                 };
-            });
+            }));
         nix = {
             trustedUsers = [ "@admin" "hyunggyujang"];
+            package = pkgs.nix;
+        } // (if localconfig.hostname == "silicon" then {
             # See Fix ⚠️ — Unnecessary NIX_PATH entry for single user installation in nix_darwin.org
             nixPath = mkForce [
                 { darwin-config = "${config.environment.darwinConfig}"; }
                 "$HOME/.nix-defexpr/channels"
             ];
-            package = pkgs.nix;
-        } // (if localconfig.hostname == "silicon" then {
-            extraOptions = ''
-          system = aarch64-darwin
-          extra-platforms = x86_64-darwin aarch64-darwin
-        '';
         } else {});
 
         fonts = if localconfig.hostname == "classic" then {
@@ -3278,7 +3274,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "git"
                 "gnupg"
                 "pass"
-                "rust"
                 "lua"
                 "luarocks"
                 "gmp"
