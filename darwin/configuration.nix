@@ -2306,8 +2306,8 @@ yabai -m rule --add app="^zoom$" space=4
                         src = pkgs.fetchFromGitHub {
                             owner = "hlissner";
                             repo = "zsh-autopair";
-                            rev = "4039bf142ac6d264decc1eb7937a11b292e65e24";
-                            sha256 = "02pf87aiyglwwg7asm8mnbf9b2bcm82pyi1cj50yj74z4kwil6d1";
+                            rev = "9d003fc02dbaa6db06e6b12e8c271398478e0b5d";
+                            sha256 = "sha256-hwZDbVo50kObLQxCa/wOZImjlH4ZaUI5W5eWs/2RnWg=";
                         };
                     }
                     {
@@ -2326,8 +2326,8 @@ yabai -m rule --add app="^zoom$" space=4
                         src = pkgs.fetchFromGitHub {
                             owner = "agkozak";
                             repo = "zsh-z";
-                            rev = "41439755cf06f35e8bee8dffe04f728384905077";
-                            sha256 = "1dzxbcif9q5m5zx3gvrhrfmkxspzf7b81k837gdb93c4aasgh6x6";
+                            rev = "b30bc6050e77abe30ce36761d18ed696e5410f16";
+                            sha256 = "sha256-TSX6KooWYGf1NDlD4A3o6CmSsyy1JL7bPeKsuCOuUhY=";
                         };
                     }
                     rec {
