@@ -3244,19 +3244,15 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             # See Fix ⚠️ — Unnecessary NIX_PATH entry for single user installation in nix_darwin.org
             nixPath = mkForce [
                 { darwin-config = "${config.environment.darwinConfig}"; }
+                { localconfig = "${<localconfig>}"; }
                 "$HOME/.nix-defexpr/channels"
             ];
-        } else {});
-
-        fonts = if localconfig.hostname == "classic" then {
-            enableFontDir = true;
-            fonts = [
-                pkgs.sarasa-gothic
-                pkgs.etBook
-                pkgs.emacs-all-the-icons-fonts
-                pkgs.source-code-pro
+        } else {
+            nixPath = [
+                { localconfig = "${<localconfig>}"; }
             ];
-        } else {};
+        });
+
         homebrew =  {
             enable = true;
             autoUpdate = true;
