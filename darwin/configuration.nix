@@ -1,4 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ config ? (import <darwin> {}).config
+, pkgs ? import <nixpkgs> { system = builtins.currentSystem; }
+, lib ? pkgs.lib
+, ... }:
 
 let hgj_home = builtins.getEnv "HOME";
     hgj_sync = hgj_home;
