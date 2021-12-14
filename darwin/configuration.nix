@@ -5,6 +5,7 @@
 
 let hgj_home = builtins.getEnv "HOME";
     hgj_sync = hgj_home;
+    hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
     hgj_localbin = ".local/bin";
     localconfig = import <localconfig>;
     brewpath = if localconfig.hostname == "classic" then "/usr/local"
@@ -2295,9 +2296,9 @@ yabai -m rule --add app="^zoom$" space=4
                 defaultKeymap = "emacs";
                 sessionVariables = { RPROMPT = ""; };
                 shellAliases =  {
-                    dbuild = "cd ${hgj_sync}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
-                    dswitch = "cd ${hgj_sync}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
-                    drb = "cd ${hgj_sync}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                    dbuild = "cd ${hgj_darwin_home}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
+                    dswitch = "cd ${hgj_darwin_home}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
+                    drb = "cd ${hgj_darwin_home}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
                 };
 
                 oh-my-zsh.enable = true;
@@ -2500,7 +2501,7 @@ yabai -m rule --add app="^zoom$" space=4
         } else {});
 
         environment = {
-            darwinConfig = "${hgj_sync}/nixpkgs/darwin/configuration.nix";
+            darwinConfig = "${hgj_darwin_home}/configuration.nix";
             variables = {
                 EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
                 VISUAL = "$EDITOR";
@@ -3247,12 +3248,12 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
             # See Fix ⚠️ — Unnecessary NIX_PATH entry for single user installation in nix_darwin.org
             nixPath = mkForce [
                 { darwin-config = "${config.environment.darwinConfig}"; }
-                { localconfig = "${<localconfig>}"; }
+                { localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix"; }
                 "$HOME/.nix-defexpr/channels"
             ];
         } else {
             nixPath = [
-                { localconfig = "${<localconfig>}"; }
+                { localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix"; }
             ];
         });
 
