@@ -138,13 +138,6 @@ in with lib;
             max-cache-ttl 86400
             pinentry-program ${brewpath}/bin/pinentry-mac
             '';
-                ".latexmkrc".text = ''
-$kanji      = "-kanji=$ENV{\"LATEXENC\"}" if defined $ENV{"LATEXENC"};
-$dvipdf     = 'dvipdfmx -o %D %S';
-$latex      = 'uplatex $kanji';
-$bibtex     = 'upbibtex $kanji';
-$pdf_mode   = 3;
-                '';
                 "${hgj_localbin}/uninstall-nix-osx" = {
                     executable = true;
                     text = ''
@@ -2296,9 +2289,9 @@ yabai -m rule --add app="^zoom$" space=4
                 defaultKeymap = "emacs";
                 sessionVariables = { RPROMPT = ""; };
                 shellAliases =  {
-                    dbuild = "cd ${hgj_darwin_home}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
-                    dswitch = "cd ${hgj_darwin_home}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
-                    drb = "cd ${hgj_darwin_home}/nixpkgs/darwin && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                    dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
+                    dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
+                    drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
                 };
 
                 oh-my-zsh.enable = true;
