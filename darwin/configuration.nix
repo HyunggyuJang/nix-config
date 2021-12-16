@@ -213,10 +213,10 @@ sudo rm -rf /var/root/.cache/nix
           bind --mode=visual <C-g> composite js document.getSelection().empty(); mode normal; hidecmdline
           bind --mode=ex <A-n> ex.next_history
           bind --mode=ex <A-p> ex.prev_history
-          # bind --mode=insert <C-p> !s /run/current-system/sw/bin/skhd -k up
-          # bind --mode=insert <C-n> !s /run/current-system/sw/bin/skhd -k down
-          # bind --mode=ex <C-p> ex.prev_completion
-          # bind --mode=ex <C-n> ex.next_completion
+          bind --mode=insert <C-p> !s ${brewpath}/bin/hs -c 'hs.eventtap.keyStroke({}, "up")'
+          bind --mode=insert <C-n> !s ${brewpath}/bin/hs -c 'hs.eventtap.keyStroke({}, "down")'
+          bind --mode=ex <C-p> ex.prev_completion
+          bind --mode=ex <C-n> ex.next_completion
           # bind --mode=ex <C-k> text.kill_line # same as default setting
           # bind --mode=ex <C-j> ex.next_completion # used for kakutei key in Aquaskk
           bind --mode=ex <Tab> ex.insert_space_or_completion # ex.complete is buggy
