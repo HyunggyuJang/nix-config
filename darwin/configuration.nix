@@ -2307,7 +2307,6 @@ yabai -m rule --add app="^zoom$" space=4
                     dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
                     dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
                     drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
-                    spacehammerREPL = "${hgj_home}/.luarocks/bin/fennel ${shevek}/shevek.fnl localhost:7888";
                 };
 
                 oh-my-zsh.enable = true;
@@ -2518,9 +2517,10 @@ yabai -m rule --add app="^zoom$" space=4
                 DOOMDIR = "${hgj_home}/notes/org/manager";
                 EMACSDIR = "${hgj_home}/.emacs.d";
                 DOOMLOCALDIR = "${hgj_home}/.doom";
+                SHELL = "${pkgs.zsh}/bin/zsh";
+                SPACEHAMMER_REPL = "${hgj_home}/.luarocks/bin/fennel ${shevek}/shevek.fnl localhost:7888";
             } //
             ( if localconfig.hostname == "classic" then {
-                SHELL = "${pkgs.zsh}/bin/zsh";
                 NODE_PATH =  "/run/current-system/sw/lib/node_modules";
             } else {
                 LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
