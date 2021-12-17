@@ -41,6 +41,21 @@ let hgj_home = builtins.getEnv "HOME";
       '';
     };
 
+    shevek = with pkgs; stdenv.mkDerivation {
+        name = "shevek";
+        src = fetchFromSourcehut {
+            owner = "~technomancy";
+            repo = "shevek";
+            rev = "06b9a6b499b3b876937ead8e58028ed925a60611";
+            sha256 = "sha256-1PxaPR0FUo9FH5gyZvOA8+u8+MYkdM5VyErwPetr9Y4=";
+        };
+        phases = ["unpackPhase" "installPhase"];
+        installPhase = ''
+        mkdir -p $out
+        cp shevek.fnl $out/
+      '';
+    };
+
 in with lib;
     rec {
         # Home manager
@@ -567,8 +582,8 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 ".hammerspoon".source = pkgs.fetchFromGitHub {
                     owner = "HyunggyuJang";
                     repo = "spacehammer";
-                    rev = "4dd1d391699f818cef1478a96c7910c490810b1e";
-                    sha256 = "18sc9v5x4riyh48wjdqmnykv1mazaimlhdp1s85mkrwln5ark562";
+                    rev = "3e248efcdf7e041d13d0f0d5c79435e8930be13d";
+                    sha256 = "sha256-6/Y7wPWOkVpsjfBWK09OLnNwM5uYdx2oIQWq7ZkdTPk=";
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
                 "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
@@ -2292,6 +2307,7 @@ yabai -m rule --add app="^zoom$" space=4
                     dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
                     dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
                     drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                    spacehammerREPL = "${hgj_home}/.luarocks/bin/fennel ${shevek}/shevek.fnl localhost:7888";
                 };
 
                 oh-my-zsh.enable = true;
@@ -3334,6 +3350,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "lean"
                 # Clojure
                 "clj-kondo"
+                # Spacehammer
+                "fnlfmt"
             ];
             casks = [
                 "appcleaner"
