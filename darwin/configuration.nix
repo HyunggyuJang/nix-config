@@ -228,8 +228,8 @@ sudo rm -rf /var/root/.cache/nix
           bind --mode=visual <C-g> composite js document.getSelection().empty(); mode normal; hidecmdline
           bind --mode=ex <A-n> ex.next_history
           bind --mode=ex <A-p> ex.prev_history
-          bind --mode=insert <C-p> !s ${brewpath}/bin/hs -c 'hs.eventtap.keyStroke({}, "up")'
-          bind --mode=insert <C-n> !s ${brewpath}/bin/hs -c 'hs.eventtap.keyStroke({}, "down")'
+          bind --mode=insert <C-p> !s hs -c 'hs.eventtap.keyStroke({}, "up")'
+          bind --mode=insert <C-n> !s hs -c 'hs.eventtap.keyStroke({}, "down")'
           bind --mode=ex <C-p> ex.prev_completion
           bind --mode=ex <C-n> ex.next_completion
           # bind --mode=ex <C-k> text.kill_line # same as default setting
@@ -2672,6 +2672,11 @@ yabai -m rule --add app="^zoom$" space=4
                 serviceConfig.KeepAlive.SuccessfulExit = false;
             };
         } else {};
+
+        # Propagate PATH variable to applications
+        launchd.user.envVariables = {
+            PATH = "${brewpath}/bin:$PATH";
+        };
         services =
             (if localconfig.hostname == "classic" then {
                 yabai = {
