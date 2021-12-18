@@ -582,8 +582,8 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 ".hammerspoon".source = pkgs.fetchFromGitHub {
                     owner = "HyunggyuJang";
                     repo = "spacehammer";
-                    rev = "3e248efcdf7e041d13d0f0d5c79435e8930be13d";
-                    sha256 = "sha256-6/Y7wPWOkVpsjfBWK09OLnNwM5uYdx2oIQWq7ZkdTPk=";
+                    rev = "0e676ffb9081376d9f41936acd80ebdc4a08d331";
+                    sha256 = "sha256-LNVue0uv03U1ymy2k1Q7HcH75oqtiYCtDb+FyKE3VeQ=";
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
                 "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
@@ -3341,7 +3341,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "libxml2"
                 # suggested by Doom emacs
                 "pipenv"
-                "jupyter"
+                "jupyterlab"
                 # For projectile
                 "ctags"
                 # Lexic
