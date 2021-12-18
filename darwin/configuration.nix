@@ -384,8 +384,6 @@ sudo rm -rf /var/root/.cache/nix
                     url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
                     sha256 = "03hb64j6baj5kx24cf9y7vx4sdsv34553djsf4l3krz7aj7cwi7f";
                 };
-                "Library/Application Support/Mozilla/NativeMessagingHosts/tridactyl.json".source =
-                    "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts/tridactyl.json";
                 ".qutebrowser/dracula".source = pkgs.fetchFromGitHub {
                     owner = "dracula";
                     repo = "qutebrowser";
@@ -2615,8 +2613,6 @@ yabai -m rule --add app="^zoom$" space=4
                 # skhd
                 shellcheck # Not yet available
                 # octave # nix-build-qrupdate aren't ready -- See https://github.com/NixOS/nixpkgs/issues/140041
-                # firefox
-                tridactyl-native
             ];
             shells = [
                 pkgs.zsh
