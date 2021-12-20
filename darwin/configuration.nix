@@ -406,7 +406,6 @@ sudo rm -rf /var/root/.cache/nix
                     };
                     executable = true;
                 };
-                ".bash_profile".text = ". ${hgj_home}/.nix-profile/etc/profile.d/nix.sh";
                 ".gitconfig".text = ''
           [user]
             name = Hyunggyu Jang
