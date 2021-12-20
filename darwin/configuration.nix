@@ -2657,7 +2657,11 @@ yabai -m rule --add app="^zoom$" space=4
                         (attrNames (readDir path)));
 
         programs = {
-            zsh.enable = true;
+            zsh = {
+                enable = true;
+                enableCompletion = false;
+                enableBashCompletion = false;
+            };
         };
 
         # Manual setting for workaround of org-id: 7127dc6e-5a84-476c-8d31-59737a4f85f9
