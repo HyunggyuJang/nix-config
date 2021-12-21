@@ -233,7 +233,7 @@ sudo rm -rf /var/root/.cache/nix
           bind --mode=ex <C-p> ex.prev_completion
           bind --mode=ex <C-n> ex.next_completion
           # bind --mode=ex <C-k> text.kill_line # same as default setting
-          # bind --mode=ex <C-j> ex.next_completion # used for kakutei key in Aquaskk
+          unbind --mode=ex <C-j> # used for kakutei key in Aquaskk
           bind --mode=ex <Tab> ex.insert_space_or_completion # ex.complete is buggy
           unbind --mode=ex <Space>
           bind --mode=insert <A-d> text.kill_word
@@ -384,6 +384,810 @@ sudo rm -rf /var/root/.cache/nix
                     url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
                     sha256 = "03hb64j6baj5kx24cf9y7vx4sdsv34553djsf4l3krz7aj7cwi7f";
                 };
+                "Library/Application Support/AquaSKK/keymap.conf".text = ''
+###
+### keymap.conf
+###
+
+# ======================================================================
+# event section
+# ======================================================================
+
+SKK_JMODE		ctrl::j
+SKK_ENTER		group::hex::0x03,0x0a,0x0d||ctrl::m
+SKK_CANCEL		ctrl::g||hex::0x1b
+SKK_BACKSPACE		hex::0x08||ctrl::h
+SKK_DELETE		hex::0x7f||ctrl::d
+SKK_TAB			hex::0x09||ctrl::i
+SKK_PASTE		ctrl::y
+SKK_LEFT		hex::0x1c||ctrl::b||keycode::7b
+SKK_RIGHT		hex::0x1d||ctrl::f||keycode::7c
+SKK_UP			hex::0x1e||ctrl::a||keycode::7e
+SKK_DOWN		hex::0x1f||ctrl::e||keycode::7d
+SKK_PING		ctrl::l
+SKK_UNDO                ctrl::/
+
+# ======================================================================
+# attribute section(for SKK_CHAR)
+# ======================================================================
+
+ToggleKana		q
+ToggleJisx0201Kana	ctrl::q
+SwitchToAscii		l
+SwitchToJisx0208Latin	L
+
+EnterAbbrev		/
+EnterJapanese		Q
+NextCompletion		.
+PrevCompletion		,
+NextCandidate		hex::0x20||ctrl::n
+PrevCandidate		x||ctrl::p
+RemoveTrigger		X
+
+UpperCases		group::A-K,M-P,R-Z
+Direct			group::keycode::0x41,0x43,0x45,0x4b,0x4e,0x51-0x59,0x5b,0x5c,0x5f
+InputChars              group::hex::0x20-0x7e
+
+CompConversion		alt::hex::0x20||shift::hex::0x20
+
+# ======================================================================
+# handle option
+# ======================================================================
+
+AlwaysHandled           group::keycode::0x66,0x68
+PseudoHandled           ctrl::l
+
+# ======================================================================
+# Sticky key
+# ======================================================================
+
+StickyKey               ;
+                '';
+                "Library/Application Support/AquaSKK/azik.conf".text = ''
+NotToggleKana		q
+NotToggleJisx0201Kana	ctrl::q
+NotEnterJapanese		Q
+
+ToggleKana		keycode::21
+ToggleJisx0201Kana	ctrl::keycode::21
+EnterJapanese  shift::keycode::21
+UpperCases		Q||shift::keycode::29
+InputChars		shift::keycode::29||keycode::21
+                '';
+                "Library/Application Support/AquaSKK/sub-rule.desc".text = ''
+###
+### sub-rule.desc -- шгЬхКйуГлуГ╝уГлуБошкмцШО
+###
+
+azik_us.rule azik.conf UseуАМAZIKуАНextension
+                '';
+                "Library/Application Support/AquaSKK/azik_us.rule".text = ''
+###
+### azik_us.rule -- AZIK ═╤└▀─ъ
+###
+
+',д├,е├,Оп
+
+b.,д╓,е╓,О╠О▐
+bd,д┘дє,е┘еє,О═О▐О▌
+bh,д╓дж,е╓еж,О╠О▐О│
+bj,д╓дє,е╓еє,О╠О▐О▌
+bk,д╙дє,е╙еє,О╦О▐О▌
+bl,д▄дє,е▄еє,О╬О▐О▌
+bn,д╨дє,е╨еє,О╩О▐О▌
+bp,д▄дж,е▄еж,О╬О▐О│
+bq,д╨дд,е╨ед,О╩О▐О▓
+br,д╨дщ,е╨ещ,О╩О▐О╫
+bt,д╙д╚,е╙е╚,О╦О▐О─
+bw,д┘дд,е┘ед,О═О▐О▓
+bx,д┘дд,е┘ед,О═О▐О▓
+bz,д╨дє,е╨еє,О╩О▐О▌
+
+byd,д╙дздє,е╙езеє,О╦О▐ОкО▌
+byh,д╙дхдж,е╙ехеж,О╦О▐ОнО│
+byj,д╙дхдє,е╙ехеє,О╦О▐ОнО▌
+byl,д╙дчдє,е╙ечеє,О╦О▐ОоО▌
+byn,д╙дудє,е╙еуеє,О╦О▐ОмО▌
+byp,д╙дчдж,е╙ечеж,О╦О▐ОоО│
+byq,д╙дудд,е╙еуед,О╦О▐ОмО▓
+byw,д╙дздд,е╙езед,О╦О▐ОкО▓
+byz,д╙дудє,е╙еуеє,О╦О▐ОмО▌
+
+ca,д┴ду,е┴еу,О┴Ом
+cc,д┴ду,е┴еу,О┴Ом
+cd,д┴дздє,е┴езеє,О┴ОкО▌
+ce,д┴дз,е┴ез,О┴Ок
+cf,д┴дз,е┴ез,О┴Ок
+ch,д┴дхдж,е┴ехеж,О┴ОнО│
+ci,д┴,е┴,О┴
+cj,д┴дхдє,е┴ехеє,О┴ОнО▌
+ck,д┴дє,е┴еє,О┴О▌
+cl,д┴дчдє,е┴ечеє,О┴ОоО▌
+cn,д┴дудє,е┴еуеє,О┴ОмО▌
+co,д┴дч,е┴еч,О┴Оо
+cp,д┴дчдж,е┴ечеж,О┴ОоО│
+cq,д┴дудд,е┴еуед,О┴ОмО▓
+cu,д┴дх,е┴ех,О┴Он
+cv,д┴дудд,е┴еуед,О┴ОмО▓
+cw,д┴дздд,е┴езед,О┴ОкО▓
+cx,д┴дздд,е┴езед,О┴ОкО▓
+cz,д┴дудє,е┴еуеє,О┴ОмО▌
+
+dd,д╟дє,е╟еє,О├О▐О▌
+df,д╟,е╟,О├О▐
+dg,д└дм,е└ем,О└О▐О╢О▐
+dh,д┼дж,е┼еж,О┬О▐О│
+dj,д┼дє,е┼еє,О┬О▐О▌
+dk,д┬дє,е┬еє,О┴О▐О▌
+dl,д╔дє,е╔еє,О─О▐О▌
+dm,д╟дт,е╟ет,О├О▐О╙
+dn,д└дє,е└еє,О└О▐О▌
+dp,д╔дж,е╔еж,О─О▐О│
+dq,д└дд,е└ед,О└О▐О▓
+dr,д╟двды,е╟евеы,О├О▐О▒О┘
+ds,д╟д╣,е╟е╣,О├О▐О╜
+dt,д└д┴,е└е┴,О└О▐О┴
+dv,д╟дє,е╟еє,О├О▐О▌
+dw,д╟дд,е╟ед,О├О▐О▓
+dy,д╟дг,е╟ег,О├О▐Ои
+dz,д└дє,е└еє,О└О▐О▌
+dch,д╟дх,е╟ехб╝,О├О▐ОнО░
+dci,д╟дг,е╟ег,О├О▐Ои
+dck,д╟дгдє,е╟егеє,О├О▐ОиО▌
+dcp,д╔де,е╔ееб╝,О─О▐ОйО░
+dcu,д╟дх,е╟ех,О├О▐Он
+
+fd,д╒дздє,е╒езеє,О╠ОкО▌
+fh,д╒дж,е╒еж,О╠О│
+fj,д╒дє,е╒еє,О╠О▌
+fk,д╒дгдє,е╒егеє,О╠ОиО▌
+fl,д╒дйдє,е╒ейеє,О╠ОлО▌
+fm,д╒др,е╒ер,О╠О╤
+fn,д╒дбдє,е╒ебеє,О╠ОзО▌
+fp,д╒дй,е╒ейб╝,О╠ОлО░
+fq,д╒дбдд,е╒ебед,О╠ОзО▓
+fr,д╒ды,е╒еы,О╠О┘
+fs,д╒дбдд,е╒ебед,О╠ОзО▓
+fw,д╒дздд,е╒езед,О╠ОкО▓
+fz,д╒дбдє,е╒ебеє,О╠ОзО▌
+
+gd,д▓дє,е▓еє,О╣О▐О▌
+gh,д░дж,е░еж,О╕О▐О│
+gj,д░дє,е░еє,О╕О▐О▌
+gk,додє,еоеє,О╖О▐О▌
+gl,д┤дє,е┤еє,О║О▐О▌
+gn,дмдє,емеє,О╢О▐О▌
+gp,д┤дж,е┤еж,О║О▐О│
+gq,дмдд,емед,О╢О▐О▓
+gr,дмдщ,емещ,О╢О▐О╫
+gt,д┤д╚,е┤е╚,О║О▐О─
+gw,д▓дд,е▓ед,О╣О▐О▓
+gz,дмдє,емеє,О╢О▐О▌
+
+gyd,додздє,еоезеє,О╖О▐ОкО▌
+gyh,додхдж,еоехеж,О╖О▐ОнО│
+gyj,додхдє,еоехеє,О╖О▐ОнО▌
+gyl,додчдє,еоечеє,О╖О▐ОоО▌
+gyn,додудє,еоеуеє,О╖О▐ОмО▌
+gyp,додчдж,еоечеж,О╖О▐ОоО│
+gyq,додудд,еоеуед,О╖О▐ОмО▓
+gyw,додздд,еоезед,О╖О▐ОкО▓
+gyz,додудє,еоеуеє,О╖О▐ОмО▌
+
+hd,д╪дє,е╪еє,О═О▌
+hf,д╒,е╒,О╠
+hh,д╒дж,е╒еж,О╠О│
+hj,д╒дє,е╒еє,О╠О▌
+hk,д╥дє,е╥еє,О╦О▌
+hl,д█дє,е█еє,О╬О▌
+hn,д╧дє,е╧еє,О╩О▌
+hp,д█дж,е█еж,О╬О│
+hq,д╧дд,е╧ед,О╩О▓
+ht,д╥д╚,е╥е╚,О╦О─
+hw,д╪дд,е╪ед,О═О▓
+hz,д╧дє,е╧еє,О╩О▌
+hga,д╥ду,е╥еу,О╦Ом
+hgd,д╥дздє,е╥езеє,О╦ОкО▌
+hge,д╥дз,е╥ез,О╦Ок
+hgh,д╥дхдж,е╥ехеж,О╦ОнО│
+hgj,д╥дхдє,е╥ехеє,О╦ОнО▌
+hgl,д╥дчдє,е╥ечеє,О╦ОоО▌
+hgn,д╥дудє,е╥еуеє,О╦ОмО▌
+hgo,д╥дч,е╥еч,О╦Оо
+hgp,д╥дчдж,е╥ечеж,О╦ОоО│
+hgq,д╥дудд,е╥еуед,О╦ОмО▓
+hgu,д╥дх,е╥ех,О╦Он
+hgw,д╥дздд,е╥езед,О╦ОкО▓
+hgz,д╥дудє,е╥еуеє,О╦ОмО▌
+hyd,д╥дздє,е╥езеє,О╦ОкО▌
+hyh,д╥дхдж,е╥ехеж,О╦ОнО│
+hyl,д╥дчдє,е╥ечеє,О╦ОоО▌
+hyp,д╥дчдж,е╥ечеж,О╦ОоО│
+hyq,д╥дудд,е╥еуед,О╦ОмО▓
+hyw,д╥дздд,е╥езед,О╦ОкО▓
+hyz,д╥дудє,е╥еуеє,О╦ОмО▌
+
+jd,д╕дздє,е╕езеє,О╝О▐ОкО▌
+jf,д╕дх,е╕ех,О╝О▐Он
+jh,д╕дхдж,е╕ехеж,О╝О▐ОнО│
+jj,д╕дхдє,е╕ехеє,О╝О▐ОнО▌
+jk,д╕дє,е╕еє,О╝О▐О▌
+jl,д╕дчдє,е╕ечеє,О╝О▐ОоО▌
+jn,д╕дудє,е╕еуеє,О╝О▐ОмО▌
+jp,д╕дчдж,е╕ечеж,О╝О▐ОоО│
+jq,д╕дудд,е╕еуед,О╝О▐ОмО▓
+jv,д╕дхдж,е╕ехеж,О╝О▐ОнО│
+jw,д╕дздд,е╕езед,О╝О▐ОкО▓
+jz,д╕дудє,е╕еуеє,О╝О▐ОмО▌
+
+kA,еї,еї,О╢
+kE,еЎ,еЎ,О╣
+kd,д▒дє,е▒еє,О╣О▌
+kf,дн,ен,О╖
+kh,дпдж,епеж,О╕О│
+kj,дпдє,епеє,О╕О▌
+kk,дндє,енеє,О╖О▌
+kl,д│дє,е│еє,О║О▌
+km,дн,ен,О╖
+kn,длдє,елеє,О╢О▌
+kp,д│дж,е│еж,О║О│
+kq,длдд,елед,О╢О▓
+kr,длдщ,елещ,О╢О╫
+kt,д│д╚,е│е╚,О║О─
+kv,дндє,енеє,О╖О▌
+kw,д▒дд,е▒ед,О╣О▓
+kz,длдє,елеє,О╢О▌
+kga,днду,енеу,О╖Ом
+kgd,дндздє,енезеє,О╖ОкО▌
+kge,дндз,енез,О╖Ок
+kgh,дндхдж,енехеж,О╖ОнО│
+kgl,дндчдє,енечеє,О╖ОоО▌
+kgn,дндудє,енеуеє,О╖ОмО▌
+kgo,дндч,енеч,О╖Оо
+kgp,дндчдж,енечеж,О╖ОоО│
+kgq,дндудд,енеуед,О╖ОмО▓
+kgu,дндх,енех,О╖Он
+kgw,дндздд,енезед,О╖ОкО▓
+kgz,дндудє,енеуеє,О╖ОмО▌
+kyd,дндздє,енезеє,О╖ОкО▌
+kyh,дндхдж,енехеж,О╖ОнО│
+kyj,дндхдє,енехеє,О╖ОнО▌
+kyl,дндчдє,енечеє,О╖ОоО▌
+kyn,дндудє,енеуеє,О╖ОмО▌
+kyp,дндчдж,енечеж,О╖ОоО│
+kyq,дндудд,енеуед,О╖ОмО▓
+kyw,дндздд,енезед,О╖ОкО▓
+kyz,дндудє,енеуеє,О╖ОмО▌
+
+m.,др,ер,О╤
+md,дсдє,есеє,О╥О▌
+mf,др,ер,О╤
+mh,дрдж,ереж,О╤О│
+mj,дрдє,ереє,О╤О▌
+mk,д▀дє,е▀еє,О╨О▌
+ml,дтдє,етеє,О╙О▌
+mn,дтд╬,ете╬,О╙О╔
+mp,дтдж,етеж,О╙О│
+mq,д▐дд,е▐ед,О╧О▓
+mr,д▐ды,е▐еы,О╧О┘
+ms,д▐д╣,е▐е╣,О╧О╜
+mt,д▐д┐,е▐е┐,О╧О└
+mv,дрдє,ереє,О╤О▌
+mw,дсдд,есед,О╥О▓
+mz,д▐дє,е▐еє,О╧О▌
+mga,д▀ду,е▀еу,О╨Ом
+mgd,д▀дздє,е▀езеє,О╨ОкО▌
+mge,д▀дз,е▀ез,О╨Ок
+mgh,д▀дхдж,е▀ехеж,О╨ОнО│
+mgj,д▀дхдє,е▀ехеє,О╨ОнО▌
+mgl,д▀дчдє,е▀ечеє,О╨ОоО▌
+mgn,д▀дудє,е▀еуеє,О╨ОмО▌
+mgo,д▀дч,е▀еч,О╨Оо
+mgp,д▀дчдж,е▀ечеж,О╨ОоО│
+mgq,д▀дудд,е▀еуед,О╨ОмО▓
+mgu,д▀дх,е▀ех,О╨Он
+mgw,д▀дздд,е▀езед,О╨ОкО▓
+mgz,д▀дудє,е▀еуеє,О╨ОмО▌
+myd,д▀дздє,е▀езеє,О╨ОкО▌
+myh,д▀дхдж,е▀ехеж,О╨ОнО│
+myj,д▀дхдє,е▀ехеє,О╨ОнО▌
+myl,д▀дчдє,е▀ечеє,О╨ОоО▌
+myn,д▀дудє,е▀еуеє,О╨ОмО▌
+myp,д▀дчдж,е▀ечеж,О╨ОоО│
+myq,д▀дудд,е▀еуед,О╨ОмО▓
+myw,д▀дздд,е▀езед,О╨ОкО▓
+myz,д▀дудє,е▀еуеє,О╨ОмО▌
+
+n.,д╠,е╠,О╟
+nb,д═д╨,е═е╨,О╚О╩О▐
+nd,д═дє,е═еє,О╚О▌
+nf,д╠,е╠,О╟
+nh,д╠дж,е╠еж,О╟О│
+nj,д╠дє,е╠еє,О╟О▌
+nk,д╦дє,е╦еє,О╞О▌
+nl,д╬дє,е╬еє,О╔О▌
+np,д╬дж,е╬еж,О╔О│
+nq,д╩дд,е╩ед,О┼О▓
+nr,д╩ды,е╩еы,О┼О┘
+nt,д╦д┴,е╦е┴,О╞О┴
+nv,д╠дє,е╠еє,О╟О▌
+nw,д═дд,е═ед,О╚О▓
+nz,д╩дє,е╩еє,О┼О▌
+nga,д╦ду,е╦еу,О╞Ом
+ngd,д╦дздє,е╦езеє,О╞ОкО▌
+nge,д╦дз,е╦ез,О╞Ок
+ngh,д╦дхдж,е╦ехеж,О╞ОнО│
+ngj,д╦дхдє,е╦ехеє,О╞ОнО▌
+ngl,д╦дчдє,е╦ечеє,О╞ОоО▌
+ngn,д╦дудє,е╦еуеє,О╞ОмО▌
+ngo,д╦дч,е╦еч,О╞Оо
+ngp,д╦дчдж,е╦ечеж,О╞ОоО│
+ngq,д╦дудд,е╦еуед,О╞ОмО▓
+ngu,д╦дх,е╦ех,О╞Он
+ngw,д╦дздд,е╦езед,О╞ОкО▓
+ngz,д╦дудє,е╦еуеє,О╞ОмО▌
+nyd,д╦дздє,е╦езеє,О╞ОкО▌
+nyh,д╦дхдж,е╦ехеж,О╞ОнО│
+nyj,д╦дхдє,е╦ехеє,О╞ОнО▌
+nyl,д╦дчдє,е╦ечеє,О╞ОоО▌
+nyn,д╦дудє,е╦еуеє,О╞ОмО▌
+nyp,д╦дчдж,е╦ечеж,О╞ОоО│
+nyq,д╦дудд,е╦еуед,О╞ОмО▓
+nyw,д╦дздд,е╦езед,О╞ОкО▓
+nyz,д╦дудє,е╦еуеє,О╞ОмО▌
+
+pd,д┌дє,е┌еє,О═О▀О▌
+pf,д▌дє,е▌еє,О╬О▀О▌
+ph,д╫дж,е╫еж,О╠О▀О│
+pj,д╫дє,е╫еє,О╠О▀О▌
+pk,д╘дє,е╘еє,О╦О▀О▌
+pl,д▌дє,е▌еє,О╬О▀О▌
+pn,д╤дє,е╤еє,О╩О▀О▌
+pp,д▌дж,е▌еж,О╬О▀О│
+pq,д╤дд,е╤ед,О╩О▀О▓
+pv,д▌дж,е▌еж,О╬О▀О│
+pw,д┌дд,е┌ед,О═О▀О▓
+pz,д╤дє,е╤еє,О╩О▀О▌
+pga,д╘ду,е╘еу,О╦О▀Ом
+pgd,д╘дздє,е╘езеє,О╦О▀ОкО▌
+pge,д╘дз,е╘ез,О╦О▀Ок
+pgh,д╘дхдж,е╘ехеж,О╦О▀ОнО│
+pgj,д╘дхдє,е╘ехеє,О╦О▀ОнО▌
+pgl,д╘дчдє,е╘ечеє,О╦О▀ОоО▌
+pgn,д╘дудє,е╘еуеє,О╦О▀ОмО▌
+pgo,д╘дч,е╘еч,О╦О▀Оо
+pgp,д╘дчдж,е╘ечеж,О╦О▀ОоО│
+pgq,д╘дудд,е╘еуед,О╦О▀ОмО▓
+pgu,д╘дх,е╘ех,О╦О▀Он
+pgw,д╘дздд,е╘езед,О╦О▀ОкО▓
+pgz,д╘дудє,е╘еуеє,О╦О▀ОмО▌
+pyd,д╘дздє,е╘езеє,О╦О▀ОкО▌
+pyh,д╘дхдж,е╘ехеж,О╦О▀ОнО│
+pyj,д╘дхдє,е╘ехеє,О╦О▀ОнО▌
+pyl,д╘дчдє,е╘ечеє,О╦О▀ОоО▌
+pyn,д╘дудє,е╘еуеє,О╦О▀ОмО▌
+pyp,д╘дчдж,е╘ечеж,О╦О▀ОоО│
+pyq,д╘дудд,е╘еуед,О╦О▀ОмО▓
+pyw,д╘дздд,е╘езед,О╦О▀ОкО▓
+pyz,д╘дудє,е╘еуеє,О╦О▀ОмО▌
+
+q,дє,еє,О▌
+
+rd,дьдє,еьеє,О┌О▌
+rh,дыдж,еыеж,О┘О│
+rj,дыдє,еыеє,О┘О▌
+rk,дъдє,еъеє,О╪О▌
+rl,дэдє,еэеє,О█О▌
+rn,дщдє,ещеє,О╫О▌
+rp,дэдж,еэеж,О█О│
+rq,дщдд,ещед,О╫О▓
+rr,дщдь,ещеь,О╫О┌
+rw,дьдд,еьед,О┌О▓
+rz,дщдє,ещеє,О╫О▌
+
+ryd,дъдздє,еъезеє,О╪ОкО▌
+ryh,дъдхдж,еъехеж,О╪ОнО│
+ryj,дъдхдє,еъехеє,О╪ОнО▌
+ryk,дъдчдп,еъечеп,О╪ОоО╕
+ryl,дъдчдє,еъечеє,О╪ОоО▌
+ryn,дъдудє,еъеуеє,О╪ОмО▌
+ryp,дъдчдж,еъечеж,О╪ОоО│
+ryq,дъдудд,еъеуед,О╪ОмО▓
+ryw,дъдздд,еъезед,О╪ОкО▓
+ryz,дъдудє,еъеуеє,О╪ОмО▌
+
+sd,д╗дє,е╗еє,О╛О▌
+sf,д╡дд,е╡ед,О╗О▓
+sh,д╣дж,е╣еж,О╜О│
+sj,д╣дє,е╣еє,О╜О▌
+sk,д╖дє,е╖еє,О╝О▌
+sl,д╜дє,е╜еє,О┐О▌
+sm,д╖дт,е╖ет,О╝О╙
+sn,д╡дє,е╡еє,О╗О▌
+sp,д╜дж,е╜еж,О┐О│
+sq,д╡дд,е╡ед,О╗О▓
+sr,д╣ды,е╣еы,О╜О┘
+ss,д╗дд,е╗ед,О╛О▓
+st,д╖д┐,е╖е┐,О╝О└
+sv,д╡дд,е╡ед,О╗О▓
+sw,д╗дд,е╗ед,О╛О▓
+sz,д╡дє,е╡еє,О╗О▌
+
+syd,д╖дздє,е╖езеє,О╝ОкО▌
+syh,д╖дхдж,е╖ехеж,О╝ОнО│
+syj,д╖дхдє,е╖ехеє,О╝ОнО▌
+syl,д╖дчдє,е╖ечеє,О╝ОоО▌
+syp,д╖дчдж,е╖ечеж,О╝ОоО│
+syq,д╖дудд,е╖еуед,О╝ОмО▓
+syw,д╖дздд,е╖езед,О╝ОкО▓
+syz,д╖дудє,е╖еуеє,О╝ОмО▌
+
+tU,д├,е├,Оп
+tb,д┐д╙,е┐е╙,О└О╦О▐
+td,д╞дє,е╞еє,О├О▌
+th,д─дж,е─еж,О┬О│
+tj,д─дє,е─еє,О┬О▌
+tk,д┴дє,е┴еє,О┴О▌
+tl,д╚дє,е╚еє,О─О▌
+tm,д┐дс,е┐ес,О└О╥
+tn,д┐дє,е┐еє,О└О▌
+tp,д╚дж,е╚еж,О─О│
+tq,д┐дд,е┐ед,О└О▓
+tr,д┐дщ,е┐ещ,О└О╫
+tt,д┐д┴,е┐е┴,О└О┴
+tw,д╞дд,е╞ед,О├О▓
+tz,д┐дє,е┐еє,О└О▌
+tgh,д╞дх,е╞ехб╝,О├ОнО░
+tgi,д╞дг,е╞ег,О├Ои
+tgk,д╞дгдє,е╞егеє,О├ОиО▌
+tgp,д╚де,е╚ееб╝,О─ОйО░
+tgu,д╞дх,е╞ех,О├Он
+tsU,д├,е├,Оп
+tsa,д─дб,е─еб,О┬Оз
+tse,д─дз,е─ез,О┬Ок
+tsi,д─дг,е─ег,О┬Ои
+tso,д─дй,е─ей,О┬Ол
+tyd,д┴дздє,е┴езеє,О┴ОкО▌
+tyh,д┴дхдж,е┴ехеж,О┴ОнО│
+tyj,д┴дхдє,е┴ехеє,О┴ОнО▌
+tyl,д┴дчдє,е┴ечеє,О┴ОоО▌
+tyn,д┴дудє,е┴еуеє,О┴ОмО▌
+typ,д┴дчдж,е┴ечеж,О┴ОоО│
+tyq,д┴дудд,е┴еуед,О┴ОмО▓
+tyw,д┴дздд,е┴езед,О┴ОкО▓
+tyz,д┴дудє,е┴еуеє,О┴ОмО▌
+
+vd,дж,еЇезеє,О│О▐ОкО▌
+vk,дж,еЇегеє,О│О▐ОиО▌
+vl,дж,еЇейеє,О│О▐ОлО▌
+vn,дж,еЇебеє,О│О▐ОзО▌
+vp,дж,еЇейб╝,О│О▐ОлО░
+vq,дж,еЇебед,О│О▐ОзО▓
+vw,дж,еЇезед,О│О▐ОкО▓
+vz,дж,еЇебеє,О│О▐ОзО▌
+vya,дж,еЇеу,О│О▐Ом
+vye,дж,еЇез,О│О▐Ок
+vyo,дж,еЇеч,О│О▐Оо
+vyu,дж,еЇех,О│О▐Он
+
+wA,дю,ею,О▄
+wd,дждздє,ежезеє,О│ОкО▌
+wf,дя,ея,О▄
+wk,дждгдє,ежегеє,О│ОиО▌
+wl,дждйдє,ежейеє,О│ОлО▌
+wn,дядє,еяеє,О▄О▌
+wp,дждй,ежейб╝,О│ОлО░
+wq,дядд,еяед,О▄О▓
+wr,дядь,еяеь,О▄О┌
+wt,дяд┐,еяе┐,О▄О└
+wz,дядє,еяеє,О▄О▌
+wha,дждб,ежеб,О│Оз
+whe,дждз,ежез,О│Ок
+whi,дждг,ежег,О│Ои
+who,дждй,ежей,О│Ол
+whu,дж,еж,О│
+wso,дждй,ежей,О│Ол
+
+x;,би,би,;
+z;,бз,бз,:
+
+xa,д╖ду,е╖еу,О╝Ом
+xc,д╖ду,е╖еу,О╝Ом
+xd,д╖дздє,е╖езеє,О╝ОкО▌
+xe,д╖дз,е╖ез,О╝Ок
+xf,д╖дздд,е╖езед,О╝ОкО▓
+xh,д╖дхдж,е╖ехеж,О╝ОнО│
+xi,д╖,е╖,О╝
+xj,д╖дхдє,е╖ехеє,О╝ОнО▌
+xk,д╖дє,е╖еє,О╝О▌
+xl,д╖дчдє,е╖ечеє,О╝ОоО▌
+xn,д╖дудє,е╖еуеє,О╝ОмО▌
+xo,д╖дч,е╖еч,О╝Оо
+xp,д╖дчдж,е╖ечеж,О╝ОоО│
+xq,д╖дудд,е╖еуед,О╝ОмО▓
+xt,д╖дхд─,е╖ехе─,О╝ОнО┬
+xu,д╖дх,е╖ех,О╝Он
+xv,д╖дудд,е╖еуед,О╝ОмО▓
+xw,д╖дздд,е╖езед,О╝ОкО▓
+xz,д╖дудє,е╖еуеє,О╝ОмО▌
+xxa,дб,еб,Оз
+xxe,дз,ез,Ок
+xxi,дг,ег,Ои
+xxo,дй,ей,Ол
+xxu,де,ее,Ой
+
+yh,дцдж,ецеж,О╒О│
+yi,дЁ,еЁ,О▓
+yj,дцдє,ецеє,О╒О▌
+yl,дшдє,ешеє,О╓О▌
+yn,дфдє,ефеє,О╘О▌
+yp,дшдж,ешеж,О╓О│
+yq,дфдд,ефед,О╘О▓
+yr,дшды,ешеы,О╓О┘
+yv,дцдж,ецеж,О╒О│
+yz,дфдє,ефеє,О╘О▌
+
+z.,д║,е║,О╜О▐
+zc,д╢,е╢,О╗О▐
+zd,д╝дє,е╝еє,О╛О▐О▌
+zf,д╝,е╝,О╛О▐
+zh,д║дж,е║еж,О╜О▐О│
+zj,д║дє,е║еє,О╜О▐О▌
+zk,д╕дє,е╕еє,О╝О▐О▌
+zl,д╛дє,е╛еє,О┐О▐О▌
+zn,д╢дє,е╢еє,О╗О▐О▌
+zp,д╛дж,е╛еж,О┐О▐О│
+zq,д╢дд,е╢ед,О╗О▐О▓
+zr,д╢ды,е╢еы,О╗О▐О┘
+zv,д╢дд,е╢ед,О╗О▐О▓
+zw,д╝дд,е╝ед,О╛О▐О▓
+zx,д╝дд,е╝ед,О╛О▐О▓
+zz,д╢дє,е╢еє,О╗О▐О▌
+zyd,д╕дздє,е╕езеє,О╝О▐ОкО▌
+zyh,д╕дхдж,е╕ехеж,О╝О▐ОнО│
+zyj,д╕дхдє,е╕ехеє,О╝О▐ОнО▌
+zyl,д╕дчдє,е╕ечеє,О╝О▐ОоО▌
+zyn,д╕дудє,е╕еуеє,О╝О▐ОмО▌
+zyp,д╕дчдж,е╕ечеж,О╝О▐ОоО│
+zyq,д╕дудд,е╕еуед,О╝О▐ОмО▓
+zyw,д╕дздд,е╕езед,О╝О▐ОкО▓
+zyz,д╕дудє,е╕еуеє,О╝О▐ОмО▌
+x[,б╓,б╓,б╓
+
+# kana-rule.conf  д╦ [ д╦┬╨д╣ды╩╤┤╣╡м┬здм─ъ╡┴д╡дьд╞дддыд╬д╟бвToggleKana дм└╡д╖дп╞░║юд╖д╩ддбг
+# д╜д│д╟бв [ д╬╩╤┤╣╡м┬здЄдвддд▐ддд╦д╖д╞бв╩╤┤╣д╡дьд╩дддшджд╦д╣ды
+[[,б╓,б╓,б╓
+                '';
+                "Library/Application Support/AquaSKK/BlacklistApps.plist".text = ''
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>bundleIdentifier</key>
+		<string>com.microsoft.powerpoint</string>
+		<key>insertEmptyString</key>
+		<false/>
+		<key>insertMarkedText</key>
+		<false/>
+		<key>syncInputSource</key>
+		<false/>
+	</dict>
+	<dict>
+		<key>bundleIdentifier</key>
+		<string>com.jetbrains</string>
+		<key>insertEmptyString</key>
+		<false/>
+		<key>insertMarkedText</key>
+		<false/>
+		<key>syncInputSource</key>
+		<false/>
+	</dict>
+	<dict>
+		<key>bundleIdentifier</key>
+		<string>com.google.android.studio</string>
+		<key>insertEmptyString</key>
+		<false/>
+		<key>insertMarkedText</key>
+		<false/>
+		<key>syncInputSource</key>
+		<false/>
+	</dict>
+	<dict>
+		<key>bundleIdentifier</key>
+		<string>jp.naver.line.mac</string>
+		<key>insertEmptyString</key>
+		<false/>
+		<key>insertMarkedText</key>
+		<false/>
+	</dict>
+</array>
+</plist>
+                '';
+                "Library/Application Support/AquaSKK/DictionarySet.plist".text = ''
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>active</key>
+		<true/>
+		<key>location</key>
+		<string>~/.doom/etc/skk/skk-jisyo.utf8</string>
+		<key>type</key>
+		<integer>5</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.L</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.jinmei</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.fullname</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.geo</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.propernoun</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.station</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.law</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.okinawa</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.china_taiwan</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.assoc</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.edict</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>zipcode/SKK-JISYO.zipcode</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>zipcode/SKK-JISYO.office.zipcode</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.JIS2</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.JIS3_4</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.JIS2004</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.itaiji</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.itaiji.JIS3_4</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<false/>
+		<key>location</key>
+		<string>SKK-JISYO.mazegaki</string>
+		<key>type</key>
+		<integer>1</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<true/>
+		<key>location</key>
+		<string>localhost:1178</string>
+		<key>type</key>
+		<integer>2</integer>
+	</dict>
+	<dict>
+		<key>active</key>
+		<true/>
+		<key>location</key>
+		<string>/Users/hyunggyujang/.doom/etc/skk/aquaskk-jisyo.utf8</string>
+		<key>type</key>
+		<integer>5</integer>
+	</dict>
+</array>
+</plist>
+                '';
                 ".qutebrowser/dracula".source = pkgs.fetchFromGitHub {
                     owner = "dracula";
                     repo = "qutebrowser";
