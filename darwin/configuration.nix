@@ -1188,6 +1188,90 @@ x[,¡Ö,¡Ö,¡Ö
 </array>
 </plist>
                 '';
+                ## For deploying for the first time
+                # "Library/Preferences/jp.sourceforge.inputmethod.aquaskk.plist".text = ''
+# <?xml version="1.0" encoding="UTF-8"?>
+# <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+# <plist version="1.0">
+# <dict>
+# 	<key>beep_on_registration</key>
+# 	<false/>
+# 	<key>candidate_window_font_name</key>
+# 	<string>Trebuchet MS</string>
+# 	<key>candidate_window_font_size</key>
+# 	<integer>18</integer>
+# 	<key>candidate_window_labels</key>
+# 	<string>ASDFJKL</string>
+# 	<key>delete_okuri_when_quit</key>
+# 	<true/>
+# 	<key>direct_clients</key>
+# 	<array>
+# 		<string>net.kovidgoyal.kitty</string>
+# 		<string>org.gnu.Emacs</string>
+# 	</array>
+# 	<key>display_shortest_match_of_kana_conversions</key>
+# 	<false/>
+# 	<key>dynamic_completion_range</key>
+# 	<integer>1</integer>
+# 	<key>enable_annotation</key>
+# 	<false/>
+# 	<key>enable_dynamic_completion</key>
+# 	<false/>
+# 	<key>enable_extended_completion</key>
+# 	<true/>
+# 	<key>enable_private_mode</key>
+# 	<false/>
+# 	<key>enable_skkdap</key>
+# 	<false/>
+# 	<key>enable_skkserv</key>
+# 	<false/>
+# 	<key>fix_intermediate_conversion</key>
+# 	<true/>
+# 	<key>handle_recursive_entry_as_okuri</key>
+# 	<false/>
+# 	<key>inline_backspace_implies_commit</key>
+# 	<false/>
+# 	<key>keyboard_layout</key>
+# 	<string>org.sil.ukelele.keyboardlayout..abccopy</string>
+# 	<key>max_count_of_inline_candidates</key>
+# 	<integer>4</integer>
+# 	<key>minimum_completion_length</key>
+# 	<integer>0</integer>
+# 	<key>openlab_host</key>
+# 	<string>openlab.ring.gr.jp</string>
+# 	<key>openlab_path</key>
+# 	<string>/skk/skk/dic</string>
+# 	<key>put_candidate_window_upward</key>
+# 	<false/>
+# 	<key>show_input_mode_icon</key>
+# 	<true/>
+# 	<key>skkdap_folder</key>
+# 	<string>~/Library/Application Support/AquaSKK</string>
+# 	<key>skkdap_port</key>
+# 	<integer>2178</integer>
+# 	<key>skkserv_localonly</key>
+# 	<true/>
+# 	<key>skkserv_port</key>
+# 	<integer>1178</integer>
+# 	<key>sub_keymaps</key>
+# 	<array>
+# 		<string>/Users/hyunggyujang/Library/Application Support/AquaSKK/azik.conf</string>
+# 	</array>
+# 	<key>sub_rules</key>
+# 	<array>
+# 		<string>/Users/hyunggyujang/Library/Application Support/AquaSKK/azik_us.rule</string>
+# 	</array>
+# 	<key>suppress_newline_on_commit</key>
+# 	<true/>
+# 	<key>use_individual_input_mode</key>
+# 	<false/>
+# 	<key>use_numeric_conversion</key>
+# 	<true/>
+# 	<key>user_dictionary_path</key>
+# 	<string>/Users/hyunggyujang/.doom/etc/skk/aquaskk-jisyo.utf8</string>
+# </dict>
+# </plist>
+#                 '';
                 ".qutebrowser/dracula".source = pkgs.fetchFromGitHub {
                     owner = "dracula";
                     repo = "qutebrowser";
