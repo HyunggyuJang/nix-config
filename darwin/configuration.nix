@@ -1466,11 +1466,10 @@ yabai -m signal --add \
 kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
                 };
-                ".hammerspoon".source = pkgs.fetchFromGitHub {
-                    owner = "HyunggyuJang";
-                    repo = "spacehammer";
-                    rev = "0e676ffb9081376d9f41936acd80ebdc4a08d331";
-                    sha256 = "sha256-LNVue0uv03U1ymy2k1Q7HcH75oqtiYCtDb+FyKE3VeQ=";
+                ".hammerspoon".source = fetchGit {
+                    url = "https://github.com/HyunggyuJang/spacehammer.git";
+                    rev = "c0e384326785fd02be7535777f9132cca65e2630";
+                    submodules = true;
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
                 "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
