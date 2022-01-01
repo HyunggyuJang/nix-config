@@ -379,6 +379,19 @@ sudo rm -rf /var/root/.cache/nix
                     url = "https://raw.githubusercontent.com/PrincetonUniversity/VST/master/doc/lstlangcoq.sty";
                     sha256 = "12dg7yqfsh2hz74nmb0y0qvdr75dn06mj0inyz9assh55ixpljd4";
                 };
+                "Library/Application Support/org.inkscape.Inkscape/config/inkscape/extensions/svg2tikz".source = with pkgs; stdenv.mkDerivation {
+                  name = "svg2tikz";
+                  src = fetchFromGitHub {
+                    owner = "xyz2tex";
+                    repo = "svg2tikz";
+                    rev = "8e56b5752de4b330a436b70e57ba55603232737a";
+                    sha256 = "sha256-IKLg9+ztG96b9A5dI3Ek9upiWoiUX9V09P5KWzlnVIo=";
+                  };
+                  phases = ["unpackPhase" "installPhase"];
+                  installPhase = ''
+                  cp -R svg2tikz/extensions $out
+                  '';
+                };
                 "Library/Application Support/Zotero/Profiles/z6bvhh6i.default/chrome/userChrome.css".source = pkgs.fetchurl {
                     name = "Zotero-Dark-theme";
                     url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
@@ -1468,7 +1481,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 };
                 ".hammerspoon".source = fetchGit {
                     url = "https://github.com/HyunggyuJang/spacehammer.git";
-                    rev = "c0e384326785fd02be7535777f9132cca65e2630";
+                    rev = "aa2dbd591e8dcd1eedec1d43a5b432dcceab0dcf";
                     submodules = true;
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
