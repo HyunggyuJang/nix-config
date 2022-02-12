@@ -1881,6 +1881,32 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                         ]
                     },
                     {
+                        "description": "Change left control to control if pressed with other keys, to escape if pressed alone.",
+                        "manipulators": [
+                            {
+                                "from": {
+                                    "key_code": "left_control",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_control"
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "escape"
+                                    }
+                                ],
+                                "type": "basic"
+                            }
+                        ]
+                    },
+                    {
                         "description": "Change return key to control if pressed with other keys, to return if pressed alone.",
                         "manipulators": [
                             {
