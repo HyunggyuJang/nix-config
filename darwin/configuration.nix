@@ -4504,7 +4504,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "font-fira-mono"
                 "discord"
                 "vagrant"
-                "virtualbox"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
