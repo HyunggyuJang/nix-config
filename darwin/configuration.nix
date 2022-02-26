@@ -4423,6 +4423,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "homebrew/core"
                 "homebrew/services"
                 "homebrew/cask-fonts"
+                # For beta version
+                "homebrew/cask-versions"
                 "railwaycat/emacsmacport"
                 "borkdude/brew"
             ];
@@ -4503,7 +4505,10 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "font-fira-sans"
                 "font-fira-mono"
                 "discord"
-                "vagrant"
+                # Custom brew to install 2.2.18 version
+                "vagrant-m1"
+                "vagrant-vmware-utility"
+                "vmware-fusion-tech-preview"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
