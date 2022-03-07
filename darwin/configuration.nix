@@ -143,7 +143,7 @@ in with lib;
                     source = pkgs.fetchurl {
                         name = "eldev";
                         url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
-                        sha256 = "0y3ri82cxxx4c29hb39jp655vrj88vcvwqxz5mad8rcqlh68aiy4";
+                        sha256 = "sha256-rmTbxD/a1SLFp48nmSLOA25vpDZnojA/ONvXQeOI9mo=";
                     };
                     executable = true;
                 };
@@ -1481,7 +1481,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 };
                 ".hammerspoon".source = fetchGit {
                     url = "https://github.com/HyunggyuJang/spacehammer.git";
-                    rev = "aa2dbd591e8dcd1eedec1d43a5b432dcceab0dcf";
+                    rev = "6687fd2ec2136e8f9ce0f1b5e2a5e5c5b85f41fd";
                     submodules = true;
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
@@ -4478,6 +4478,9 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "clj-kondo"
                 # Spacehammer
                 "fnlfmt"
+                # ISUCON
+                "go"
+                "mysql"
             ];
             casks = [
                 "appcleaner"
@@ -4509,6 +4512,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "vagrant-m1"
                 "vagrant-vmware-utility"
                 "vmware-fusion-tech-preview"
+                # Docker
+                "docker"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
