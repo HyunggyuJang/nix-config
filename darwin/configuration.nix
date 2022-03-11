@@ -216,7 +216,7 @@ sudo rm -rf /var/root/.cache/nix
             '';
                 };
                 ".tridactylrc".text = ''
-          set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12) (internal-border-width . 0))" +%l:%c
+          set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12) (internal-border-width . 0))" +%l:%c; emacsclient --eval "(setq mac-use-title-bar nil)"
           # bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           # bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           bind --mode=browser <C-g> escapehatch
@@ -1481,7 +1481,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 };
                 ".hammerspoon".source = fetchGit {
                     url = "https://github.com/HyunggyuJang/spacehammer.git";
-                    rev = "6687fd2ec2136e8f9ce0f1b5e2a5e5c5b85f41fd";
+                    rev = "27a6e5c4b126a51acd036b621da911f773bb356f";
                     submodules = true;
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
@@ -4481,6 +4481,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 # ISUCON
                 "go"
                 "mysql"
+                # Blog
+                "hugo"
             ];
             casks = [
                 "appcleaner"
