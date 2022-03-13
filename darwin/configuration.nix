@@ -1481,7 +1481,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 };
                 ".hammerspoon".source = fetchGit {
                     url = "https://github.com/HyunggyuJang/spacehammer.git";
-                    rev = "27a6e5c4b126a51acd036b621da911f773bb356f";
+                    rev = "1337fbd6d0d1abb26f1f9d96bd8f406f256199c1";
                     submodules = true;
                 };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
@@ -3534,6 +3534,8 @@ yabai -m rule --add app="^zoom$" space=4
                     browserpass
                     tridactyl
                     darkreader
+                    # For work with kazuki
+                    metamask
                     # Need to add zotero-connector
                 ];
             programs.firefox.profiles =
