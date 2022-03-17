@@ -3223,21 +3223,21 @@ yabai -m rule --add app="^zoom$" space=4
                     "simple_modifications": [
                         {
                             "from": {
-                                "key_code": "escape"
-                            },
-                            "to": [
-                                {
-                                    "key_code": "caps_lock"
-                                }
-                            ]
-                        },
-                        {
-                            "from": {
                                 "key_code": "caps_lock"
                             },
                             "to": [
                                 {
                                     "key_code": "escape"
+                                }
+                            ]
+                        },
+                        {
+                            "from": {
+                                "key_code": "escape"
+                            },
+                            "to": [
+                                {
+                                    "key_code": "caps_lock"
                                 }
                             ]
                         }
@@ -3257,21 +3257,21 @@ yabai -m rule --add app="^zoom$" space=4
                     "simple_modifications": [
                         {
                             "from": {
-                                "key_code": "escape"
-                            },
-                            "to": [
-                                {
-                                    "key_code": "caps_lock"
-                                }
-                            ]
-                        },
-                        {
-                            "from": {
                                 "key_code": "caps_lock"
                             },
                             "to": [
                                 {
                                     "key_code": "escape"
+                                }
+                            ]
+                        },
+                        {
+                            "from": {
+                                "key_code": "escape"
+                            },
+                            "to": [
+                                {
+                                    "key_code": "caps_lock"
                                 }
                             ]
                         }
@@ -3518,7 +3518,11 @@ yabai -m rule --add app="^zoom$" space=4
             else
                 printf "\e]%s\e\\" "$1"
             fi
-                                                                          }
+        }
+
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+        [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
         '';
             };
 
@@ -3735,6 +3739,7 @@ yabai -m rule --add app="^zoom$" space=4
                 # skhd
                 shellcheck # Not yet available
                 # octave # nix-build-qrupdate aren't ready -- See https://github.com/NixOS/nixpkgs/issues/140041
+                solc-select
             ];
             shells = [
                 pkgs.zsh
@@ -4437,7 +4442,6 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "aspell"
                 "graphviz"
                 "zstd"
-                "nodejs"
                 "isync"
                 "libvterm"
                 "ripgrep"
@@ -4485,6 +4489,9 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "mysql"
                 # Blog
                 "hugo"
+                # Javascript
+                "yarn"
+                "nvm"
             ];
             casks = [
                 "appcleaner"
@@ -4518,6 +4525,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "vmware-fusion-tech-preview"
                 # Docker
                 "docker"
+                # IDE based on web development
+                "visual-studio-code"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
