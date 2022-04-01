@@ -3485,7 +3485,7 @@ yabai -m rule --add app="^zoom$" space=4
                 initExtraBeforeCompInit = ''
         echo >&2 "Homebrew completion path..."
         if [ -f ${brewpath}/bin/brew ]; then
-          PATH=${brewpath}/bin:$PATH fpath+=$(brew --prefix)/share/zsh/site-functions
+          PATH=$PATH:${brewpath}/bin fpath+=$(brew --prefix)/share/zsh/site-functions
         else
           echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
         fi
