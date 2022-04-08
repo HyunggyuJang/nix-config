@@ -1303,7 +1303,7 @@ x[,「,「,「
                     source = pkgs.fetchurl {
                         name = "readability";
                         url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability";
-                        sha256 = "029538gkymh756qd14j6947r6qdyzww6chnkd240vc8v0pif58lk";
+                        sha256 = "sha256-Iliz4okMFezs+B6jkDifaeFKADVRnTsCInFFUax4QzE=";
                     };
                     executable = true;
                 };
@@ -1321,10 +1321,10 @@ x[,「,「,「
         '';
                 ".mbsyncrc".text = ''
           IMAPAccount nagoya
-          Host mail.j.mbox.nagoya-u.ac.jp
-          User jang.hyunggyu@j.mbox.nagoya-u.ac.jp #not XXX@me.com etc.
+          Host mail.math.nagoya-u.ac.jp
+          User hyunggyu.jang.e6@math.nagoya-u.ac.jp #not XXX@me.com etc.
           AuthMechs LOGIN
-          PassCmd "pass mail.j.mbox.nagoya-u.ac.jp"
+          PassCmd "pass math.nagoya-u.ac.jp"
           Port 993
           SSLType IMAPS
           SSLVersions TLSv1.2
@@ -1388,14 +1388,15 @@ x[,「,「,「
           logfile        ~/.msmtp.log
 
           # Nagoya-U mail
-          account        jang.hyunggyu@j.mbox.nagoya-u.ac.jp
-          host           mail.j.mbox.nagoya-u.ac.jp
-          port           587
+          account        hyunggyu.jang.e6@math.nagoya-u.ac.jp
+          host           smtp.math.nagoya-u.ac.jp
+          port           443
           protocol       smtp
-          from	         jang.hyunggyu@j.mbox.nagoya-u.ac.jp
-          user           jang.hyunggyu@j.mbox.nagoya-u.ac.jp
-          passwordeval   "pass mail.j.mbox.nagoya-u.ac.jp"
-          tls_starttls   on
+          # https://help.zoho.com/portal/en/community/topic/msmtp
+          from	         hyunggyu.jang.e6@math.nagoya-u.ac.jp
+          user           hyunggyu.jang.e6@math.nagoya-u.ac.jp
+          passwordeval   "pass math.nagoya-u.ac.jp"
+          tls_starttls   off
 
           # Gmail
           account        murasakipurplez5@gmail.com
@@ -1416,7 +1417,7 @@ x[,「,「,「
           [user]
           name=Hyunggyu Jang
           primary_email=murasakipurplez5@gmail.com
-          other_email=jang.hyunggyu@j.mbox.nagoya-u.ac.jp
+          other_email=hyunggyu.jang.e6@math.nagoya-u.ac.jp
           [new]
           tags=new
           ignore=/.*[.](json|lock|bak)$/;.mbsyncstate;.uidvalidity;.DS_Store
@@ -4527,12 +4528,16 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "docker"
                 # IDE based on web development
                 "visual-studio-code"
+                # VPN
+                "Tunnelblick"
+                # Garrigue lab
+                "element"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
             ] else []);
             extraConfig = ''
-        brew "emacs-mac", args: ["with-no-title-bars", "with-starter"]
+        brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
         brew "notmuch", args: ["HEAD"]
         cask "firefox", args: { language: "en-KR" }
       '';
