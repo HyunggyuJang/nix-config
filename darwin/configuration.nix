@@ -228,8 +228,8 @@ sudo rm -rf /var/root/.cache/nix
           bind --mode=visual <C-g> composite js document.getSelection().empty(); mode normal; hidecmdline
           bind --mode=ex <A-n> ex.next_history
           bind --mode=ex <A-p> ex.prev_history
-          bind --mode=insert <C-p> !s hs -c 'hs.eventtap.keyStroke({}, "up")'
-          bind --mode=insert <C-n> !s hs -c 'hs.eventtap.keyStroke({}, "down")'
+          bind --mode=insert <C-p> !s skhd -k up
+          bind --mode=insert <C-n> !s skhd -k down
           bind --mode=ex <C-p> ex.prev_completion
           bind --mode=ex <C-n> ex.next_completion
           # bind --mode=ex <C-k> text.kill_line # same as default setting
@@ -3018,8 +3018,6 @@ yabai -m rule --add app="^System Preferences$" manage=off
 yabai -m rule --add app="Inkscape" title="LaTeX (pdflatex)" manage=off
 yabai -m rule --add app=AquaSKK manage=off
 yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off
-yabai -m rule --add app="^Emacs$" space=1
-yabai -m rule --add app="^Firefox$" space=2
 yabai -m rule --add app=Anki space=3
 yabai -m rule --add app="^Microsoft Teams$" space=4
 yabai -m rule --add app="^zoom$" space=4
@@ -4119,7 +4117,7 @@ yabai -m rule --add app="^zoom$" space=4
             } else (if localconfig.hostname == "silicon" then {
                 nix-daemon.enable = false;
                 skhd = {
-                    enable = false;
+                    enable = true;
                     skhdConfig = ''
 ################################################################################
 #
@@ -4322,10 +4320,10 @@ warp < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
 mywindow < i ; myinsert
 myinsert < ctrl - g ; default
 
-myinsert < h : skhd -k "ctrl - g"; yabai -m window --insert west
-myinsert < j : skhd -k "ctrl - g"; yabai -m window --insert south
-myinsert < k : skhd -k "ctrl - g"; yabai -m window --insert north
-myinsert < l : skhd -k "ctrl - g"; yabai -m window --insert east
+myinsert < h : yabai -m window --insert west
+myinsert < j : yabai -m window --insert south
+myinsert < k : yabai -m window --insert north
+myinsert < l : yabai -m window --insert east
 
 ctrl + cmd - return : yabai -m window --toggle zoom-fullscreen
 
@@ -4435,6 +4433,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "homebrew/cask-versions"
                 "railwaycat/emacsmacport"
                 "borkdude/brew"
+                # yabai
+                "koekeishiya/formulae"
             ];
             brews = [
                 "pngpaste"
@@ -4474,6 +4474,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "libxml2"
                 # suggested by Doom emacs
                 "pipenv"
+                "pyenv"
                 "jupyterlab"
                 # For projectile
                 "ctags"
@@ -4493,6 +4494,8 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 # Javascript
                 "yarn"
                 "nvm"
+                # Arthswap slither
+                "poetry"
             ];
             casks = [
                 "appcleaner"
@@ -4502,7 +4505,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "altserver"
                 "anki"
                 "aquaskk"
-                "hammerspoon"
+                # "hammerspoon"
                 "karabiner-elements"
                 "microsoft-powerpoint"
                 "onedrive"
@@ -4540,6 +4543,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
         brew "notmuch", args: ["HEAD"]
         cask "firefox", args: { language: "en-KR" }
+        brew "yabai", start_service: true
       '';
         });
     }
