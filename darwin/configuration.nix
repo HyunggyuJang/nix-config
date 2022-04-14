@@ -1480,11 +1480,11 @@ yabai -m signal --add \
 kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
                 };
-                ".hammerspoon".source = fetchGit {
-                    url = "https://github.com/HyunggyuJang/spacehammer.git";
-                    rev = "d2c9b655d937fc30b9d84a48ed171e89c2989c8f";
-                    submodules = true;
-                };
+                # ".hammerspoon".source = fetchGit {
+                #     url = "https://github.com/HyunggyuJang/spacehammer.git";
+                #     rev = "d2c9b655d937fc30b9d84a48ed171e89c2989c8f";
+                #     submodules = true;
+                # };
                 "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
                 "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
             };
@@ -3735,7 +3735,7 @@ yabai -m rule --add app="^zoom$" space=4
                 leiningen
                 yaskkserv2
                 darwin-zsh-completions
-                # skhd
+                skhd
                 shellcheck # Not yet available
                 # octave # nix-build-qrupdate aren't ready -- See https://github.com/NixOS/nixpkgs/issues/140041
                 solc-select
@@ -4134,78 +4134,27 @@ ctrl + cmd - l : yabai -m window --focus east
 ctrl + cmd - r : yabai -m space --rotate 90
 ctrl + cmd + shift - r : yabai -m space --rotate 270
 
+:: modal @
 :: mywindow @
 :: swap @
 :: warp @
 :: myinsert @
 
-ctrl + cmd - w ; mywindow
+cmd - space ; modal
+modal < ctrl - g ; default
+
+modal < j : skhd -k "ctrl - g" ; hs -c "hs.hints.windowHints(hs.window.allWindows(), nil, true)"
+
+modal < w ; mywindow
 mywindow < ctrl - g ; default
 
 mywindow < h : yabai -m window west --resize right:-20:0 2> /dev/null || yabai -m window --resize right:-20:0
 mywindow < j : yabai -m window north --resize bottom:0:20 2> /dev/null || yabai -m window --resize bottom:0:20
 mywindow < k : yabai -m window south --resize top:0:-20 2> /dev/null || yabai -m window --resize top:0:-20
 mywindow < l : yabai -m window east --resize left:20:0 2> /dev/null || yabai -m window --resize left:20:0
-mywindow < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
-  | xargs -I{} yabai -m window --focus {}
-mywindow < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
-  | xargs -I{} yabai -m window --focus {}
 
-mywindow < ctrl + cmd - w ; swap
+mywindow < s ; swap
 swap < ctrl - g ; default
-
-swap < n : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
-  | xargs -I{} yabai -m window --swap {}
-
-swap < p: yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
-  | xargs -I{} yabai -m window --swap {}
 
 swap < h : skhd -k "ctrl - g" ; yabai -m window --swap west
 swap < j : skhd -k "ctrl - g" ; yabai -m window --swap south
@@ -4213,53 +4162,6 @@ swap < k : skhd -k "ctrl - g" ; yabai -m window --swap north
 swap < l : skhd -k "ctrl - g" ; yabai -m window --swap east
 
 swap < 0x18 : skhd -k "ctrl - g" ; yabai -m window --swap recent
-
-swap < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
-  | xargs -I{} yabai -m window --swap {}
-swap < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
-  | xargs -I{} yabai -m window --swap {}
-
 
 mywindow < w ; warp
 warp < ctrl - g ; default
@@ -4271,51 +4173,6 @@ warp < k : skhd -k "ctrl - g" ; \
   yabai -m window --warp north
 warp < l : skhd -k "ctrl - g" ; \
   yabai -m window --warp east
-warp < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
-  | xargs -I{} yabai -m window --warp {}
-warp < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-  | jq -re ".[] | select(.visible == 1).index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
-  | xargs -I{} yabai -m window --warp {}
 
 mywindow < i ; myinsert
 myinsert < ctrl - g ; default
@@ -4359,7 +4216,7 @@ ctrl + cmd - c [
 #
 
 :: open @
-ctrl + cmd - o ; open
+modal < a ; open
 open < ctrl - g ; default
 
 # emacs
@@ -4367,14 +4224,23 @@ open < e : skhd -k "ctrl - g"; open -a Emacs
 open < shift - e : skhd -k "ctrl - g"; DEBUG=1 open -a Emacs
 
 # kitty or terminal
-open < t : skhd -k "ctrl - g"; open_kitty
-open < shift - t : skhd -k "ctrl - g"; open -a kitty
+open < k : skhd -k "ctrl - g"; open_kitty
+open < shift - k : skhd -k "ctrl - g"; open -a kitty
 
 # Internet Browser
-open < b : skhd -k "ctrl - g"; open -a "/Applications/firefox.app"
-ctrl + cmd - e : doom everywhere
-ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
+open < f : skhd -k "ctrl - g"; open -a "/Applications/firefox.app"
 
+open < s : skhd -k "ctrl - g"; open -a Slack
+
+open < r : skhd -k "ctrl - g"; open -a Zotero
+
+open < a : skhd -k "ctrl - g"; open -a Anki
+
+open < z : skhd -k "ctrl - g"; open -a zoom.us
+
+open < t : skhd -k "ctrl - g"; open -a "Microsoft Teams"
+
+open < i : skhd -k "ctrl - g"; doom everywhere
 '';
                 };
             } else {
@@ -4505,7 +4371,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "altserver"
                 "anki"
                 "aquaskk"
-                # "hammerspoon"
+                "hammerspoon"
                 "karabiner-elements"
                 "microsoft-powerpoint"
                 "onedrive"
@@ -4535,6 +4401,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
                 "Tunnelblick"
                 # Garrigue lab
                 "element"
+                "skype"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
@@ -4544,6 +4411,7 @@ ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
         brew "notmuch", args: ["HEAD"]
         cask "firefox", args: { language: "en-KR" }
         brew "yabai", start_service: true
+        brew "ocaml", args: ["HEAD"]
       '';
         });
     }
