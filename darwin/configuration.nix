@@ -3522,6 +3522,9 @@ yabai -m rule --add app="^zoom$" space=4
         export NVM_DIR="$HOME/.nvm"
         [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
         [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+        # opam
+        [[ ! -r /Users/hyunggyujang/.opam/opam-init/init.zsh ]] || source /Users/hyunggyujang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
         '';
             };
 
@@ -4126,10 +4129,10 @@ yabai -m rule --add app="^zoom$" space=4
 
 # ^ = 0x18
 ctrl + cmd - 6 : yabai -m window --focus recent
-ctrl + cmd - h : yabai -m window --focus west
-ctrl + cmd - j : yabai -m window --focus south
-ctrl + cmd - k : yabai -m window --focus north
-ctrl + cmd - l : yabai -m window --focus east
+ctrl + cmd - h : yabai -m window --focus west || yabai -m display --focus west
+ctrl + cmd - j : yabai -m window --focus south || yabai -m display --focus south
+ctrl + cmd - k : yabai -m window --focus north || yabai -m display --focus north
+ctrl + cmd - l : yabai -m window --focus east || yabai -m display --focus east
 
 ctrl + cmd - r : yabai -m space --rotate 90
 ctrl + cmd + shift - r : yabai -m space --rotate 270
@@ -4156,10 +4159,10 @@ mywindow < l : yabai -m window east --resize left:20:0 2> /dev/null || yabai -m 
 mywindow < s ; swap
 swap < ctrl - g ; default
 
-swap < h : skhd -k "ctrl - g" ; yabai -m window --swap west
-swap < j : skhd -k "ctrl - g" ; yabai -m window --swap south
-swap < k : skhd -k "ctrl - g" ; yabai -m window --swap north
-swap < l : skhd -k "ctrl - g" ; yabai -m window --swap east
+swap < h : skhd -k "ctrl - g" ; yabai -m window --swap west || yabai -m window --display west
+swap < j : skhd -k "ctrl - g" ; yabai -m window --swap south || yabai -m window --display south
+swap < k : skhd -k "ctrl - g" ; yabai -m window --swap north || yabai -m window --display north
+swap < l : skhd -k "ctrl - g" ; yabai -m window --swap east || yabai -m window --display east
 
 swap < 0x18 : skhd -k "ctrl - g" ; yabai -m window --swap recent
 
@@ -4330,7 +4333,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "python"
                 "findutils"
                 "z3"
-                "coq"
                 "pandoc"
                 "pinentry-mac"
                 # Fonts
@@ -4362,6 +4364,12 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "nvm"
                 # Arthswap slither
                 "poetry"
+                # emacs-mac
+                "libgccjit"
+                # Garrigue project
+                # "ocaml"
+                "opam"
+                # "coq"
             ];
             casks = [
                 "appcleaner"
@@ -4411,7 +4419,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         brew "notmuch", args: ["HEAD"]
         cask "firefox", args: { language: "en-KR" }
         brew "yabai", start_service: true
-        brew "ocaml", args: ["HEAD"]
       '';
         });
     }
