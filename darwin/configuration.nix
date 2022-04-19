@@ -4127,7 +4127,7 @@ yabai -m rule --add app="^zoom$" space=4
 # window manipulation
 #
 
-# ^ = 0x18
+# ^ = 0x16
 ctrl + cmd - 6 : yabai -m window --focus recent
 ctrl + cmd - h : yabai -m window --focus west || yabai -m display --focus west
 ctrl + cmd - j : yabai -m window --focus south || yabai -m display --focus south
@@ -4159,12 +4159,12 @@ mywindow < l : yabai -m window east --resize left:20:0 2> /dev/null || yabai -m 
 mywindow < s ; swap
 swap < ctrl - g ; default
 
-swap < h : skhd -k "ctrl - g" ; yabai -m window --swap west || yabai -m window --display west
-swap < j : skhd -k "ctrl - g" ; yabai -m window --swap south || yabai -m window --display south
-swap < k : skhd -k "ctrl - g" ; yabai -m window --swap north || yabai -m window --display north
-swap < l : skhd -k "ctrl - g" ; yabai -m window --swap east || yabai -m window --display east
+swap < h : skhd -k "ctrl - g" ; yabai -m window --swap west || WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m display --focus west && yabai -m window --swap $WIN_ID && yabai -m window --focus $WIN_ID
+swap < j : skhd -k "ctrl - g" ; yabai -m window --swap south || WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m display --focus south && yabai -m window --swap $WIN_ID && yabai -m window --focus $WIN_ID
+swap < k : skhd -k "ctrl - g" ; yabai -m window --swap north || WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m display --focus north && yabai -m window --swap $WIN_ID && yabai -m window --focus $WIN_ID
+swap < l : skhd -k "ctrl - g" ; yabai -m window --swap east || WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m display --focus east && yabai -m window --swap $WIN_ID && yabai -m window --focus $WIN_ID
 
-swap < 0x18 : skhd -k "ctrl - g" ; yabai -m window --swap recent
+swap < 0x16 : skhd -k "ctrl - g" ; yabai -m window --swap recent
 
 mywindow < w ; warp
 warp < ctrl - g ; default
