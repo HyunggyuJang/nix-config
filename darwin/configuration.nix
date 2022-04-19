@@ -4199,12 +4199,12 @@ ctrl + cmd - return : yabai -m window --toggle zoom-fullscreen
 #
 
 # Move currently focused window to the specified space
-ctrl + cmd - 1 : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --space 1 && yabai -m window --focus $WIN_ID
-ctrl + cmd - 2 : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --space 2 && yabai -m window --focus $WIN_ID
-ctrl + cmd - 3 : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --space 3 && yabai -m window --focus $WIN_ID
-ctrl + cmd - 4 : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --space 4 && yabai -m window --focus $WIN_ID
-ctrl + cmd - 5 : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --space 5 && yabai -m window --focus $WIN_ID
-ctrl + cmd - 6 : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --space 6 && yabai -m window --focus $WIN_ID
+ctrl + cmd - 1 : yabai -m window --space 1; skhd -k "cmd - 1"
+ctrl + cmd - 2 : yabai -m window --space 2; skhd -k "cmd - 2"
+ctrl + cmd - 3 : yabai -m window --space 3; skhd -k "cmd - 3"
+ctrl + cmd - 4 : yabai -m window --space 4; skhd -k "cmd - 4"
+ctrl + cmd - 5 : yabai -m window --space 5; skhd -k "cmd - 5"
+ctrl + cmd - 6 : yabai -m window --space 6; skhd -k "cmd - 6"
 
 ################################################################################
 #
