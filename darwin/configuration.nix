@@ -4133,11 +4133,11 @@ ctrl + cmd - h : yabai -m window --focus west || yabai -m display --focus west
 ctrl + cmd - j : yabai -m window --focus south || yabai -m display --focus south
 ctrl + cmd - k : yabai -m window --focus north || yabai -m display --focus north
 ctrl + cmd - l : yabai -m window --focus east || yabai -m display --focus east
-ctrl + cmd + shift - 6 : yabai -m window --display recent
-ctrl + cmd + shift - h : yabai -m window --display west
-ctrl + cmd + shift - j : yabai -m window --display south
-ctrl + cmd + shift - k : yabai -m window --display north
-ctrl + cmd + shift - l : yabai -m window --display east
+ctrl + cmd + shift - 6 : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --display recent && yabai -m window --focus $WIN_ID
+ctrl + cmd + shift - h : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --display west && yabai -m window --focus $WIN_ID
+ctrl + cmd + shift - j : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --display south && yabai -m window --focus $WIN_ID
+ctrl + cmd + shift - k : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --display north && yabai -m window --focus $WIN_ID
+ctrl + cmd + shift - l : WIN_ID=$(yabai -m query --windows --window | jq '.id') && yabai -m window --display east && yabai -m window --focus $WIN_ID
 
 
 ctrl + cmd - r : yabai -m space --rotate 90
