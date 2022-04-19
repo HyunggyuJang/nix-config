@@ -4133,6 +4133,12 @@ ctrl + cmd - h : yabai -m window --focus west || yabai -m display --focus west
 ctrl + cmd - j : yabai -m window --focus south || yabai -m display --focus south
 ctrl + cmd - k : yabai -m window --focus north || yabai -m display --focus north
 ctrl + cmd - l : yabai -m window --focus east || yabai -m display --focus east
+ctrl + cmd + shift - 6 : yabai -m window --display recent
+ctrl + cmd + shift - h : yabai -m window --display west
+ctrl + cmd + shift - j : yabai -m window --display south
+ctrl + cmd + shift - k : yabai -m window --display north
+ctrl + cmd + shift - l : yabai -m window --display east
+
 
 ctrl + cmd - r : yabai -m space --rotate 90
 ctrl + cmd + shift - r : yabai -m space --rotate 270
