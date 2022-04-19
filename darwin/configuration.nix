@@ -4376,6 +4376,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # "ocaml"
                 "opam"
                 # "coq"
+                "parallel"
             ];
             casks = [
                 "appcleaner"
@@ -4416,7 +4417,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # Garrigue lab
                 "element"
                 "skype"
-                "parallel"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
