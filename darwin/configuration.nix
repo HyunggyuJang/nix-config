@@ -4417,6 +4417,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # Garrigue lab
                 "element"
                 "skype"
+                # Data analysis class
+                "microsoft-excel"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
