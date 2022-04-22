@@ -4249,6 +4249,8 @@ open < z : skhd -k "ctrl - g"; open -a zoom.us
 
 open < t : skhd -k "ctrl - g"; open -a "Microsoft Teams"
 
+open < c : skhd -k "ctrl - g"; open -a "Visual Studio Code"
+
 open < i : skhd -k "ctrl - g"; doom everywhere
 '';
                 };
