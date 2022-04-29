@@ -3660,6 +3660,7 @@ yabai -m rule --add app="^zoom$" space=4
                 # which source *-set-environment file.
                 "${environment.variables.EMACSDIR}/bin"
                 "${brewpath}/bin"
+                "$(python -m site --user-base)/bin"
             ];
             profiles = mkForce ([ "$HOME/.nix-profile" "/run/current-system/sw" ]);
         } // (if localconfig.hostname == "classic" then {
@@ -4349,7 +4350,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "jansson"
                 "libxml2"
                 # suggested by Doom emacs
-                "pipenv"
                 "pyenv"
                 "jupyterlab"
                 # For projectile
