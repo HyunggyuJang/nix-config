@@ -3414,6 +3414,12 @@ yabai -m rule --add app="^zoom$" space=4
     ]
 }
 '';
+                    "youtube-dl/config".text = ''
+# use authinfo
+-n
+# Save all vides under Youtube directory in cloud server
+-o ~/storage/Youtube/%(title)s.%(ext)s
+'';
                 });
             };
             programs.zsh = {
@@ -4379,6 +4385,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "opam"
                 # "coq"
                 "parallel"
+                "youtube-dl"
             ];
             casks = [
                 "appcleaner"
