@@ -3415,8 +3415,6 @@ yabai -m rule --add app="^zoom$" space=4
 }
 '';
                     "youtube-dl/config".text = ''
-# use authinfo
--n
 # Save all vides under Youtube directory in cloud server
 -o ~/storage/Youtube/%(title)s.%(ext)s
 '';
@@ -3432,6 +3430,7 @@ yabai -m rule --add app="^zoom$" space=4
                     dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
                     dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
                     drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                    yt-private = "xargs -I{} youtube-dl {} -u $(gpg --no-tty -qd ~/.authinfo.gpg | grep youtube | cut -d' ' -f4) -p $(gpg --no-tty -qd ~/.authinfo.gpg | grep youtube | cut -d' ' -f6)";
                 };
 
                 oh-my-zsh.enable = true;
