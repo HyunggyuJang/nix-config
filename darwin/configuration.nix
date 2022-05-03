@@ -3465,6 +3465,25 @@ yabai -m rule --add app="^zoom$" space=4
                             sha256 = "sha256-TSX6KooWYGf1NDlD4A3o6CmSsyy1JL7bPeKsuCOuUhY=";
                         };
                     }
+                    rec {
+                        name = "system-wide-clipboard";
+                        file = "system-wide-clipboard.zsh";
+                        src = pkgs.stdenv.mkDerivation rec {
+                            name    = "system-wide-clipboard";
+                            src = pkgs.fetchurl {
+                                name = "system-wide-clipboard.zsh";
+                                url = "https://gist.githubusercontent.com/varenc/e4a22145c484771f254fa20982e2cd7f/raw/c2f17f411b38c7deda31ee35ff5ae980dff6ef10/system-wide-clipboard.zsh";
+                                sha256 = "09disbcgpgdckmzds8lsbyvn0m8187np5r1qs9cdza3412wcm9sl";
+                            };
+
+                            phases = "installPhase";
+
+                            installPhase = ''
+                            mkdir -p $out
+                            cp ${src} $out/${file}
+                            '';
+                        };
+                    }
                 ];
                 initExtraBeforeCompInit = ''
         echo >&2 "Homebrew completion path..."
@@ -3510,33 +3529,6 @@ yabai -m rule --add app="^zoom$" space=4
 
         # opam
         [[ ! -r /Users/hyunggyujang/.opam/opam-init/init.zsh ]] || source /Users/hyunggyujang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
-
-        # Documented in the zsh manual: http://zsh.sourceforge.net/Guide/zshguide04.html
-        # under sections: "4.1.1: The simple facts" and "4.5.5: Keymaps"
-
-        # the default keymap for zle is "Emacs"
-
-        # The emacs keymap bindings for kill-region and copy-region-as-kill are a little off from emacs' defaults
-
-        # the zsh defaults are:
-        # M-w => kill-region
-        # M-W => copy-region-as-kill (that's M-S-w)
-        # C-w => backward-kill-word
-
-        # for emacs proper they should be:
-        # C-w => kill-region
-        # M-w => copy-region-as-kill
-
-        # in to .zshrc, add the following to rebind these:
-
-        # add these below ^
-        
-        # copy
-        # NOTE: \e == ^[ or ESC, which is bound to <alt> (Meta) in tty
-        bindkey "\ew" copy-region-as-kill
-
-        # cut
-        bindkey "\C-w" kill-region
         '';
             };
 
