@@ -139,14 +139,6 @@ in with lib;
               esac
             '';
                 };
-                "${hgj_localbin}/eldev" = {
-                    source = pkgs.fetchurl {
-                        name = "eldev";
-                        url = "https://raw.github.com/doublep/eldev/master/bin/eldev";
-                        sha256 = "sha256-rmTbxD/a1SLFp48nmSLOA25vpDZnojA/ONvXQeOI9mo=";
-                    };
-                    executable = true;
-                };
                 ".gnupg/gpg-agent.conf".text = ''
             enable-ssh-support
             default-cache-ttl 86400
@@ -1285,28 +1277,6 @@ x[,¡Ö,¡Ö,¡Ö
 # </dict>
 # </plist>
 #                 '';
-                ".qutebrowser/dracula".source = pkgs.fetchFromGitHub {
-                    owner = "dracula";
-                    repo = "qutebrowser";
-                    rev = "ba5bd6589c4bb8ab35aaaaf7111906732f9764ef";
-                    sha256 = "1mhckmyqc7ripzmz0d8466fq0njqhxkigzm3nz0yl05k0xlsbzka";
-                };
-                ".qutebrowser/userscripts/readability-js" = {
-                    source = pkgs.fetchurl {
-                        name = "readability-js";
-                        url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability-js";
-                        sha256 = "14hbaz9x9680l3cbv7v9pndnhvpff62j9wiadgg9gwvkxn179zd1";
-                    };
-                    executable = true;
-                };
-                ".qutebrowser/userscripts/readability" = {
-                    source = pkgs.fetchurl {
-                        name = "readability";
-                        url = "https://raw.githubusercontent.com/qutebrowser/qutebrowser/master/misc/userscripts/readability";
-                        sha256 = "sha256-Iliz4okMFezs+B6jkDifaeFKADVRnTsCInFFUax4QzE=";
-                    };
-                    executable = true;
-                };
                 ".gitconfig".text = ''
           [user]
             name = Hyunggyu Jang
