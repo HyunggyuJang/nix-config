@@ -3430,6 +3430,7 @@ yabai -m rule --add app="^zoom$" space=4
                     dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
                     dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
                     drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                    docker = "podman";
                 };
 
                 oh-my-zsh.enable = true;
@@ -3721,7 +3722,7 @@ yabai -m rule --add app="^zoom$" space=4
                 gnupg
                 pass
                 # fish
-                yaskkserv2 #→ Cannot build
+                yaskkserv2
                 cargo
                 skhd
             ];
@@ -3742,6 +3743,8 @@ yabai -m rule --add app="^zoom$" space=4
                 clojure
                 leiningen
                 yaskkserv2
+                cargo
+                rustc
                 darwin-zsh-completions
                 skhd
                 shellcheck # Not yet available
@@ -4384,6 +4387,12 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # "coq"
                 "parallel"
                 "youtube-dl"
+                # By Sehun
+                "htop-osx"
+                # GPU programming
+                "glslang"
+                # Substitute of docker
+                "podman"
             ];
             casks = [
                 "appcleaner"
@@ -4416,7 +4425,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "vagrant-vmware-utility"
                 "vmware-fusion-tech-preview"
                 # Docker
-                "docker"
+                # "docker"
                 # IDE based on web development
                 "visual-studio-code"
                 # VPN
@@ -4426,6 +4435,10 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "skype"
                 # Data analysis class
                 "microsoft-excel"
+                # School
+                "microsoft-word"
+                # audit
+                "telegram"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
