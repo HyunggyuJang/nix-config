@@ -63,6 +63,7 @@ in with lib;
 
         home-manager.useGlobalPkgs = true;
         home-manager.users = let userconfig = { config, ...}: rec {
+            home.stateVersion = "22.11";
             home.file = {
                 #             ".mail/.notmuch/hooks/pre-new" = {
                 #                 text = ''
@@ -3398,9 +3399,8 @@ yabai -m rule --add app="^zoom$" space=4
                 sessionVariables = { RPROMPT = ""; };
                 shellAliases =  {
                     dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
-                    dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make switch && cd -";
+                    dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color caffeinate -i make switch && cd -";
                     drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
-                    docker = "podman";
                 };
 
                 oh-my-zsh.enable = true;
@@ -3713,13 +3713,18 @@ yabai -m rule --add app="^zoom$" space=4
                 clojure
                 leiningen
                 yaskkserv2
-                cargo
-                rustc
                 darwin-zsh-completions
                 skhd
                 shellcheck # Not yet available
                 # octave # nix-build-qrupdate aren't ready -- See https://github.com/NixOS/nixpkgs/issues/140041
                 solc-select
+                # ligo-lsp
+                tree-sitter
+                stack
+                llvm
+                # Tezos
+                hidapi
+                rustup
             ];
             shells = [
                 pkgs.zsh
@@ -4358,11 +4363,9 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "parallel"
                 "youtube-dl"
                 # By Sehun
-                "htop-osx"
+                # "htop-osx"
                 # GPU programming
                 "glslang"
-                # Substitute of docker
-                "podman"
             ];
             casks = [
                 "appcleaner"
@@ -4391,11 +4394,11 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "font-fira-mono"
                 "discord"
                 # Custom brew to install 2.2.18 version
-                "vagrant-m1"
-                "vagrant-vmware-utility"
-                "vmware-fusion-tech-preview"
+                # "vagrant-m1"
+                # "vagrant-vmware-utility"
+                # "vmware-fusion-tech-preview"
                 # Docker
-                # "docker"
+                "docker"
                 # IDE based on web development
                 "visual-studio-code"
                 # VPN
