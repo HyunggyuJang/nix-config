@@ -3636,6 +3636,8 @@ yabai -m rule --add app="^zoom$" space=4
                 "${environment.variables.EMACSDIR}/bin"
                 "${brewpath}/bin"
                 # "$(${brewpath}/bin/python -m site --user-base)/bin"
+                # rust
+                "$HOME/.cargo/bin"
             ];
             profiles = mkForce ([ "$HOME/.nix-profile" "/run/current-system/sw" ]);
         } // (if localconfig.hostname == "classic" then {
@@ -3723,8 +3725,10 @@ yabai -m rule --add app="^zoom$" space=4
                 stack
                 llvm
                 # Tezos
-                hidapi
                 rustup
+            ];
+            pathsToLink = [
+              "/lib"
             ];
             shells = [
                 pkgs.zsh
@@ -4317,7 +4321,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "imagemagick"
                 "octave"
                 "fd"
-                "pkg-config"
                 "poppler"
                 "automake"
                 "cmake"
@@ -4366,6 +4369,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # "htop-osx"
                 # GPU programming
                 "glslang"
+                # tezos
+                "hidapi"
             ];
             casks = [
                 "appcleaner"
