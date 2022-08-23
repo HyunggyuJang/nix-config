@@ -4371,6 +4371,10 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "glslang"
                 # tezos
                 "hidapi"
+                # WASM
+                "binaryen"
+                # To cleanup system data
+                "fwartner/tap/mac-cleanup"
             ];
             casks = [
                 "appcleaner"
