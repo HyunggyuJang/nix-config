@@ -93,53 +93,6 @@ in with lib;
                 ./doom $@
               '';
                 };
-                "${hgj_localbin}/emacs-eru" = {
-                    executable = true;
-                    text = ''
-              #!/usr/bin/env bash
-              set -e
-              ACTION=$1
-              emacs_d=$HOME/.config/emacs
-              if [[ -d "$XDG_CONFIG_HOME" ]]; then
-                emacs_d="$XDG_CONFIG_HOME/emacs"
-              fi
-              function print_usage() {
-                echo "Usage:
-                emacs-eru ACTION
-              Actions:
-                install               Install dependencies, compile and lint configurations
-                upgrade               Upgrade dependencies
-                test                  Test configurations
-              "
-              }
-              if [ -z "$ACTION" ]; then
-                echo "No ACTION is provided"
-                print_usage
-                exit 1
-              fi
-              case "$ACTION" in
-                install)
-                  cd "$emacs_d" && {
-                    make bootstrap compile lint
-                  }
-                  ;;
-                upgrade)
-                  cd "$emacs_d" && {
-                    make upgrade compile lint
-                  }
-                  ;;
-                test)
-                  cd "$emacs_d" && {
-                    make test
-                  }
-                  ;;
-                *)
-                  echo "Unrecognized ACTION $ACTION"
-                  print_usage
-                  ;;
-              esac
-            '';
-                };
                 ".gnupg/gpg-agent.conf".text = ''
             enable-ssh-support
             default-cache-ttl 86400
@@ -4299,6 +4252,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "borkdude/brew"
                 # yabai
                 "koekeishiya/formulae"
+                # system data cleaner
+                "fwartner/tap"
             ];
             brews = [
                 "pngpaste"
@@ -4353,7 +4308,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # Blog
                 "hugo"
                 # Javascript
-                "yarn"
                 "nvm"
                 # Arthswap slither
                 "poetry"
@@ -4374,7 +4328,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # WASM
                 "binaryen"
                 # To cleanup system data
-                "fwartner/tap/mac-cleanup"
+                "mac-cleanup"
             ];
             casks = [
                 "appcleaner"
@@ -4421,6 +4375,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "microsoft-word"
                 # audit
                 "telegram"
+                # For google meet
+                "google-chrome"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
