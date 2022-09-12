@@ -3410,11 +3410,13 @@ yabai -m rule --add app="^zoom$" space=4
                     }
                 ];
                 initExtraBeforeCompInit = ''
-        echo >&2 "Homebrew completion path..."
-        if [ -f ${brewpath}/bin/brew ]; then
-          PATH=$PATH:${brewpath}/bin fpath+=$(brew --prefix)/share/zsh/site-functions
-        else
-          echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
+        if [ "$INSIDE_EMACS" != vterm ]; then
+            echo >&2 "Homebrew completion path..."
+            if [ -f ${brewpath}/bin/brew ]; then
+                PATH=${brewpath}/bin:$PATH fpath+=$(brew --prefix)/share/zsh/site-functions
+            else
+                echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
+            fi
         fi
     '';
                 initExtra = ''
@@ -3447,12 +3449,14 @@ yabai -m rule --add app="^zoom$" space=4
             fi
         }
 
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-        [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+        if [ "$INSIDE_EMACS" != vterm ]; then
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+            [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
-        # opam
-        [[ ! -r /Users/hyunggyujang/.opam/opam-init/init.zsh ]] || source /Users/hyunggyujang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+            # opam
+            [[ ! -r /Users/hyunggyujang/.opam/opam-init/init.zsh ]] || source /Users/hyunggyujang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+        fi
         '';
             };
 
@@ -4327,8 +4331,13 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "hidapi"
                 # WASM
                 "binaryen"
+                "rust-analyzer"
                 # To cleanup system data
                 "mac-cleanup"
+                # python
+                "pyright"
+                # mail
+                "notmuch"
             ];
             casks = [
                 "appcleaner"
@@ -4383,7 +4392,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
             ] else []);
             extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
-        brew "notmuch", args: ["HEAD"]
         cask "firefox", args: { language: "en-KR" }
         brew "yabai", start_service: true
       '';
