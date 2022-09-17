@@ -1503,6 +1503,12 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
 
           include dracula.conf
         '';
+                    "helix/config.toml".text = ''
+          [editor.cursor-shape]
+          insert = "bar"
+          normal = "block"
+          select = "underline"
+        '';
                     "zathura/zathurarc".text = "set selection-clipboard clipboard";
                 } // (if localconfig.hostname == "classic" then {
                     "fontconfig/fonts.conf".text = ''
