@@ -4338,6 +4338,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "pyright"
                 # mail
                 "notmuch"
+                # rust-implemented editor
+                "helix"
             ];
             casks = [
                 "appcleaner"
