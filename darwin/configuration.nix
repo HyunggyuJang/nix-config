@@ -3688,7 +3688,11 @@ yabai -m rule --add app="^zoom$" space=4
                 stack
                 llvm
                 # Tezos
+                # WASM
                 rustup
+                openssl
+                binaryen
+                rust-analyzer
             ];
             pathsToLink = [
               "/lib"
@@ -4335,9 +4339,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "glslang"
                 # tezos
                 "hidapi"
-                # WASM
-                "binaryen"
-                "rust-analyzer"
                 # To cleanup system data
                 "mac-cleanup"
                 # python
