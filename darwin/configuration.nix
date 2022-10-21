@@ -3283,6 +3283,23 @@ yabai -m rule --add app="^zoom$" space=4
                             },
                             {
                                 "from": {
+                                    "key_code": "j",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "fn"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "8",
+                                        "modifiers": ["left_shift"]
+                                    }
+                                ],
+                                "type": "basic"
+                            },
+                            {
+                                "from": {
                                     "key_code": "comma",
                                     "modifiers": {
                                         "mandatory": [
@@ -4092,6 +4109,8 @@ yabai -m rule --add app="^zoom$" space=4
                 # "$(${brewpath}/bin/python -m site --user-base)/bin"
                 # rust
                 "$HOME/.cargo/bin"
+                # ruby
+                "$HOME/.rbenv/shims"
             ];
             profiles = mkForce ([ "$HOME/.nix-profile" "/run/current-system/sw" ]);
         } // (if localconfig.hostname == "classic" then {
@@ -4840,6 +4859,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "helix"
                 # moonlander
                 "libusb"
+                # applied mathematics
+                "rbenv"
             ];
             casks = [
                 "appcleaner"
