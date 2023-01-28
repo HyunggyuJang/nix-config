@@ -3689,7 +3689,7 @@ yabai -m rule --add app="^zoom$" space=4
                     ]
                 },
                 {
-                    "disable_built_in_keyboard_if_exists": false,
+                    "disable_built_in_keyboard_if_exists": true,
                     "fn_function_keys": [],
                     "identifiers": {
                         "is_keyboard": true,
@@ -3702,7 +3702,7 @@ yabai -m rule --add app="^zoom$" space=4
                     "simple_modifications": []
                 },
                 {
-                    "disable_built_in_keyboard_if_exists": false,
+                    "disable_built_in_keyboard_if_exists": true,
                     "fn_function_keys": [],
                     "identifiers": {
                         "is_keyboard": true,
@@ -4777,7 +4777,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # yabai
                 "koekeishiya/formulae"
                 # system data cleaner
-                "fwartner/tap"
+                "mac-cleanup/mac-cleanup-py"
             ];
             brews = [
                 "pngpaste"
@@ -4850,7 +4850,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # tezos
                 "hidapi"
                 # To cleanup system data
-                "mac-cleanup"
+                "mac-cleanup-py"
                 # python
                 "pyright"
                 # mail
@@ -4861,6 +4861,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "libusb"
                 # applied mathematics
                 "rbenv"
+                # minicaml
+                "rlwrap"
             ];
             casks = [
                 "appcleaner"
@@ -4909,6 +4911,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "telegram"
                 # For google meet
                 "google-chrome"
+                # Web design
+                "figma"
             ] ++ (if localconfig.hostname == "work" then [
                 # IBM fonts
                 "font-ibm-plex"
