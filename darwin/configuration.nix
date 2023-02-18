@@ -3980,16 +3980,6 @@ yabai -m rule --add app="^zoom$" space=4
             programs.browserpass.browsers = [ "firefox" ];
             programs.firefox.enable = true;
             programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
-            programs.firefox.extensions =
-                with nur.repos.rycee.firefox-addons; [
-                    ublock-origin
-                    browserpass
-                    tridactyl
-                    darkreader
-                    # For work with kazuki
-                    metamask
-                    # Need to add zotero-connector
-                ];
             programs.firefox.profiles =
                 {
                     home = {
@@ -4035,6 +4025,16 @@ yabai -m rule --add app="^zoom$" space=4
                                 }
                             )
                         );
+                        extensions =
+                          with nur.repos.rycee.firefox-addons; [
+                            ublock-origin
+                            browserpass
+                            tridactyl
+                            darkreader
+                            # For work with kazuki
+                            metamask
+                            # Need to add zotero-connector
+                          ];
                     };
                 };
         };
@@ -4869,8 +4869,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "slack"
                 "basictex"
                 "kitty"
-                "altserver"
-                "anki"
                 "aquaskk"
                 "hammerspoon"
                 "karabiner-elements"
@@ -4880,7 +4878,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "zoom"
                 "ukelele"
                 "zotero"
-                "inkscape"
                 # elegant-emacs
                 "font-roboto-mono"
                 "font-roboto-slab"
@@ -4896,8 +4893,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 # "vmware-fusion-tech-preview"
                 # Docker
                 "docker"
-                # IDE based on web development
-                "visual-studio-code"
                 # VPN
                 "Tunnelblick"
                 # Garrigue lab
