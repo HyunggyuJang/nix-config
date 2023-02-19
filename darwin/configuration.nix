@@ -93,6 +93,7 @@ in with lib;
                 ./doom $@
               '';
                 };
+                ".cargo/bin/rust-analyzer".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer";
                 ".gnupg/gpg-agent.conf".text = ''
             enable-ssh-support
             default-cache-ttl 86400
@@ -4202,7 +4203,6 @@ yabai -m rule --add app="^zoom$" space=4
                 rustup
                 openssl
                 binaryen
-                rust-analyzer
             ];
             pathsToLink = [
               "/lib"
