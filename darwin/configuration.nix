@@ -4906,6 +4906,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
                 "telegram"
                 # For google meet
                 "google-chrome"
+                # For Bing AI
+                "microsoft-edge"
                 # Web design
                 "figma"
             ] ++ (if localconfig.hostname == "work" then [
