@@ -2514,7 +2514,7 @@ yabai -m rule --add app="^zoom$" space=4
     };
     services =
       {
-        nix-daemon.enable = true;
+        nix-daemon.enable = false;
         skhd = {
           enable = true;
           skhdConfig = ''
@@ -2652,7 +2652,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         };
       };
     nix = {
-      trustedUsers = [ "@admin" "hyunggyujang"];
+      settings.trusted-users = [ "@admin" "hyunggyujang"];
       package = pkgs.nix;
       nixPath = [
         { localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix"; }
@@ -2661,8 +2661,9 @@ open < i : skhd -k "ctrl - g"; doom everywhere
 
     homebrew =  {
       enable = true;
-      autoUpdate = true;
-      cleanup = "zap";
+      onActivation.upgrade = true;
+      onActivation.autoUpdate = true;
+      onActivation.cleanup = "zap";
       global.brewfile = true;
       brewPrefix = "/opt/homebrew/bin";
       taps = [
