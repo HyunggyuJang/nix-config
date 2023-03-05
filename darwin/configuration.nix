@@ -2714,7 +2714,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "libxml2"
         # suggested by Doom emacs
         "pyenv"
-        "jupyterlab"
         # For projectile
         "ctags"
         # Lexic
@@ -2752,7 +2751,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "karabiner-elements"
         "onedrive"
         "zoom"
-        "ukelele"
         "zotero"
         # elegant-emacs
         "font-roboto-mono"
