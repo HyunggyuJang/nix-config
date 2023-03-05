@@ -2712,6 +2712,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # emacs-mac dependencies
         "jansson"
         "libxml2"
+        "texinfo"
         # suggested by Doom emacs
         "pyenv"
         # For projectile
