@@ -15,8 +15,15 @@ let hgj_home = builtins.getEnv "HOME";
         python = "python38";
     };
 
-    nur = import <nur> {
-        inherit pkgs;
+    brewpath = "/opt/homebrew";
+
+    nur = import (builtins.fetchTarball {
+      # Get the revision by choosing a version from https://github.com/nix-community/NUR/commits/master
+      url = "https://github.com/nix-community/NUR/archive/7dcad7f6b7ce15ba4fb6013deca282e7883ac3c3.tar.gz";
+      # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
+      sha256 = "13qzk8qji5cnhkh55cryahsj2981zdf4qw54z57hbf6sh49axpjx";
+    }) {
+      inherit pkgs;
     };
 
     myPython = mach-nix.mkPython {
