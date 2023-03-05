@@ -1,5 +1,15 @@
-{ config ? (import <darwin> {}).config
-, pkgs ? import <nixpkgs> { system = builtins.currentSystem; }
+{ config ? (import (builtins.fetchTarball {
+  # Get the revision by choosing a version from https://github.com/LnL7/nix-darwin
+  url = "https://github.com/LnL7/nix-darwin/archive/87b9d090ad39b25b2400029c64825fc2a8868943.tar.gz";
+  # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
+  sha256 = "0c2naszb8xqi152m4b71vpi20cwacmxsx82ig8fgq61z9y05iiq2";
+}) {}).config
+, pkgs ? import (builtins.fetchTarball {
+  # Get the revision by choosing a version from https://github.com/LnL7/nix-darwin
+  url = "https://github.com/NixOS/nixpkgs/archive/6360be075539647669cf0a09fbda9f8fdae627d8.tar.gz";
+  # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
+  sha256 = "0bnkf2376lz58a61dqnr6makpgdh0wsn8va0k1jk6bi509lzx641";
+}) { system = builtins.currentSystem; }
 , lib ? pkgs.lib
 , ... }:
 
@@ -36,7 +46,15 @@ let hgj_home = builtins.getEnv "HOME";
 in with lib;
   rec {
     # Home manager
-    imports = [ <home-manager/nix-darwin> ];
+    imports = [ ''
+${(builtins.fetchTarball {
+  # Get the revision by choosing a version from https://github.com/nix-community/home-manager
+  url = "https://github.com/nix-community/home-manager/archive/b9e3a29864798d55ec1d6579ab97876bb1ee9664.tar.gz";
+  # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
+  sha256 = "04cvww0ic5kxvm09jhlsfcb1nby2rbw88jrv453zx0ipb4wndbks";
+})}/nix-darwin
+''
+ ];
 
     home-manager.useGlobalPkgs = true;
     home-manager.users = let userconfig = { config, ...}: rec {
