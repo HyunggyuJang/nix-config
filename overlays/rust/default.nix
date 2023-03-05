@@ -8,11 +8,11 @@ with prev;
       owner = "wachikun";
       repo = pname;
       rev = "c5e2e32807e9871205e1bfb58dfaaa40f5957021";
-      sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+      sha256 = "sha256-i1Nsga1BJgG0gdeTvg0KvkpmKb1qp/PlXfgjJHSGAxQ=";
     };
     # target = "x86_64-apple-darwin";
 
-    cargoSha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    cargoSha256 = "sha256-r5PWeRvUyzuV26Eq4FWW67WCXBqQmpT8gBJujCys4k4=";
 
     buildInputs = [ darwin.apple_sdk.frameworks.Security ];
 
