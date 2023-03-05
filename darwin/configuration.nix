@@ -2208,74 +2208,74 @@ yabai -m rule --add app="^zoom$" space=4
 # Save all vides under Youtube directory in cloud server
 -o ~/storage/Youtube/%(title)s.%(ext)s
 '';
-        });
-    };
-                             programs.zsh = {
-                               enable = true;
-                               enableAutosuggestions = true;
-                               enableCompletion = false; # See https://github.com/NixOS/nix/issues/5445
-                               defaultKeymap = "emacs";
-                               sessionVariables = { RPROMPT = ""; };
-                               shellAliases =  {
-                                 dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
-                                 dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color caffeinate -i make switch && cd -";
-                                 drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
-                               };
+        };
+      };
+      programs.zsh = {
+        enable = true;
+        enableAutosuggestions = true;
+        enableCompletion = false; # See https://github.com/NixOS/nix/issues/5445
+        defaultKeymap = "emacs";
+        sessionVariables = { RPROMPT = ""; };
+        shellAliases =  {
+          dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
+          dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color caffeinate -i make switch && cd -";
+          drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+        };
 
-                               oh-my-zsh.enable = true;
+        oh-my-zsh.enable = true;
 
-                               plugins = [
-                                 {
-                                   name = "autopair";
-                                   file = "autopair.zsh";
-                                   src = pkgs.fetchFromGitHub {
-                                     owner = "hlissner";
-                                     repo = "zsh-autopair";
-                                     rev = "9d003fc02dbaa6db06e6b12e8c271398478e0b5d";
-                                     sha256 = "sha256-hwZDbVo50kObLQxCa/wOZImjlH4ZaUI5W5eWs/2RnWg=";
-                                   };
-                                 }
-                                 {
-                                   name = "fast-syntax-highlighting";
-                                   file = "fast-syntax-highlighting.plugin.zsh";
-                                   src = pkgs.fetchFromGitHub {
-                                     owner = "zdharma-continuum";
-                                     repo = "fast-syntax-highlighting";
-                                     rev = "585c089968caa1c904cbe926ff04a1be9e3d8f42";
-                                     sha256 = "sha256-x+4C2u03RueNo6/ZXsueqmYoPIpDHnKAZXP5IiKsidE=";
-                                   };
-                                 }
-                                 {
-                                   name = "z";
-                                   file = "zsh-z.plugin.zsh";
-                                   src = pkgs.fetchFromGitHub {
-                                     owner = "agkozak";
-                                     repo = "zsh-z";
-                                     rev = "b30bc6050e77abe30ce36761d18ed696e5410f16";
-                                     sha256 = "sha256-TSX6KooWYGf1NDlD4A3o6CmSsyy1JL7bPeKsuCOuUhY=";
-                                   };
-                                 }
-                                 rec {
-                                   name = "system-wide-clipboard";
-                                   file = "system-wide-clipboard.zsh";
-                                   src = pkgs.stdenv.mkDerivation rec {
-                                     name    = "system-wide-clipboard";
-                                     src = pkgs.fetchurl {
-                                       name = "system-wide-clipboard.zsh";
-                                       url = "https://gist.githubusercontent.com/HyunggyuJang/850b22128515b257ff3da73b589d7d3b/raw/3660504d2874a46a048b291a8ceabe8af9778294/system-wide-clipboard.zsh";
-                                       sha256 = "sha256-fmLcHhD2Cb45OEmIQi8mp9Q1uid1Osy9/kFxelHp70Y=";
-                                     };
+        plugins = [
+          {
+            name = "autopair";
+            file = "autopair.zsh";
+            src = pkgs.fetchFromGitHub {
+              owner = "hlissner";
+              repo = "zsh-autopair";
+              rev = "9d003fc02dbaa6db06e6b12e8c271398478e0b5d";
+              sha256 = "sha256-hwZDbVo50kObLQxCa/wOZImjlH4ZaUI5W5eWs/2RnWg=";
+            };
+          }
+          {
+            name = "fast-syntax-highlighting";
+            file = "fast-syntax-highlighting.plugin.zsh";
+            src = pkgs.fetchFromGitHub {
+              owner = "zdharma-continuum";
+              repo = "fast-syntax-highlighting";
+              rev = "585c089968caa1c904cbe926ff04a1be9e3d8f42";
+              sha256 = "sha256-x+4C2u03RueNo6/ZXsueqmYoPIpDHnKAZXP5IiKsidE=";
+            };
+          }
+          {
+            name = "z";
+            file = "zsh-z.plugin.zsh";
+            src = pkgs.fetchFromGitHub {
+              owner = "agkozak";
+              repo = "zsh-z";
+              rev = "b30bc6050e77abe30ce36761d18ed696e5410f16";
+              sha256 = "sha256-TSX6KooWYGf1NDlD4A3o6CmSsyy1JL7bPeKsuCOuUhY=";
+            };
+          }
+          rec {
+            name = "system-wide-clipboard";
+            file = "system-wide-clipboard.zsh";
+            src = pkgs.stdenv.mkDerivation rec {
+              name    = "system-wide-clipboard";
+              src = pkgs.fetchurl {
+                name = "system-wide-clipboard.zsh";
+                url = "https://gist.githubusercontent.com/HyunggyuJang/850b22128515b257ff3da73b589d7d3b/raw/3660504d2874a46a048b291a8ceabe8af9778294/system-wide-clipboard.zsh";
+                sha256 = "sha256-fmLcHhD2Cb45OEmIQi8mp9Q1uid1Osy9/kFxelHp70Y=";
+              };
 
-                                     phases = "installPhase";
+              phases = "installPhase";
 
-                                     installPhase = ''
+              installPhase = ''
                             mkdir -p $out
                             cp ${src} $out/${file}
                             '';
-                                   };
-                                 }
-                               ];
-                               initExtraBeforeCompInit = ''
+            };
+          }
+        ];
+        initExtraBeforeCompInit = ''
         if [ "$INSIDE_EMACS" != vterm ]; then
             echo >&2 "Homebrew completion path..."
             if [ -f ${brewpath}/bin/brew ]; then
@@ -2285,7 +2285,7 @@ yabai -m rule --add app="^zoom$" space=4
             fi
         fi
     '';
-                               initExtra = ''
+        initExtra = ''
         PROMPT=' %{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
         local prompt_suffix="%(?:%{$fg_bold[green]%}❯ :%{$fg_bold[red]%}❯%{$reset_color%} "
         function get_pwd(){
@@ -2324,157 +2324,157 @@ yabai -m rule --add app="^zoom$" space=4
             [[ ! -r /Users/hyunggyujang/.opam/opam-init/init.zsh ]] || source /Users/hyunggyujang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
         fi
         '';
-                             };
+      };
 
-                             programs.fzf.enable = true;
-                             programs.fzf.enableZshIntegration = true;
-                             programs.browserpass.enable = true;
-                             programs.browserpass.browsers = [ "firefox" ];
-                             programs.firefox.enable = true;
-                             programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
-                             programs.firefox.profiles =
-                               {
-                                 home = {
-                                   id = 0;
-                                   settings = {
-                                     "app.update.auto" = false;
-                                     "browser.startup.homepage" = "https://start.duckduckgo.com";
-                                     "browser.search.region" = "KR";
-                                     "browser.search.countryCode" = "KR";
-                                     "browser.search.isUS" = true;
-                                     "browser.ctrlTab.recentlyUsedOrder" = false;
-                                     "browser.newtabpage.enabled" = false;
-                                     "browser.bookmarks.showMobileBookmarks" = true;
-                                     "browser.uidensity" = 1;
-                                     "browser.urlbar.placeholderName" = "DuckDuckGo";
-                                     "browser.urlbar.update1" = true;
-                                     "distribution.searchplugins.defaultLocale" = "en-KR";
-                                     "general.useragent.locale" = "en-KR";
-                                     "identity.fxaccounts.account.device.name" = localconfig.hostname;
-                                     "privacy.trackingprotection.enabled" = true;
-                                     "privacy.trackingprotection.socialtracking.enabled" = true;
-                                     "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
-                                     "reader.color_scheme" = "sepia";
-                                     "services.sync.declinedEngines" = "addons,passwords,prefs";
-                                     "services.sync.engine.addons" = false;
-                                     "services.sync.engineStatusChanged.addons" = true;
-                                     "services.sync.engine.passwords" = false;
-                                     "services.sync.engine.prefs" = false;
-                                     "services.sync.engineStatusChanged.prefs" = true;
-                                     "signon.rememberSignons" = false;
-                                     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-                                   };
-                                   userChrome = (
-                                     builtins.readFile (
-                                       pkgs.substituteAll {
-                                         name = "homeUserChrome";
-                                         src = pkgs.fetchurl {
-                                           name = "userChrome.css";
-                                           url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
-                                           sha256 = "1ia2azcrrbc70m8hcn7mph1allh2fly9k2kqmi4qy6mx5lf12kn8";
-                                         };
-                                         tabLineColour = "#5e81ac";
-                                       }
-                                     )
-                                   );
-                                   extensions =
-                                     with nur.repos.rycee.firefox-addons; [
-                                       ublock-origin
-                                       browserpass
-                                       tridactyl
-                                       darkreader
-                                       # For work with kazuki
-                                       metamask
-                                       # Need to add zotero-connector
-                                     ];
-                                 };
-                               };
-  };
-in
-{
-  hyunggyujang = userconfig;
-};
-system = {
-  defaults.NSGlobalDomain = {
-    ApplePressAndHoldEnabled = false;
-    AppleKeyboardUIMode = 3;
-    AppleShowScrollBars = "WhenScrolling";
-    AppleInterfaceStyleSwitchesAutomatically = true;
-    NSAutomaticCapitalizationEnabled = false;
-    NSAutomaticDashSubstitutionEnabled = false;
-    NSAutomaticPeriodSubstitutionEnabled = false;
-    NSAutomaticQuoteSubstitutionEnabled = false;
-    NSAutomaticSpellingCorrectionEnabled = false;
-    NSUseAnimatedFocusRing = false;
-    _HIHideMenuBar = true;
-  };
+      programs.fzf.enable = true;
+      programs.fzf.enableZshIntegration = true;
+      programs.browserpass.enable = true;
+      programs.browserpass.browsers = [ "firefox" ];
+      programs.firefox.enable = true;
+      programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
+      programs.firefox.profiles =
+        {
+          home = {
+            id = 0;
+            settings = {
+              "app.update.auto" = false;
+              "browser.startup.homepage" = "https://start.duckduckgo.com";
+              "browser.search.region" = "KR";
+              "browser.search.countryCode" = "KR";
+              "browser.search.isUS" = true;
+              "browser.ctrlTab.recentlyUsedOrder" = false;
+              "browser.newtabpage.enabled" = false;
+              "browser.bookmarks.showMobileBookmarks" = true;
+              "browser.uidensity" = 1;
+              "browser.urlbar.placeholderName" = "DuckDuckGo";
+              "browser.urlbar.update1" = true;
+              "distribution.searchplugins.defaultLocale" = "en-KR";
+              "general.useragent.locale" = "en-KR";
+              "identity.fxaccounts.account.device.name" = localconfig.hostname;
+              "privacy.trackingprotection.enabled" = true;
+              "privacy.trackingprotection.socialtracking.enabled" = true;
+              "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+              "reader.color_scheme" = "sepia";
+              "services.sync.declinedEngines" = "addons,passwords,prefs";
+              "services.sync.engine.addons" = false;
+              "services.sync.engineStatusChanged.addons" = true;
+              "services.sync.engine.passwords" = false;
+              "services.sync.engine.prefs" = false;
+              "services.sync.engineStatusChanged.prefs" = true;
+              "signon.rememberSignons" = false;
+              "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+            };
+            userChrome = (
+              builtins.readFile (
+                pkgs.substituteAll {
+                  name = "homeUserChrome";
+                  src = pkgs.fetchurl {
+                    name = "userChrome.css";
+                    url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
+                    sha256 = "1ia2azcrrbc70m8hcn7mph1allh2fly9k2kqmi4qy6mx5lf12kn8";
+                  };
+                  tabLineColour = "#5e81ac";
+                }
+              )
+            );
+            extensions =
+              with nur.repos.rycee.firefox-addons; [
+                ublock-origin
+                browserpass
+                tridactyl
+                darkreader
+                # For work with kazuki
+                metamask
+                # Need to add zotero-connector
+              ];
+          };
+        };
+    };
+                         in
+                           {
+                             hyunggyujang = userconfig;
+                           };
+    system = {
+      defaults.NSGlobalDomain = {
+        ApplePressAndHoldEnabled = false;
+        AppleKeyboardUIMode = 3;
+        AppleShowScrollBars = "WhenScrolling";
+        AppleInterfaceStyleSwitchesAutomatically = true;
+        NSAutomaticCapitalizationEnabled = false;
+        NSAutomaticDashSubstitutionEnabled = false;
+        NSAutomaticPeriodSubstitutionEnabled = false;
+        NSAutomaticQuoteSubstitutionEnabled = false;
+        NSAutomaticSpellingCorrectionEnabled = false;
+        NSUseAnimatedFocusRing = false;
+        _HIHideMenuBar = true;
+      };
 
-  defaults.dock.orientation = "left";
+      defaults.dock.orientation = "left";
 
-  defaults.loginwindow.GuestEnabled = false;
+      defaults.loginwindow.GuestEnabled = false;
 
-};
-users = {
-  users.hyunggyujang = {
-    name = "Hyunggyu Jang";
-    home = "${hgj_home}";
-    shell = pkgs.zsh;
-  };
-}
-environment = {
-  darwinConfig = "${hgj_darwin_home}/configuration.nix";
-  variables = {
-    EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
-    VISUAL = "$EDITOR";
-    LANG = "en_US.UTF-8";
-    DOOMDIR = "${hgj_home}/notes/org/manager";
-    EMACSDIR = "${hgj_home}/.emacs.d";
-    DOOMLOCALDIR = "${hgj_home}/.doom";
-    SHELL = "${pkgs.zsh}/bin/zsh";
-    LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
-  };
-  systemPath = [
-    "$HOME/${hgj_localbin}"
-    # Easy access to Doom
-    # SystemPath added before to the variables, it can be inspected at /etc/static/zshenv,
-    # which source *-set-environment file.
-    "${environment.variables.EMACSDIR}/bin"
-    "${brewpath}/bin"
-    # rust
-    "$HOME/.cargo/bin"
-    # ruby
-    "$HOME/.rbenv/shims"
-  ];
-  systemPackages = with pkgs; [
-    nixfmt
-    yaskkserv2
-    darwin-zsh-completions
-    skhd
-    shellcheck
-    solc-select
-    tree-sitter
-    stack
-    llvm
-    # WASM
-    rustup
-    openssl
-  ];
-  pathsToLink = [
-    "/lib"
-  ];
-  shells = [
-    pkgs.zsh
-  ];
-});
+    };
+    users = {
+      users.hyunggyujang = {
+        name = "Hyunggyu Jang";
+        home = "${hgj_home}";
+        shell = pkgs.zsh;
+      };
+    };
+    environment = {
+      darwinConfig = "${hgj_darwin_home}/configuration.nix";
+      variables = {
+        EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
+        VISUAL = "$EDITOR";
+        LANG = "en_US.UTF-8";
+        DOOMDIR = "${hgj_home}/notes/org/manager";
+        EMACSDIR = "${hgj_home}/.emacs.d";
+        DOOMLOCALDIR = "${hgj_home}/.doom";
+        SHELL = "${pkgs.zsh}/bin/zsh";
+        LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
+      };
+      systemPath = [
+        "$HOME/${hgj_localbin}"
+        # Easy access to Doom
+        # SystemPath added before to the variables, it can be inspected at /etc/static/zshenv,
+        # which source *-set-environment file.
+        "${environment.variables.EMACSDIR}/bin"
+        "${brewpath}/bin"
+        # rust
+        "$HOME/.cargo/bin"
+        # ruby
+        "$HOME/.rbenv/shims"
+      ];
+      systemPackages = with pkgs; [
+        nixfmt
+        yaskkserv2
+        darwin-zsh-completions
+        skhd
+        shellcheck
+        solc-select
+        tree-sitter
+        stack
+        llvm
+        # WASM
+        rustup
+        openssl
+      ];
+      pathsToLink = [
+        "/lib"
+      ];
+      shells = [
+        pkgs.zsh
+      ];
+    };
 
-nixpkgs.overlays =
-  let path = ../overlays;
-  in with builtins;
-    [
-      (self: super: {
-        darwin-zsh-completions = super.runCommandNoCC "darwin-zsh-completions-0.0.0"
-          { preferLocalBuild = true; }
-          ''
+    nixpkgs.overlays =
+      let path = ../overlays;
+      in with builtins;
+        [
+          (self: super: {
+            darwin-zsh-completions = super.runCommandNoCC "darwin-zsh-completions-0.0.0"
+              { preferLocalBuild = true; }
+              ''
           mkdir -p $out/share/zsh/site-functions
           cat <<-'EOF' > $out/share/zsh/site-functions/_darwin-rebuild
           #compdef darwin-rebuild
@@ -2500,24 +2500,24 @@ nixpkgs.overlays =
           esac
           EOF
         '';})
-    ] ++ map (n: import (path + ("/" + n)))
-      (filter (n: match ".*\\.nix" n != null ||
-                  pathExists (path + ("/" + n + "/default.nix")))
-        (attrNames (readDir path)));
+        ] ++ map (n: import (path + ("/" + n)))
+          (filter (n: match ".*\\.nix" n != null ||
+                      pathExists (path + ("/" + n + "/default.nix")))
+            (attrNames (readDir path)));
 
-programs = {
-  zsh = {
-    enable = true;
-    enableCompletion = false;
-    enableBashCompletion = false;
-  };
-};
-services =
-  {
-    nix-daemon.enable = true;
-    skhd = {
-      enable = true;
-      skhdConfig = ''
+    programs = {
+      zsh = {
+        enable = true;
+        enableCompletion = false;
+        enableBashCompletion = false;
+      };
+    };
+    services =
+      {
+        nix-daemon.enable = true;
+        skhd = {
+          enable = true;
+          skhdConfig = ''
 ################################################################################
 #
 # window manipulation
@@ -2649,137 +2649,137 @@ open < c : skhd -k "ctrl - g"; open -a "Visual Studio Code"
 
 open < i : skhd -k "ctrl - g"; doom everywhere
 '';
+        };
+      };
+    nix = {
+      trustedUsers = [ "@admin" "hyunggyujang"];
+      package = pkgs.nix;
+      nixPath = [
+        { localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix"; }
+      ];
     };
-  };
-nix = {
-  trustedUsers = [ "@admin" "hyunggyujang"];
-  package = pkgs.nix;
-  nixPath = [
-    { localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix"; }
-  ];
-};
 
-homebrew =  {
-  enable = true;
-  autoUpdate = true;
-  cleanup = "zap";
-  global.brewfile = true;
-  brewPrefix = "/opt/homebrew/bin";
-  taps = [
-    "homebrew/bundle"
-    "homebrew/cask"
-    "homebrew/core"
-    "homebrew/services"
-    "homebrew/cask-fonts"
-    # For beta version
-    "homebrew/cask-versions"
-    "railwaycat/emacsmacport"
-    "borkdude/brew"
-    # yabai
-    "koekeishiya/formulae"
-    # system data cleaner
-    "mac-cleanup/mac-cleanup-py"
-  ];
-  brews = [
-    "pngpaste"
-    "jq"
-    "msmtp"
-    "aspell"
-    "graphviz"
-    "zstd"
-    "isync"
-    "libvterm"
-    "ripgrep"
-    "git"
-    "gnupg"
-    "pass"
-    "lua"
-    "gmp"
-    "coreutils"
-    "gnuplot"
-    "imagemagick"
-    "fd"
-    "poppler"
-    "automake"
-    "cmake"
-    "python"
-    "findutils"
-    "pandoc"
-    "pinentry-mac"
-    # Fonts
-    "svn"
-    # emacs-mac dependencies
-    "jansson"
-    "libxml2"
-    # suggested by Doom emacs
-    "pyenv"
-    "jupyterlab"
-    # For projectile
-    "ctags"
-    # Lexic
-    "sdcv"
-    # Javascript
-    "nvm"
-    # TODO: remove this dependency for slither
-    "poetry"
-    # emacs-mac
-    "libgccjit"
-    # Garrigue project
-    # "ocaml"
-    "opam"
-    # "coq"
-    "parallel"
-    "youtube-dl"
-    # To cleanup system data
-    "mac-cleanup-py"
-    # python
-    "pyright"
-    # mail
-    "notmuch"
-    # moonlander
-    "libusb"
-    # minicaml
-    "rlwrap"
-  ];
-  casks = [
-    "appcleaner"
-    "slack"
-    "basictex"
-    "kitty"
-    "aquaskk"
-    "hammerspoon"
-    "karabiner-elements"
-    "onedrive"
-    "zoom"
-    "ukelele"
-    "zotero"
-    # elegant-emacs
-    "font-roboto-mono"
-    "font-roboto-slab"
-    # math font
-    "font-dejavu"
-    # beamer with xelatex
-    "font-fira-sans"
-    "font-fira-mono"
-    "discord"
-    # Docker
-    "docker"
-    # Garrigue lab
-    "element"
-    "skype"
-    # Data analysis class
-    "microsoft-excel"
-    # School
-    "microsoft-word"
-    # audit
-    "telegram"
-    # For Bing AI + Google meet
-    "microsoft-edge"
-  ];
-  extraConfig = ''
+    homebrew =  {
+      enable = true;
+      autoUpdate = true;
+      cleanup = "zap";
+      global.brewfile = true;
+      brewPrefix = "/opt/homebrew/bin";
+      taps = [
+        "homebrew/bundle"
+        "homebrew/cask"
+        "homebrew/core"
+        "homebrew/services"
+        "homebrew/cask-fonts"
+        # For beta version
+        "homebrew/cask-versions"
+        "railwaycat/emacsmacport"
+        "borkdude/brew"
+        # yabai
+        "koekeishiya/formulae"
+        # system data cleaner
+        "mac-cleanup/mac-cleanup-py"
+      ];
+      brews = [
+        "pngpaste"
+        "jq"
+        "msmtp"
+        "aspell"
+        "graphviz"
+        "zstd"
+        "isync"
+        "libvterm"
+        "ripgrep"
+        "git"
+        "gnupg"
+        "pass"
+        "lua"
+        "gmp"
+        "coreutils"
+        "gnuplot"
+        "imagemagick"
+        "fd"
+        "poppler"
+        "automake"
+        "cmake"
+        "python"
+        "findutils"
+        "pandoc"
+        "pinentry-mac"
+        # Fonts
+        "svn"
+        # emacs-mac dependencies
+        "jansson"
+        "libxml2"
+        # suggested by Doom emacs
+        "pyenv"
+        "jupyterlab"
+        # For projectile
+        "ctags"
+        # Lexic
+        "sdcv"
+        # Javascript
+        "nvm"
+        # TODO: remove this dependency for slither
+        "poetry"
+        # emacs-mac
+        "libgccjit"
+        # Garrigue project
+        # "ocaml"
+        "opam"
+        # "coq"
+        "parallel"
+        "youtube-dl"
+        # To cleanup system data
+        "mac-cleanup-py"
+        # python
+        "pyright"
+        # mail
+        "notmuch"
+        # moonlander
+        "libusb"
+        # minicaml
+        "rlwrap"
+      ];
+      casks = [
+        "appcleaner"
+        "slack"
+        "basictex"
+        "kitty"
+        "aquaskk"
+        "hammerspoon"
+        "karabiner-elements"
+        "onedrive"
+        "zoom"
+        "ukelele"
+        "zotero"
+        # elegant-emacs
+        "font-roboto-mono"
+        "font-roboto-slab"
+        # math font
+        "font-dejavu"
+        # beamer with xelatex
+        "font-fira-sans"
+        "font-fira-mono"
+        "discord"
+        # Docker
+        "docker"
+        # Garrigue lab
+        "element"
+        "skype"
+        # Data analysis class
+        "microsoft-excel"
+        # School
+        "microsoft-word"
+        # audit
+        "telegram"
+        # For Bing AI + Google meet
+        "microsoft-edge"
+      ];
+      extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
         cask "firefox", args: { language: "en-KR" }
         brew "yabai", start_service: true
       '';
-};
+    };
   }
