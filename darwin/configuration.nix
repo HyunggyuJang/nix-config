@@ -8,13 +8,6 @@ let hgj_home = builtins.getEnv "HOME";
     hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
     hgj_localbin = ".local/bin";
     localconfig = import <localconfig>;
-    brewpath = if localconfig.hostname == "classic" then "/usr/local"
-               else "/opt/homebrew";
-    mach-nix = import <mach-nix> {
-        inherit pkgs;
-        python = "python38";
-    };
-
     brewpath = "/opt/homebrew";
 
     nur = import (builtins.fetchTarball {
@@ -26,150 +19,37 @@ let hgj_home = builtins.getEnv "HOME";
       inherit pkgs;
     };
 
-    myPython = mach-nix.mkPython {
-        requirements = ''
-        readability-lxml
-        octave-kernel
-        mathlibtools
-    '';
-    };
-
     kittyDracula = with pkgs; stdenv.mkDerivation {
-        name = "kitty-dracula-theme";
-        src = fetchFromGitHub {
-            owner = "dracula";
-            repo = "kitty";
-            rev = "6d6239a";
-            sha256 = "1fyclzglw4jz0vrglwg6v644bhr7w7mb1d95lagy7iz14gybli0i";
-        };
-        installPhase = ''
+      name = "kitty-dracula-theme";
+      src = fetchFromGitHub {
+        owner = "dracula";
+        repo = "kitty";
+        rev = "6d6239a";
+        sha256 = "1fyclzglw4jz0vrglwg6v644bhr7w7mb1d95lagy7iz14gybli0i";
+      };
+      installPhase = ''
         mkdir -p $out
         cp dracula.conf diff.conf $out/
       '';
     };
 
-    shevek = with pkgs; stdenv.mkDerivation {
-        name = "shevek";
-        src = fetchFromSourcehut {
-            owner = "~technomancy";
-            repo = "shevek";
-            rev = "06b9a6b499b3b876937ead8e58028ed925a60611";
-            sha256 = "sha256-1PxaPR0FUo9FH5gyZvOA8+u8+MYkdM5VyErwPetr9Y4=";
-        };
-        phases = ["unpackPhase" "installPhase"];
-        installPhase = ''
-        mkdir -p $out
-        cp shevek.fnl $out/
-      '';
-    };
-
 in with lib;
-    rec {
-        # Home manager
-        imports = [ <home-manager/nix-darwin> ];
+  rec {
+    # Home manager
+    imports = [ <home-manager/nix-darwin> ];
 
-        home-manager.useGlobalPkgs = true;
-        home-manager.users = let userconfig = { config, ...}: rec {
-            home.stateVersion = "22.11";
-            home.file = {
-                #             ".mail/.notmuch/hooks/pre-new" = {
-                #                 text = ''
-                # #!/bin/bash
-                # filter="tag:deleted tag:trash AND folder:/account.nagoya/"
-                # echo "$(notmuch count "$filter") trashed messages"
-                # notmuch search --output=files --format=text0 "$filter" | ${if localconfig.hostname == "silicon" then "g" else ""}xargs -0 --no-run-if-empty rm
-                #             '';
-                #                 executable = true;
-                #             };
-                ".emacs-profiles.el".text = ''
-                (("default" . ((user-emacs-directory . "~/test/doom-testbed/doom-emacs")
-                               (env . (("EMACSDIR" . "~/test/doom-testbed/doom-emacs")
-                                       ("DOOMDIR" . ;"${hgj_sync}/.doom.d"
-                                        "~/test/doom-testbed/.doom.d"
-                                       )
-                                       ("DOOMLOCALDIR" . "~/test/doom-testbed/.doom"))))))
-            '';
-                "${hgj_localbin}/doomTest" = {
-                    executable = true;
-                    text = ''
-                cd $HOME/test/doom-testbed/doom-emacs/bin
-                # DOOMDIR=${hgj_sync}/.doom.d
-                EMACSDIR=../
-                DOOMDIR=../../.doom.d
-                DOOMLOCALDIR=../../.doom
-                ./doom $@
-              '';
-                };
-                ".cargo/bin/rust-analyzer".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer";
-                ".gnupg/gpg-agent.conf".text = ''
+    home-manager.useGlobalPkgs = true;
+    home-manager.users = let userconfig = { config, ...}: rec {
+      home.stateVersion = "22.11";
+      home.file = {
+        ".cargo/bin/rust-analyzer".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer";
+        ".gnupg/gpg-agent.conf".text = ''
             enable-ssh-support
             default-cache-ttl 86400
             max-cache-ttl 86400
             pinentry-program ${brewpath}/bin/pinentry-mac
             '';
-                "${hgj_localbin}/uninstall-nix-osx" = {
-                    executable = true;
-                    text = ''
-#!usr/bin/env bash
-
-# !!WARNING!!
-# This will DELETE all efforts you have put into configuring nix
-# Have a look through everything that gets deleted / copied over
-
-# nix-env -e '.*'
-
-rm -rf "$HOME"/.nix-*
-# rm -rf $HOME/.config/nixpkgs
-rm -rf "$HOME"/.cache/nix
-rm -rf "$HOME"/.nixpkgs
-
-if [ -L "$HOME"/Applications ]; then
-  rm "$HOME"/Applications
-fi
-
-sudo rm -rf /etc/nix /nix
-
-# Nix wasnt installed using `--daemon`
-# [ ! -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist ] && exit 0
-
-if [ -f /Library/LaunchDaemons/org.nixos.nix-daemon.plist ]; then
-    sudo launchctl unload /Library/LaunchDaemons/org.nixos.nix-daemon.plist
-    sudo rm /Library/LaunchDaemons/org.nixos.nix-daemon.plist
-fi
-
-if [ -f /etc/profile.backup-before-nix ]; then
-    sudo mv /etc/profile.backup-before-nix /etc/profile
-fi
-
-if [ -f /etc/bashrc.backup-before-nix ]; then
-    sudo mv /etc/bashrc.backup-before-nix /etc/bashrc
-fi
-
-if [ -f /etc/zshrc.backup-before-nix ]; then
-    sudo mv /etc/zshrc.backup-before-nix /etc/zshrc
-fi
-
-USERS=$(sudo dscl . list /Users | grep nixbld)
-
-for USER in $USERS; do
-    sudo /usr/bin/dscl . -delete "/Users/$USER"
-    sudo /usr/bin/dscl . -delete /Groups/staff GroupMembership "$USER";
-done
-
-_GROUPS=$(sudo dscl . list /Groups | grep nixbld)
-
-for GROUP in $_GROUPS; do
-    sudo /usr/bin/dscl . -delete "/Groups/$GROUP"
-done
-
-sudo rm -rf /var/root/.nix-*
-sudo rm -rf /var/root/.cache/nix
-
-# useful for finding hanging links
-# $ find . -type l -maxdepth 5 ! -exec test -e {} \; -print 2>/dev/null | xargs -I {} sh -c 'file -b {} | grep nix && echo {}'
-            '';
-                };
-                ".tridactylrc".text = ''
+        ".tridactylrc".text = ''
           set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12) (internal-border-width . 0))" +%l:%c
           # bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           # bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
@@ -201,7 +81,7 @@ sudo rm -rf /var/root/.cache/nix
           bind --mode=insert <A-e> text.end_of_line
           set theme dark
           '';
-                ".qutebrowser/config.py".text = ''
+        ".qutebrowser/config.py".text = ''
           config.load_autoconfig(True)
           # c.window.hide_decoration = True
 
@@ -319,39 +199,7 @@ sudo rm -rf /var/root/.cache/nix
               }
           })
         '';
-                "Library/texmf/tex/latex/lstlean.tex".source = pkgs.fetchurl {
-                    name = "Lean-syntax-tex-highlight";
-                    url = "https://raw.githubusercontent.com/leanprover-community/lean/master/extras/latex/lstlean.tex";
-                    sha256 = "0ig0r4zg9prfydzc4wbywjfj1yv4578zrd80bx34vbkfbgqvpq5m";
-                };
-                "Library/texmf/tex/latex/uplatex.cfg".text = ''
-                \RequirePackage{plautopatch}
-                \RequirePackage{exppl2e}
-            '';
-                "Library/texmf/tex/latex/lstlangcoq.sty".source = pkgs.fetchurl {
-                    name = "Coq-syntax-tex-highlight";
-                    url = "https://raw.githubusercontent.com/PrincetonUniversity/VST/master/doc/lstlangcoq.sty";
-                    sha256 = "12dg7yqfsh2hz74nmb0y0qvdr75dn06mj0inyz9assh55ixpljd4";
-                };
-                "Library/Application Support/org.inkscape.Inkscape/config/inkscape/extensions/svg2tikz".source = with pkgs; stdenv.mkDerivation {
-                  name = "svg2tikz";
-                  src = fetchFromGitHub {
-                    owner = "xyz2tex";
-                    repo = "svg2tikz";
-                    rev = "8e56b5752de4b330a436b70e57ba55603232737a";
-                    sha256 = "sha256-IKLg9+ztG96b9A5dI3Ek9upiWoiUX9V09P5KWzlnVIo=";
-                  };
-                  phases = ["unpackPhase" "installPhase"];
-                  installPhase = ''
-                  cp -R svg2tikz/extensions $out
-                  '';
-                };
-                "Library/Application Support/Zotero/Profiles/z6bvhh6i.default/chrome/userChrome.css".source = pkgs.fetchurl {
-                    name = "Zotero-Dark-theme";
-                    url = "https://raw.githubusercontent.com/quin-q/Zotero-Dark-Theme/mac-patch/userChrome.css";
-                    sha256 = "03hb64j6baj5kx24cf9y7vx4sdsv34553djsf4l3krz7aj7cwi7f";
-                };
-                "Library/Application Support/AquaSKK/keymap.conf".text = ''
+        "Library/Application Support/AquaSKK/keymap.conf".text = ''
 ###
 ### keymap.conf
 ###
@@ -410,7 +258,7 @@ PseudoHandled           ctrl::l
 
 StickyKey               ;
                 '';
-                "Library/Application Support/AquaSKK/azik.conf".text = ''
+        "Library/Application Support/AquaSKK/azik.conf".text = ''
 NotToggleKana		q
 NotToggleJisx0201Kana	ctrl::q
 NotEnterJapanese		Q
@@ -421,14 +269,14 @@ EnterJapanese  shift::keycode::21
 UpperCases		Q||shift::keycode::29
 InputChars		shift::keycode::29||keycode::21
                 '';
-                "Library/Application Support/AquaSKK/sub-rule.desc".text = ''
+        "Library/Application Support/AquaSKK/sub-rule.desc".text = ''
 ###
 ### sub-rule.desc -- Ë£úÂä©„É´„Éº„É´„ÅÆË™¨Êòé
 ###
 
 azik_us.rule azik.conf Use„ÄåAZIK„Äçextension
                 '';
-                "Library/Application Support/AquaSKK/azik_us.rule".text = ''
+        "Library/Application Support/AquaSKK/azik_us.rule".text = ''
 ###
 ### azik_us.rule -- AZIK Õ—¿ﬂƒÍ
 ###
@@ -925,333 +773,246 @@ x[,°÷,°÷,°÷
 # §Ω§≥§«°¢ [ §Œ —¥πµ¨¬ß§Ú§¢§§§ﬁ§§§À§∑§∆°¢ —¥π§µ§Ï§ §§§Ë§¶§À§π§Î
 [[,°÷,°÷,°÷
                 '';
-                "Library/Application Support/AquaSKK/BlacklistApps.plist".text = ''
+        "Library/Application Support/AquaSKK/BlacklistApps.plist".text = ''
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array>
-	<dict>
-		<key>bundleIdentifier</key>
-		<string>com.microsoft.powerpoint</string>
-		<key>insertEmptyString</key>
-		<false/>
-		<key>insertMarkedText</key>
-		<false/>
-		<key>syncInputSource</key>
-		<false/>
-	</dict>
-	<dict>
-		<key>bundleIdentifier</key>
-		<string>com.jetbrains</string>
-		<key>insertEmptyString</key>
-		<false/>
-		<key>insertMarkedText</key>
-		<false/>
-		<key>syncInputSource</key>
-		<false/>
-	</dict>
-	<dict>
-		<key>bundleIdentifier</key>
-		<string>com.google.android.studio</string>
-		<key>insertEmptyString</key>
-		<false/>
-		<key>insertMarkedText</key>
-		<false/>
-		<key>syncInputSource</key>
-		<false/>
-	</dict>
-	<dict>
-		<key>bundleIdentifier</key>
-		<string>jp.naver.line.mac</string>
-		<key>insertEmptyString</key>
-		<false/>
-		<key>insertMarkedText</key>
-		<false/>
-	</dict>
+  <dict>
+    <key>bundleIdentifier</key>
+    <string>com.microsoft.powerpoint</string>
+    <key>insertEmptyString</key>
+    <false/>
+    <key>insertMarkedText</key>
+    <false/>
+    <key>syncInputSource</key>
+    <false/>
+  </dict>
+  <dict>
+    <key>bundleIdentifier</key>
+    <string>com.jetbrains</string>
+    <key>insertEmptyString</key>
+    <false/>
+    <key>insertMarkedText</key>
+    <false/>
+    <key>syncInputSource</key>
+    <false/>
+  </dict>
+  <dict>
+    <key>bundleIdentifier</key>
+    <string>com.google.android.studio</string>
+    <key>insertEmptyString</key>
+    <false/>
+    <key>insertMarkedText</key>
+    <false/>
+    <key>syncInputSource</key>
+    <false/>
+  </dict>
+  <dict>
+    <key>bundleIdentifier</key>
+    <string>jp.naver.line.mac</string>
+    <key>insertEmptyString</key>
+    <false/>
+    <key>insertMarkedText</key>
+    <false/>
+  </dict>
 </array>
 </plist>
                 '';
-                "Library/Application Support/AquaSKK/DictionarySet.plist".text = ''
+        "Library/Application Support/AquaSKK/DictionarySet.plist".text = ''
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array>
-	<dict>
-		<key>active</key>
-		<true/>
-		<key>location</key>
-		<string>~/.doom/etc/skk/skk-jisyo.utf8</string>
-		<key>type</key>
-		<integer>5</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.L</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.jinmei</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.fullname</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.geo</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.propernoun</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.station</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.law</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.okinawa</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.china_taiwan</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.assoc</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.edict</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>zipcode/SKK-JISYO.zipcode</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>zipcode/SKK-JISYO.office.zipcode</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.JIS2</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.JIS3_4</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.JIS2004</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.itaiji</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.itaiji.JIS3_4</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<false/>
-		<key>location</key>
-		<string>SKK-JISYO.mazegaki</string>
-		<key>type</key>
-		<integer>1</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<true/>
-		<key>location</key>
-		<string>localhost:1178</string>
-		<key>type</key>
-		<integer>2</integer>
-	</dict>
-	<dict>
-		<key>active</key>
-		<true/>
-		<key>location</key>
-		<string>/Users/hyunggyujang/.doom/etc/skk/aquaskk-jisyo.utf8</string>
-		<key>type</key>
-		<integer>5</integer>
-	</dict>
+  <dict>
+    <key>active</key>
+    <true/>
+    <key>location</key>
+    <string>~/.doom/etc/skk/skk-jisyo.utf8</string>
+    <key>type</key>
+    <integer>5</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.L</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.jinmei</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.fullname</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.geo</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.propernoun</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.station</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.law</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.okinawa</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.china_taiwan</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.assoc</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.edict</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>zipcode/SKK-JISYO.zipcode</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>zipcode/SKK-JISYO.office.zipcode</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.JIS2</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.JIS3_4</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.JIS2004</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.itaiji</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.itaiji.JIS3_4</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <false/>
+    <key>location</key>
+    <string>SKK-JISYO.mazegaki</string>
+    <key>type</key>
+    <integer>1</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <true/>
+    <key>location</key>
+    <string>localhost:1178</string>
+    <key>type</key>
+    <integer>2</integer>
+  </dict>
+  <dict>
+    <key>active</key>
+    <true/>
+    <key>location</key>
+    <string>/Users/hyunggyujang/.doom/etc/skk/aquaskk-jisyo.utf8</string>
+    <key>type</key>
+    <integer>5</integer>
+  </dict>
 </array>
 </plist>
                 '';
-                ## For deploying for the first time
-                # "Library/Preferences/jp.sourceforge.inputmethod.aquaskk.plist".text = ''
-# <?xml version="1.0" encoding="UTF-8"?>
-# <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-# <plist version="1.0">
-# <dict>
-# 	<key>beep_on_registration</key>
-# 	<false/>
-# 	<key>candidate_window_font_name</key>
-# 	<string>Trebuchet MS</string>
-# 	<key>candidate_window_font_size</key>
-# 	<integer>18</integer>
-# 	<key>candidate_window_labels</key>
-# 	<string>ASDFJKL</string>
-# 	<key>delete_okuri_when_quit</key>
-# 	<true/>
-# 	<key>direct_clients</key>
-# 	<array>
-# 		<string>net.kovidgoyal.kitty</string>
-# 		<string>org.gnu.Emacs</string>
-# 	</array>
-# 	<key>display_shortest_match_of_kana_conversions</key>
-# 	<false/>
-# 	<key>dynamic_completion_range</key>
-# 	<integer>1</integer>
-# 	<key>enable_annotation</key>
-# 	<false/>
-# 	<key>enable_dynamic_completion</key>
-# 	<false/>
-# 	<key>enable_extended_completion</key>
-# 	<true/>
-# 	<key>enable_private_mode</key>
-# 	<false/>
-# 	<key>enable_skkdap</key>
-# 	<false/>
-# 	<key>enable_skkserv</key>
-# 	<false/>
-# 	<key>fix_intermediate_conversion</key>
-# 	<true/>
-# 	<key>handle_recursive_entry_as_okuri</key>
-# 	<false/>
-# 	<key>inline_backspace_implies_commit</key>
-# 	<false/>
-# 	<key>keyboard_layout</key>
-# 	<string>org.sil.ukelele.keyboardlayout..abccopy</string>
-# 	<key>max_count_of_inline_candidates</key>
-# 	<integer>4</integer>
-# 	<key>minimum_completion_length</key>
-# 	<integer>0</integer>
-# 	<key>openlab_host</key>
-# 	<string>openlab.ring.gr.jp</string>
-# 	<key>openlab_path</key>
-# 	<string>/skk/skk/dic</string>
-# 	<key>put_candidate_window_upward</key>
-# 	<false/>
-# 	<key>show_input_mode_icon</key>
-# 	<true/>
-# 	<key>skkdap_folder</key>
-# 	<string>~/Library/Application Support/AquaSKK</string>
-# 	<key>skkdap_port</key>
-# 	<integer>2178</integer>
-# 	<key>skkserv_localonly</key>
-# 	<true/>
-# 	<key>skkserv_port</key>
-# 	<integer>1178</integer>
-# 	<key>sub_keymaps</key>
-# 	<array>
-# 		<string>/Users/hyunggyujang/Library/Application Support/AquaSKK/azik.conf</string>
-# 	</array>
-# 	<key>sub_rules</key>
-# 	<array>
-# 		<string>/Users/hyunggyujang/Library/Application Support/AquaSKK/azik_us.rule</string>
-# 	</array>
-# 	<key>suppress_newline_on_commit</key>
-# 	<true/>
-# 	<key>use_individual_input_mode</key>
-# 	<false/>
-# 	<key>use_numeric_conversion</key>
-# 	<true/>
-# 	<key>user_dictionary_path</key>
-# 	<string>/Users/hyunggyujang/.doom/etc/skk/aquaskk-jisyo.utf8</string>
-# </dict>
-# </plist>
-#                 '';
-                ".gitconfig".text = ''
+        ".gitconfig".text = ''
           [user]
             name = Hyunggyu Jang
             email = murasakipurplez5@gmail.com
         '';
-                ".mailcap".text = ''
+        ".mailcap".text = ''
           # HTML
           text/html; open %s; description=HTML Text; test=test -n "$DISPLAY";  nametemplate=%s.html
         '';
-                ".mailrc".text = ''
-          set sendmail="/usr/local/bin/msmtp"
-        '';
-                ".mbsyncrc".text = ''
+        ".mbsyncrc".text = ''
           IMAPAccount nagoya
           Host mail.math.nagoya-u.ac.jp
           User hyunggyu.jang.e6@math.nagoya-u.ac.jp #not XXX@me.com etc.
@@ -1311,7 +1072,7 @@ x[,°÷,°÷,°÷
           Group gmail
           Channel gmail-folders
         '';
-                ".msmtprc".text = ''
+        ".msmtprc".text = ''
           # Set default values for all following accounts.
           defaults
           auth           on
@@ -1343,7 +1104,7 @@ x[,°÷,°÷,°÷
           # Set a default account
           account default : murasakipurplez5@gmail.com
         '';
-                ".notmuch-config".text = ''
+        ".notmuch-config".text = ''
           [database]
           path=${hgj_home}/.mail
           [user]
@@ -1358,9 +1119,9 @@ x[,°÷,°÷,°÷
           [maildir]
           synchronize_flags=true
         '';
-                "${hgj_localbin}/open_kitty" = {
-                    executable = true;
-                    text = ''
+        "${hgj_localbin}/open_kitty" = {
+          executable = true;
+          text = ''
 #!/usr/bin/env bash
 
 # https://github.com/noperator/dotfiles/blob/master/.config/kitty/launch-instance.sh
@@ -1369,7 +1130,7 @@ x[,°÷,°÷,°÷
 # 1. Copying the first window's working directory, and
 # 2. Keeping the second window on the first window's focused display.
 
-PATH="${if localconfig.hostname == "classic" then "$HOME/Applications/Nix Apps" else "/Applications"}/kitty.app/Contents/MacOS${"\${PATH:+:\${PATH}}"}"
+PATH="/Applications/kitty.app/Contents/MacOS${"\${PATH:+:\${PATH}}"}"
 
 FOCUSED_WINDOW=$(yabai -m query --windows --window)
 
@@ -1411,74 +1172,69 @@ yabai -m signal --add \
 # focused display.
 kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
-                };
-                # ".hammerspoon".source = fetchGit {
-                #     url = "https://github.com/HyunggyuJang/spacehammer.git";
-                #     rev = "d2c9b655d937fc30b9d84a48ed171e89c2989c8f";
-                #     submodules = true;
-                # };
-                "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
-                "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
-            };
-            # https://github.com/nix-community/home-manager/blob/db00b39a9abec04245486a01b236b8d9734c9ad0/tests/modules/targets-darwin/default.nix
-            # Has to be set explicitly as it disabled by default, preferring nix-darwin
-            targets.darwin.keybindings = {
-                # Control shortcuts
-                "^l"        = "centerSelectionInVisibleArea:";
-                "^/"        = "undo:";
-                "^_"        = "undo:";
-                "^ "        = "setMark:";
-                "^w"        = "deleteToMark:";
-                "^u"        = "deleteToBeginningOfLine:";
-                "^g"        = "_cancelKey:";
-                # Meta shortcuts
-                "~y"        = "yankPop:";
-                "~f"        = "moveWordForward:";
-                "~b"        = "moveWordBackward:";
-                "~p"        = "selectPreviousKeyView:";
-                "~n"        = "selectNextKeyView:";
-                # Excaping XML expressions should be done automatically!
-                "~&lt;"     = "moveToBeginningOfDocument:";
-                "~&gt;"     = "moveToEndOfDocument:";
-                "~v"        = "pageUp:";
-                "~/"        = "complete:";
-                "~c"        = [ "capitalizeWord:"
-                                "moveForward:"
-                                "moveForward:"];
-                "~u"        = [ "uppercaseWord:"
-                                "moveForward:"
-                                "moveForward:"];
-                "~l"        = [ "lowercaseWord:"
-                                "moveForward:"
-                                "moveForward:"];
-                "~d"        = "deleteWordForward:";
-                "^~h"       = "deleteWordBackward:";
-                "~t"        = "transposeWords:";
-                "~\\@"       = [ "setMark:"
-                                 "moveWordForward:"
-                                 "swapWithMark:"];
-                "~h"        = [ "setMark:"
-                                "moveToEndOfParagraph:"
-                                "swapWithMark:"];
-                # C-x shortcuts
-                "^x" = {
-                    "u"     = "undo:";
-                    "k"     = "performClose:";
-                    "^f"    = "openDocument:";
-                    "^x"    = "swapWithMark:";
-                    "^m"    = "selectToMark:";
-                    "^s"    = "saveDocument:";
-                    "^w"    = "saveDocumentAs:";
-                };
-            };
-            xdg = {
-                enable = true;
+        };
+        "notes".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/";
+        "storage".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
+      };
+      # https://github.com/nix-community/home-manager/blob/db00b39a9abec04245486a01b236b8d9734c9ad0/tests/modules/targets-darwin/default.nix
+      # Has to be set explicitly as it disabled by default, preferring nix-darwin
+      targets.darwin.keybindings = {
+        # Control shortcuts
+        "^l"        = "centerSelectionInVisibleArea:";
+        "^/"        = "undo:";
+        "^_"        = "undo:";
+        "^ "        = "setMark:";
+        "^w"        = "deleteToMark:";
+        "^u"        = "deleteToBeginningOfLine:";
+        "^g"        = "_cancelKey:";
+        # Meta shortcuts
+        "~y"        = "yankPop:";
+        "~f"        = "moveWordForward:";
+        "~b"        = "moveWordBackward:";
+        "~p"        = "selectPreviousKeyView:";
+        "~n"        = "selectNextKeyView:";
+        # Excaping XML expressions should be done automatically!
+        "~&lt;"     = "moveToBeginningOfDocument:";
+        "~&gt;"     = "moveToEndOfDocument:";
+        "~v"        = "pageUp:";
+        "~/"        = "complete:";
+        "~c"        = [ "capitalizeWord:"
+                        "moveForward:"
+                        "moveForward:"];
+        "~u"        = [ "uppercaseWord:"
+                        "moveForward:"
+                        "moveForward:"];
+        "~l"        = [ "lowercaseWord:"
+                        "moveForward:"
+                        "moveForward:"];
+        "~d"        = "deleteWordForward:";
+        "^~h"       = "deleteWordBackward:";
+        "~t"        = "transposeWords:";
+        "~\\@"       = [ "setMark:"
+                         "moveWordForward:"
+                         "swapWithMark:"];
+        "~h"        = [ "setMark:"
+                        "moveToEndOfParagraph:"
+                        "swapWithMark:"];
+        # C-x shortcuts
+        "^x" = {
+          "u"     = "undo:";
+          "k"     = "performClose:";
+          "^f"    = "openDocument:";
+          "^x"    = "swapWithMark:";
+          "^m"    = "selectToMark:";
+          "^s"    = "saveDocument:";
+          "^w"    = "saveDocumentAs:";
+        };
+      };
+      xdg = {
+        enable = true;
 
-                configHome = "${hgj_home}/.config";
-                dataHome = "${hgj_home}/.local/share";
-                cacheHome = "${hgj_home}/.cache";
-                configFile = {
-                    "afew/config".text = ''
+        configHome = "${hgj_home}/.config";
+        dataHome = "${hgj_home}/.local/share";
+        cacheHome = "${hgj_home}/.cache";
+        configFile = {
+          "afew/config".text = ''
           [MailMover]
           folders = account.nagoya/Inbox account.nagoya/Trash
           rename = True
@@ -1493,9 +1249,9 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
           maildir_separator = /
         '';
 
-                    "kitty/dracula.conf".source = "${kittyDracula}/dracula.conf";
-                    "kitty/diff.conf".source = "${kittyDracula}/diff.conf";
-                    "kitty/kitty.conf".text = ''
+          "kitty/dracula.conf".source = "${kittyDracula}/dracula.conf";
+          "kitty/diff.conf".source = "${kittyDracula}/diff.conf";
+          "kitty/kitty.conf".text = ''
           allow_remote_control yes
 
           hide_window_decorations yes
@@ -1511,1426 +1267,14 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
 
           include dracula.conf
         '';
-                    "helix/config.toml".text = ''
+          "helix/config.toml".text = ''
           [editor.cursor-shape]
           insert = "bar"
           normal = "block"
           select = "underline"
         '';
-                    "zathura/zathurarc".text = "set selection-clipboard clipboard";
-                } // (if localconfig.hostname == "classic" then {
-                    "fontconfig/fonts.conf".text = ''
-        <?xml version='1.0'?>
-        <!-- Generated by Hyunggyu Jang. -->
-        <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
-        <fontconfig>
-          <dir>/Library/Fonts</dir>
-          <dir>${hgj_home}/Library/Fonts</dir>
-        </fontconfig>
-      '';
-
-                    "karabiner/karabiner.json".text = ''
-{
-    "global": {
-        "check_for_updates_on_startup": false,
-        "show_in_menu_bar": true,
-        "show_profile_name_in_menu_bar": false
-    },
-    "profiles": [
-        {
-            "complex_modifications": {
-                "parameters": {
-                    "basic.simultaneous_threshold_milliseconds": 50,
-                    "basic.to_delayed_action_delay_milliseconds": 500,
-                    "basic.to_if_alone_timeout_milliseconds": 1000,
-                    "basic.to_if_held_down_threshold_milliseconds": 500,
-                    "mouse_motion_to_scroll.speed": 100
-                },
-                "rules": [
-                    {
-                        "description": "„Ç≥„Éû„É≥„Éâ„Ç≠„Éº„Çí„Ç™„Éó„Ç∑„Éß„É≥„Ç≠„Éº„Å´ÁΩÆ„ÅçÊèõ„Åà„Çã„ÄÇ",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "left_command",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_option"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Ëã±Êï∞„Éª„Åã„Å™„Ç≠„Éº„Çí‰ªñ„ÅÆ„Ç≠„Éº„Å®ÁµÑ„ÅøÂêà„Çè„Åõ„Å¶Êäº„Åó„Åü„Å®„Åç„Å´„ÄÅ„Ç≥„Éû„É≥„Éâ„Ç≠„Éº„ÇíÈÄÅ‰ø°„Åô„Çã„ÄÇ",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "japanese_eisuu",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_command"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "japanese_eisuu"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "japanese_eisuu",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_command"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "f17"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "japanese_kana",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_command"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "japanese_kana"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "japanese_kana",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_command"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "f18"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "input_sources": [
-                                            {
-                                                "language": "ko"
-                                            }
-                                        ],
-                                        "type": "input_source_if"
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "right_command",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_option"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "input_sources": [
-                                            {
-                                                "language": "ko"
-                                            }
-                                        ],
-                                        "type": "input_source_unless"
-                                    },
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "right_command",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_option"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "hold_down_milliseconds": 50,
-                                        "key_code": "japanese_eisuu"
-                                    },
-                                    {
-                                        "select_input_source": {
-                                            "language": "ko"
-                                        }
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "right_command",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_option"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "f19"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Change escape to control if pressed with other keys, to escape if pressed alone.",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "escape",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_control"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "escape"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Change left control to control if pressed with other keys, to escape if pressed alone.",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "left_control",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_control"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "escape"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Change return key to control if pressed with other keys, to return if pressed alone.",
-                        "manipulators": [
-                            {
-                                "from": {
-                                    "key_code": "return_or_enter",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_control"
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "return_or_enter"
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Bash style Emacs key bindings (rev 2)",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "w",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "delete_or_backspace",
-                                        "modifiers": [
-                                            "left_option"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "u",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_arrow",
-                                        "modifiers": [
-                                            "left_command",
-                                            "left_shift"
-                                        ]
-                                    },
-                                    {
-                                        "key_code": "delete_or_backspace",
-                                        "repeat": false
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Emacs key bindings [control+keys] (rev 10)",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "d",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "delete_forward"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "h",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "delete_or_backspace"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "i",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "tab"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "keyboard_types": [
-                                            "ansi",
-                                            "iso"
-                                        ],
-                                        "type": "keyboard_type_if"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "open_bracket",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "escape"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "keyboard_types": [
-                                            "jis"
-                                        ],
-                                        "type": "keyboard_type_if"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "close_bracket",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "escape"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "from": {
-                                    "key_code": "m",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "return_or_enter"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "b",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_arrow"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "f",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_arrow"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "n",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "down_arrow"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "p",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift",
-                                            "option"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "up_arrow"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "v",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "page_down"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.microsoft\\.Excel$",
-                                            "^com\\.microsoft\\.Powerpoint$",
-                                            "^com\\.microsoft\\.Word$"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "a",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "home"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^com\\.microsoft\\.Excel$",
-                                            "^com\\.microsoft\\.Powerpoint$",
-                                            "^com\\.microsoft\\.Word$"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "e",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "end"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.eclipse\\.platform\\.ide$"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "a",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_arrow",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.eclipse\\.platform\\.ide$"
-                                        ],
-                                        "type": "frontmost_application_if"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "e",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_arrow",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Emacs key bindings [option+keys] (rev 5)",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "v",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "option"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "page_up"
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "b",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "option"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "left_arrow",
-                                        "modifiers": [
-                                            "left_option"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "f",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "option"
-                                        ],
-                                        "optional": [
-                                            "caps_lock",
-                                            "shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "right_arrow",
-                                        "modifiers": [
-                                            "left_option"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "d",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "option"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "delete_forward",
-                                        "modifiers": [
-                                            "left_option"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Emacs key bindings [C-x key strokes] (rev 2)",
-                        "manipulators": [
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-x",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "c",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "q",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-x",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "f",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "o",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-x",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "s",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "s",
-                                        "modifiers": [
-                                            "left_command"
-                                        ]
-                                    }
-                                ],
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "name": "C-x",
-                                        "type": "variable_if",
-                                        "value": 1
-                                    }
-                                ],
-                                "from": {
-                                    "any": "key_code",
-                                    "modifiers": {
-                                        "optional": [
-                                            "any"
-                                        ]
-                                    }
-                                },
-                                "type": "basic"
-                            },
-                            {
-                                "conditions": [
-                                    {
-                                        "bundle_identifiers": [
-                                            "^org\\.gnu\\.Emacs$",
-                                            "^com\\.apple\\.Terminal$",
-                                            "^com\\.googlecode\\.iterm2$",
-                                            "^com\\.microsoft\\.VSCode$",
-                                            "^com\\.qvacua\\.VimR$"
-                                        ],
-                                        "file_paths": [
-                                            "kitty",
-                                            "qutebrowser"
-                                        ],
-                                        "type": "frontmost_application_unless"
-                                    }
-                                ],
-                                "from": {
-                                    "key_code": "x",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "control"
-                                        ],
-                                        "optional": [
-                                            "caps_lock"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "set_variable": {
-                                            "name": "C-x",
-                                            "value": 1
-                                        }
-                                    }
-                                ],
-                                "to_delayed_action": {
-                                    "to_if_canceled": [
-                                        {
-                                            "set_variable": {
-                                                "name": "C-x",
-                                                "value": 0
-                                            }
-                                        }
-                                    ],
-                                    "to_if_invoked": [
-                                        {
-                                            "set_variable": {
-                                                "name": "C-x",
-                                                "value": 0
-                                            }
-                                        }
-                                    ]
-                                },
-                                "type": "basic"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "devices": [
-                {
-                    "disable_built_in_keyboard_if_exists": false,
-                    "fn_function_keys": [],
-                    "identifiers": {
-                        "is_keyboard": true,
-                        "is_pointing_device": false,
-                        "product_id": 657,
-                        "vendor_id": 1452
-                    },
-                    "ignore": false,
-                    "manipulate_caps_lock_led": true,
-                    "simple_modifications": []
-                }
-            ],
-            "fn_function_keys": [
-                {
-                    "from": {
-                        "key_code": "f1"
-                    },
-                    "to": {
-                        "consumer_key_code": "display_brightness_decrement"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f2"
-                    },
-                    "to": {
-                        "consumer_key_code": "display_brightness_increment"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f3"
-                    },
-                    "to": {
-                        "key_code": "mission_control"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f4"
-                    },
-                    "to": {
-                        "key_code": "launchpad"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f5"
-                    },
-                    "to": {
-                        "key_code": "illumination_decrement"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f6"
-                    },
-                    "to": {
-                        "key_code": "illumination_increment"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f7"
-                    },
-                    "to": {
-                        "consumer_key_code": "rewind"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f8"
-                    },
-                    "to": {
-                        "consumer_key_code": "play_or_pause"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f9"
-                    },
-                    "to": {
-                        "consumer_key_code": "fast_forward"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f10"
-                    },
-                    "to": {
-                        "consumer_key_code": "mute"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f11"
-                    },
-                    "to": {
-                        "consumer_key_code": "volume_decrement"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "f12"
-                    },
-                    "to": {
-                        "consumer_key_code": "volume_increment"
-                    }
-                }
-            ],
-            "name": "Default profile",
-            "parameters": {
-                "delay_milliseconds_before_open_device": 1000
-            },
-            "selected": true,
-            "simple_modifications": [
-                {
-                    "from": {
-                        "key_code": "caps_lock"
-                    },
-                    "to": {
-                        "key_code": "fn"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "escape"
-                    },
-                    "to": {
-                        "key_code": "caps_lock"
-                    }
-                },
-                {
-                    "from": {
-                        "key_code": "left_control"
-                    },
-                    "to": {
-                        "key_code": "escape"
-                    }
-                }
-            ],
-            "virtual_hid_keyboard": {
-                "country_code": 0,
-                "mouse_key_xy_scale": 100
-            }
-        }
-    ]
-}
-'';
-                } else {
-                    "yabai/yabairc".text = ''
+          "zathura/zathurarc".text = "set selection-clipboard clipboard";
+          "yabai/yabairc".text = ''
 yabai -m config active_window_opacity 1.000000
 yabai -m config auto_balance on
 yabai -m config bottom_padding 0
@@ -2960,7 +1304,7 @@ yabai -m rule --add app=Anki space=3
 yabai -m rule --add app="^Microsoft Teams$" space=4
 yabai -m rule --add app="^zoom$" space=4
 '';
-                    "karabiner/karabiner.json".text = ''
+          "karabiner/karabiner.json".text = ''
 {
     "global": {
         "check_for_updates_on_startup": false,
@@ -3860,78 +2204,78 @@ yabai -m rule --add app="^zoom$" space=4
     ]
 }
 '';
-                    "youtube-dl/config".text = ''
+          "youtube-dl/config".text = ''
 # Save all vides under Youtube directory in cloud server
 -o ~/storage/Youtube/%(title)s.%(ext)s
 '';
-                });
-            };
-            programs.zsh = {
-                enable = true;
-                enableAutosuggestions = true;
-                enableCompletion = false; # See https://github.com/NixOS/nix/issues/5445
-                defaultKeymap = "emacs";
-                sessionVariables = { RPROMPT = ""; };
-                shellAliases =  {
-                    dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
-                    dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color caffeinate -i make switch && cd -";
-                    drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
-                };
+        });
+    };
+                             programs.zsh = {
+                               enable = true;
+                               enableAutosuggestions = true;
+                               enableCompletion = false; # See https://github.com/NixOS/nix/issues/5445
+                               defaultKeymap = "emacs";
+                               sessionVariables = { RPROMPT = ""; };
+                               shellAliases =  {
+                                 dbuild = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
+                                 dswitch = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color caffeinate -i make switch && cd -";
+                                 drb = "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                               };
 
-                oh-my-zsh.enable = true;
+                               oh-my-zsh.enable = true;
 
-                plugins = [
-                    {
-                        name = "autopair";
-                        file = "autopair.zsh";
-                        src = pkgs.fetchFromGitHub {
-                            owner = "hlissner";
-                            repo = "zsh-autopair";
-                            rev = "9d003fc02dbaa6db06e6b12e8c271398478e0b5d";
-                            sha256 = "sha256-hwZDbVo50kObLQxCa/wOZImjlH4ZaUI5W5eWs/2RnWg=";
-                        };
-                    }
-                    {
-                        name = "fast-syntax-highlighting";
-                        file = "fast-syntax-highlighting.plugin.zsh";
-                        src = pkgs.fetchFromGitHub {
-                            owner = "zdharma-continuum";
-                            repo = "fast-syntax-highlighting";
-                            rev = "585c089968caa1c904cbe926ff04a1be9e3d8f42";
-                            sha256 = "sha256-x+4C2u03RueNo6/ZXsueqmYoPIpDHnKAZXP5IiKsidE=";
-                        };
-                    }
-                    {
-                        name = "z";
-                        file = "zsh-z.plugin.zsh";
-                        src = pkgs.fetchFromGitHub {
-                            owner = "agkozak";
-                            repo = "zsh-z";
-                            rev = "b30bc6050e77abe30ce36761d18ed696e5410f16";
-                            sha256 = "sha256-TSX6KooWYGf1NDlD4A3o6CmSsyy1JL7bPeKsuCOuUhY=";
-                        };
-                    }
-                    rec {
-                        name = "system-wide-clipboard";
-                        file = "system-wide-clipboard.zsh";
-                        src = pkgs.stdenv.mkDerivation rec {
-                            name    = "system-wide-clipboard";
-                            src = pkgs.fetchurl {
-                                name = "system-wide-clipboard.zsh";
-                                url = "https://gist.githubusercontent.com/HyunggyuJang/850b22128515b257ff3da73b589d7d3b/raw/3660504d2874a46a048b291a8ceabe8af9778294/system-wide-clipboard.zsh";
-                                sha256 = "sha256-fmLcHhD2Cb45OEmIQi8mp9Q1uid1Osy9/kFxelHp70Y=";
-                            };
+                               plugins = [
+                                 {
+                                   name = "autopair";
+                                   file = "autopair.zsh";
+                                   src = pkgs.fetchFromGitHub {
+                                     owner = "hlissner";
+                                     repo = "zsh-autopair";
+                                     rev = "9d003fc02dbaa6db06e6b12e8c271398478e0b5d";
+                                     sha256 = "sha256-hwZDbVo50kObLQxCa/wOZImjlH4ZaUI5W5eWs/2RnWg=";
+                                   };
+                                 }
+                                 {
+                                   name = "fast-syntax-highlighting";
+                                   file = "fast-syntax-highlighting.plugin.zsh";
+                                   src = pkgs.fetchFromGitHub {
+                                     owner = "zdharma-continuum";
+                                     repo = "fast-syntax-highlighting";
+                                     rev = "585c089968caa1c904cbe926ff04a1be9e3d8f42";
+                                     sha256 = "sha256-x+4C2u03RueNo6/ZXsueqmYoPIpDHnKAZXP5IiKsidE=";
+                                   };
+                                 }
+                                 {
+                                   name = "z";
+                                   file = "zsh-z.plugin.zsh";
+                                   src = pkgs.fetchFromGitHub {
+                                     owner = "agkozak";
+                                     repo = "zsh-z";
+                                     rev = "b30bc6050e77abe30ce36761d18ed696e5410f16";
+                                     sha256 = "sha256-TSX6KooWYGf1NDlD4A3o6CmSsyy1JL7bPeKsuCOuUhY=";
+                                   };
+                                 }
+                                 rec {
+                                   name = "system-wide-clipboard";
+                                   file = "system-wide-clipboard.zsh";
+                                   src = pkgs.stdenv.mkDerivation rec {
+                                     name    = "system-wide-clipboard";
+                                     src = pkgs.fetchurl {
+                                       name = "system-wide-clipboard.zsh";
+                                       url = "https://gist.githubusercontent.com/HyunggyuJang/850b22128515b257ff3da73b589d7d3b/raw/3660504d2874a46a048b291a8ceabe8af9778294/system-wide-clipboard.zsh";
+                                       sha256 = "sha256-fmLcHhD2Cb45OEmIQi8mp9Q1uid1Osy9/kFxelHp70Y=";
+                                     };
 
-                            phases = "installPhase";
+                                     phases = "installPhase";
 
-                            installPhase = ''
+                                     installPhase = ''
                             mkdir -p $out
                             cp ${src} $out/${file}
                             '';
-                        };
-                    }
-                ];
-                initExtraBeforeCompInit = ''
+                                   };
+                                 }
+                               ];
+                               initExtraBeforeCompInit = ''
         if [ "$INSIDE_EMACS" != vterm ]; then
             echo >&2 "Homebrew completion path..."
             if [ -f ${brewpath}/bin/brew ]; then
@@ -3941,7 +2285,7 @@ yabai -m rule --add app="^zoom$" space=4
             fi
         fi
     '';
-                initExtra = ''
+                               initExtra = ''
         PROMPT=' %{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
         local prompt_suffix="%(?:%{$fg_bold[green]%}‚ùØ :%{$fg_bold[red]%}‚ùØ%{$reset_color%} "
         function get_pwd(){
@@ -3969,7 +2313,7 @@ yabai -m rule --add app="^zoom$" space=4
             else
                 printf "\e]%s\e\\" "$1"
             fi
-        }
+                                                                                }
 
         if [ "$INSIDE_EMACS" != vterm ]; then
             export NVM_DIR="$HOME/.nvm"
@@ -3980,253 +2324,157 @@ yabai -m rule --add app="^zoom$" space=4
             [[ ! -r /Users/hyunggyujang/.opam/opam-init/init.zsh ]] || source /Users/hyunggyujang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
         fi
         '';
-            };
+                             };
 
-            programs.fzf.enable = true;
-            programs.fzf.enableZshIntegration = true;
-            programs.browserpass.enable = true;
-            programs.browserpass.browsers = [ "firefox" ];
-            programs.firefox.enable = true;
-            programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
-            programs.firefox.profiles =
-                {
-                    home = {
-                        id = 0;
-                        settings = {
-                            "app.update.auto" = false;
-                            "browser.startup.homepage" = "https://start.duckduckgo.com";
-                            "browser.search.region" = "KR";
-                            "browser.search.countryCode" = "KR";
-                            "browser.search.isUS" = true;
-                            "browser.ctrlTab.recentlyUsedOrder" = false;
-                            "browser.newtabpage.enabled" = false;
-                            "browser.bookmarks.showMobileBookmarks" = true;
-                            "browser.uidensity" = 1;
-                            "browser.urlbar.placeholderName" = "DuckDuckGo";
-                            "browser.urlbar.update1" = true;
-                            "distribution.searchplugins.defaultLocale" = "en-KR";
-                            "general.useragent.locale" = "en-KR";
-                            "identity.fxaccounts.account.device.name" = localconfig.hostname;
-                            "privacy.trackingprotection.enabled" = true;
-                            "privacy.trackingprotection.socialtracking.enabled" = true;
-                            "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
-                            "reader.color_scheme" = "sepia";
-                            "services.sync.declinedEngines" = "addons,passwords,prefs";
-                            "services.sync.engine.addons" = false;
-                            "services.sync.engineStatusChanged.addons" = true;
-                            "services.sync.engine.passwords" = false;
-                            "services.sync.engine.prefs" = false;
-                            "services.sync.engineStatusChanged.prefs" = true;
-                            "signon.rememberSignons" = false;
-                            "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-                        };
-                        userChrome = (
-                            builtins.readFile (
-                                pkgs.substituteAll {
-                                    name = "homeUserChrome";
-                                    src = pkgs.fetchurl {
-                                        name = "userChrome.css";
-                                        url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
-                                        sha256 = "1ia2azcrrbc70m8hcn7mph1allh2fly9k2kqmi4qy6mx5lf12kn8";
-                                    };
-                                    tabLineColour = "#5e81ac";
-                                }
-                            )
-                        );
-                        extensions =
-                          with nur.repos.rycee.firefox-addons; [
-                            ublock-origin
-                            browserpass
-                            tridactyl
-                            darkreader
-                            # For work with kazuki
-                            metamask
-                            # Need to add zotero-connector
-                          ];
-                    };
-                };
-        };
-                             in
-                               if localconfig.hostname == "classic" then {
-                                   hynggyujang = userconfig // {
-                                       home.sessionVariables = {
-                                           FONTCONFIG_FILE    = "${xdg.configHome}/fontconfig/fonts.conf";
-                                           FONTCONFIG_PATH    = "${xdg.configHome}/fontconfig";
-                                       };
+                             programs.fzf.enable = true;
+                             programs.fzf.enableZshIntegration = true;
+                             programs.browserpass.enable = true;
+                             programs.browserpass.browsers = [ "firefox" ];
+                             programs.firefox.enable = true;
+                             programs.firefox.package = pkgs.runCommand "firefox-0.0.0" {} "mkdir $out";
+                             programs.firefox.profiles =
+                               {
+                                 home = {
+                                   id = 0;
+                                   settings = {
+                                     "app.update.auto" = false;
+                                     "browser.startup.homepage" = "https://start.duckduckgo.com";
+                                     "browser.search.region" = "KR";
+                                     "browser.search.countryCode" = "KR";
+                                     "browser.search.isUS" = true;
+                                     "browser.ctrlTab.recentlyUsedOrder" = false;
+                                     "browser.newtabpage.enabled" = false;
+                                     "browser.bookmarks.showMobileBookmarks" = true;
+                                     "browser.uidensity" = 1;
+                                     "browser.urlbar.placeholderName" = "DuckDuckGo";
+                                     "browser.urlbar.update1" = true;
+                                     "distribution.searchplugins.defaultLocale" = "en-KR";
+                                     "general.useragent.locale" = "en-KR";
+                                     "identity.fxaccounts.account.device.name" = localconfig.hostname;
+                                     "privacy.trackingprotection.enabled" = true;
+                                     "privacy.trackingprotection.socialtracking.enabled" = true;
+                                     "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
+                                     "reader.color_scheme" = "sepia";
+                                     "services.sync.declinedEngines" = "addons,passwords,prefs";
+                                     "services.sync.engine.addons" = false;
+                                     "services.sync.engineStatusChanged.addons" = true;
+                                     "services.sync.engine.passwords" = false;
+                                     "services.sync.engine.prefs" = false;
+                                     "services.sync.engineStatusChanged.prefs" = true;
+                                     "signon.rememberSignons" = false;
+                                     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
                                    };
-                               } else {
-                                   hyunggyujang = userconfig;
+                                   userChrome = (
+                                     builtins.readFile (
+                                       pkgs.substituteAll {
+                                         name = "homeUserChrome";
+                                         src = pkgs.fetchurl {
+                                           name = "userChrome.css";
+                                           url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
+                                           sha256 = "1ia2azcrrbc70m8hcn7mph1allh2fly9k2kqmi4qy6mx5lf12kn8";
+                                         };
+                                         tabLineColour = "#5e81ac";
+                                       }
+                                     )
+                                   );
+                                   extensions =
+                                     with nur.repos.rycee.firefox-addons; [
+                                       ublock-origin
+                                       browserpass
+                                       tridactyl
+                                       darkreader
+                                       # For work with kazuki
+                                       metamask
+                                       # Need to add zotero-connector
+                                     ];
+                                 };
                                };
-        system = {
-            defaults.NSGlobalDomain = {
-                ApplePressAndHoldEnabled = false;
-                AppleKeyboardUIMode = 3;
-                AppleShowScrollBars = "WhenScrolling";
-                AppleInterfaceStyleSwitchesAutomatically = true;
-                NSAutomaticCapitalizationEnabled = false;
-                NSAutomaticDashSubstitutionEnabled = false;
-                NSAutomaticPeriodSubstitutionEnabled = false;
-                NSAutomaticQuoteSubstitutionEnabled = false;
-                NSAutomaticSpellingCorrectionEnabled = false;
-                NSUseAnimatedFocusRing = false;
-                _HIHideMenuBar = true;
-            };
+  };
+in
+{
+  hyunggyujang = userconfig;
+};
+system = {
+  defaults.NSGlobalDomain = {
+    ApplePressAndHoldEnabled = false;
+    AppleKeyboardUIMode = 3;
+    AppleShowScrollBars = "WhenScrolling";
+    AppleInterfaceStyleSwitchesAutomatically = true;
+    NSAutomaticCapitalizationEnabled = false;
+    NSAutomaticDashSubstitutionEnabled = false;
+    NSAutomaticPeriodSubstitutionEnabled = false;
+    NSAutomaticQuoteSubstitutionEnabled = false;
+    NSAutomaticSpellingCorrectionEnabled = false;
+    NSUseAnimatedFocusRing = false;
+    _HIHideMenuBar = true;
+  };
 
-            defaults.dock.orientation = "left";
+  defaults.dock.orientation = "left";
 
-            defaults.loginwindow.GuestEnabled = false;
+  defaults.loginwindow.GuestEnabled = false;
 
-        };
-        users = {
-            users.hyunggyujang = {
-                name = "Hyunggyu Jang";
-                home = "${hgj_home}";
-                shell = pkgs.zsh;
-            };
-        } //
-        (if localconfig.hostname == "silicon" then {
-            # For single user hack
-            nix.configureBuildUsers = mkForce false;
-            knownGroups = mkForce [];
-        } else {});
+};
+users = {
+  users.hyunggyujang = {
+    name = "Hyunggyu Jang";
+    home = "${hgj_home}";
+    shell = pkgs.zsh;
+  };
+}
+environment = {
+  darwinConfig = "${hgj_darwin_home}/configuration.nix";
+  variables = {
+    EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
+    VISUAL = "$EDITOR";
+    LANG = "en_US.UTF-8";
+    DOOMDIR = "${hgj_home}/notes/org/manager";
+    EMACSDIR = "${hgj_home}/.emacs.d";
+    DOOMLOCALDIR = "${hgj_home}/.doom";
+    SHELL = "${pkgs.zsh}/bin/zsh";
+    LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
+  };
+  systemPath = [
+    "$HOME/${hgj_localbin}"
+    # Easy access to Doom
+    # SystemPath added before to the variables, it can be inspected at /etc/static/zshenv,
+    # which source *-set-environment file.
+    "${environment.variables.EMACSDIR}/bin"
+    "${brewpath}/bin"
+    # rust
+    "$HOME/.cargo/bin"
+    # ruby
+    "$HOME/.rbenv/shims"
+  ];
+  systemPackages = with pkgs; [
+    nixfmt
+    yaskkserv2
+    darwin-zsh-completions
+    skhd
+    shellcheck
+    solc-select
+    tree-sitter
+    stack
+    llvm
+    # WASM
+    rustup
+    openssl
+  ];
+  pathsToLink = [
+    "/lib"
+  ];
+  shells = [
+    pkgs.zsh
+  ];
+});
 
-        environment = {
-            darwinConfig = "${hgj_darwin_home}/configuration.nix";
-            variables = {
-                EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
-                VISUAL = "$EDITOR";
-                LANG = "en_US.UTF-8";
-                DOOMDIR = "${hgj_home}/notes/org/manager";
-                EMACSDIR = "${hgj_home}/.emacs.d";
-                DOOMLOCALDIR = "${hgj_home}/.doom";
-                SHELL = "${pkgs.zsh}/bin/zsh";
-                SPACEHAMMER_REPL = "${hgj_home}/.luarocks/bin/fennel ${shevek}/shevek.fnl localhost:7888";
-            } //
-            ( if localconfig.hostname == "classic" then {
-                NODE_PATH =  "/run/current-system/sw/lib/node_modules";
-            } else {
-                LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
-            });
-            systemPath = [
-                "$HOME/${hgj_localbin}"
-                # Easy access to Doom
-                # SystemPath added before to the variables, it can be inspected at /etc/static/zshenv,
-                # which source *-set-environment file.
-                "${environment.variables.EMACSDIR}/bin"
-                "${brewpath}/bin"
-                # "$(${brewpath}/bin/python -m site --user-base)/bin"
-                # rust
-                "$HOME/.cargo/bin"
-                # ruby
-                "$HOME/.rbenv/shims"
-            ];
-            profiles = mkForce ([ "$HOME/.nix-profile" "/run/current-system/sw" ]);
-        } // (if localconfig.hostname == "classic" then {
-            systemPackages = with pkgs; [
-                git
-                ((emacsPackagesNgGen emacs).emacsWithPackages (epkgs: with epkgs; [
-                    vterm
-                ]))
-                afew
-                notmuch
-                msmtp
-                # From doom
-                (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
-                jq
-                fd
-                djvulibre
-                graphviz
-                zstd
-                coreutils-prefixed
-                nodejs
-                isync
-                nixfmt
-                shellcheck
-                ripgrep
-                # desktop-file-utils
-                # inkscape
-                gmailieer
-                findutils
-                fontconfig
-                kitty
-                fzf
-                bashInteractive
-                nodePackages.node2nix
-                # qutebrowser
-                # for qutebrowser userscript packages
-                nodePackages.qutejs
-                nodePackages.jsdom
-                nodePackages."@mozilla/readability"
-                # readability packages
-                mach-nix.mach-nix
-                myPython
-                proselint
-                texlive.combined.scheme-medium
-                imagemagick
-                # For octave
-                ((octave.override {inherit (pkgs) gnuplot;}).withPackages (opkgs: with opkgs; [ control geometry ]))
-                gnuplot
-                epstool
-                lean
-                pandoc
-                # for pdf-tools
-                gcc gnumake automake autoconf pkgconfig libpng zlib poppler
-                (lua5_3.withPackages (ps: with ps; [fennel]))
-                gnupg
-                pass
-                # fish
-                yaskkserv2
-                cargo
-                skhd
-            ];
-            shells = [
-                pkgs.bashInteractive
-                pkgs.zsh
-            ];
-            pathsToLink = [
-                "/lib/node_modules"
-                "/share/emacs"
-                "/share/lua"
-                "/lib/lua"
-            ];
-            loginShell = "${pkgs.zsh}/bin/zsh -l";
-        } else {
-            systemPackages = with pkgs; [
-                nixfmt
-                clojure
-                leiningen
-                yaskkserv2
-                darwin-zsh-completions
-                skhd
-                shellcheck # Not yet available
-                # octave # nix-build-qrupdate aren't ready -- See https://github.com/NixOS/nixpkgs/issues/140041
-                solc-select
-                # ligo-lsp
-                tree-sitter
-                stack
-                llvm
-                # Tezos
-                # WASM
-                rustup
-                openssl
-                binaryen
-            ];
-            pathsToLink = [
-              "/lib"
-            ];
-            shells = [
-                pkgs.zsh
-            ];
-        });
-
-        nixpkgs.overlays =
-            let path = ../overlays;
-            in with builtins;
-                [
-                    (self: super: {
-                        darwin-zsh-completions = super.runCommandNoCC "darwin-zsh-completions-0.0.0"
-                            { preferLocalBuild = true; }
-                            ''
+nixpkgs.overlays =
+  let path = ../overlays;
+  in with builtins;
+    [
+      (self: super: {
+        darwin-zsh-completions = super.runCommandNoCC "darwin-zsh-completions-0.0.0"
+          { preferLocalBuild = true; }
+          ''
           mkdir -p $out/share/zsh/site-functions
           cat <<-'EOF' > $out/share/zsh/site-functions/_darwin-rebuild
           #compdef darwin-rebuild
@@ -4252,347 +2500,24 @@ yabai -m rule --add app="^zoom$" space=4
           esac
           EOF
         '';})
-                ] ++ map (n: import (path + ("/" + n)))
-                    (filter (n: match ".*\\.nix" n != null ||
-                                pathExists (path + ("/" + n + "/default.nix")))
-                        (attrNames (readDir path)));
+    ] ++ map (n: import (path + ("/" + n)))
+      (filter (n: match ".*\\.nix" n != null ||
+                  pathExists (path + ("/" + n + "/default.nix")))
+        (attrNames (readDir path)));
 
-        programs = {
-            zsh = {
-                enable = true;
-                enableCompletion = false;
-                enableBashCompletion = false;
-            };
-        };
-
-        # Manual setting for workaround of org-id: 7127dc6e-5a84-476c-8d31-59737a4f85f9
-        launchd.daemons = if localconfig.hostname == "classic" then {
-            yabai-sa = {
-                script = ''
-          ${pkgs.yabai}/bin/yabai --check-sa || ${pkgs.yabai}/bin/yabai --install-sa
-        '';
-
-                serviceConfig.RunAtLoad = true;
-                serviceConfig.KeepAlive.SuccessfulExit = false;
-            };
-        } else {};
-        services =
-            (if localconfig.hostname == "classic" then {
-                yabai = {
-                    enable = true;
-                    package = pkgs.yabai;
-                    config = {
-                        mouse_follows_focus        = "off";
-                        focus_follows_mouse        = "off";
-                        window_placement           = "second_child";
-                        window_topmost             = "on";
-                        window_opacity             = "on";
-                        window_opacity_duration    = 0.0;
-                        active_window_opacity      = 1.0;
-                        normal_window_opacity      = 0.90;
-                        window_shadow              = "off";
-                        window_border              = "off";
-                        split_ratio                = 0.50;
-                        auto_balance               = "on";
-                        mouse_modifier             = "fn";
-                        mouse_action1              = "move";
-                        mouse_action2              = "resize";
-
-                        # general space settings;
-                        layout                     = "bsp";
-                        top_padding                = 0;
-                        bottom_padding             = 0;
-                        left_padding               = 0;
-                        right_padding              = 0;
-                        window_gap                 = 0;
-                    };
-                    extraConfig = ''
-          yabai -m rule --add app="^System Preferences$" manage=off
-          yabai -m rule --add app="^Karabiner-Elements$" manage=off
-          yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off sticky=on
-          yabai -m rule --add app=Emacs space=1
-          yabai -m rule --add app=qutebrowser space=2
-          yabai -m rule --add app=Anki space=3
-          yabai -m rule --add app="Microsoft Teams" space=4
-          yabai -m rule --add app=zoom space=4
-          yabai -m rule --add app="Google Chrome" space=5
-        '';
-                };
-                skhd = {
-                    enable = true;
-                    skhdConfig = ''
-          ################################################################################
-          #
-          # window manipulation
-          #
-
-          # ^ = 0x18
-          ctrl + cmd - 0x18 : yabai -m window --focus recent
-          ctrl + cmd - h : yabai -m window --focus west
-          ctrl + cmd - j : yabai -m window --focus south
-          ctrl + cmd - k : yabai -m window --focus north
-          ctrl + cmd - l : yabai -m window --focus east
-
-          ctrl + cmd - r : yabai -m space --rotate 90
-          ctrl + cmd + shift - r : yabai -m space --rotate 270
-
-          :: mywindow @
-          :: swap @
-          :: warp @
-          :: myinsert @
-
-          ctrl + cmd - w ; mywindow
-          mywindow < ctrl - g ; default
-
-          mywindow < h : yabai -m window west --resize right:-20:0 2> /dev/null || yabai -m window --resize right:-20:0
-          mywindow < j : yabai -m window north --resize bottom:0:20 2> /dev/null || yabai -m window --resize bottom:0:20
-          mywindow < k : yabai -m window south --resize top:0:-20 2> /dev/null || yabai -m window --resize top:0:-20
-          mywindow < l : yabai -m window east --resize left:20:0 2> /dev/null || yabai -m window --resize left:20:0
-          mywindow < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
-            | xargs -I{} yabai -m window --focus {}
-          mywindow < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
-            | xargs -I{} yabai -m window --focus {}
-          mywindow < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
-            | xargs -I{} yabai -m window --focus {}
-          mywindow < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
-            | xargs -I{} yabai -m window --focus {}
-          mywindow < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
-            | xargs -I{} yabai -m window --focus {}
-          mywindow < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
-            | xargs -I{} yabai -m window --focus {}
-          mywindow < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
-            | xargs -I{} yabai -m window --focus {}
-          mywindow < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
-            | xargs -I{} yabai -m window --focus {}
-          mywindow < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
-            | xargs -I{} yabai -m window --focus {}
-
-          mywindow < ctrl + cmd - w ; swap
-          swap < ctrl - g ; default
-
-          swap < n : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | reverse | nth(index(map(select(.focused == 1))) - 1).id" \
-            | xargs -I{} yabai -m window --swap {}
-
-          swap < p: yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(index(map(select(.focused == 1))) - 1).id" \
-            | xargs -I{} yabai -m window --swap {}
-
-          swap < h : skhd -k "ctrl - g" ; yabai -m window --swap west
-          swap < j : skhd -k "ctrl - g" ; yabai -m window --swap south
-          swap < k : skhd -k "ctrl - g" ; yabai -m window --swap north
-          swap < l : skhd -k "ctrl - g" ; yabai -m window --swap east
-
-          swap < 0x18 : skhd -k "ctrl - g" ; yabai -m window --swap recent
-
-          swap < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
-            | xargs -I{} yabai -m window --swap {}
-          swap < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
-            | xargs -I{} yabai -m window --swap {}
-          swap < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
-            | xargs -I{} yabai -m window --swap {}
-          swap < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
-            | xargs -I{} yabai -m window --swap {}
-          swap < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
-            | xargs -I{} yabai -m window --swap {}
-          swap < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
-            | xargs -I{} yabai -m window --swap {}
-          swap < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
-            | xargs -I{} yabai -m window --swap {}
-          swap < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
-            | xargs -I{} yabai -m window --swap {}
-          swap < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
-            | xargs -I{} yabai -m window --swap {}
-
-
-          mywindow < w ; warp
-          warp < ctrl - g ; default
-          warp < h : skhd -k "ctrl - g" ; \
-            yabai -m window --warp west
-          warp < j : skhd -k "ctrl - g" ; \
-            yabai -m window --warp south
-          warp < k : skhd -k "ctrl - g" ; \
-            yabai -m window --warp north
-          warp < l : skhd -k "ctrl - g" ; \
-            yabai -m window --warp east
-          warp < 1 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(0).id" \
-            | xargs -I{} yabai -m window --warp {}
-          warp < 2 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(1).id" \
-            | xargs -I{} yabai -m window --warp {}
-          warp < 3 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(2).id" \
-            | xargs -I{} yabai -m window --warp {}
-          warp < 4 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(3).id" \
-            | xargs -I{} yabai -m window --warp {}
-          warp < 5 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(4).id" \
-            | xargs -I{} yabai -m window --warp {}
-          warp < 6 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(5).id" \
-            | xargs -I{} yabai -m window --warp {}
-          warp < 7 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(6).id" \
-            | xargs -I{} yabai -m window --warp {}
-          warp < 8 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(7).id" \
-            | xargs -I{} yabai -m window --warp {}
-          warp < 9 : skhd -k "ctrl - g" ; yabai -m query --spaces \
-            | jq -re ".[] | select(.visible == 1).index" \
-            | xargs -I{} yabai -m query --windows --space {} \
-            | jq -sre "add | sort_by(.display, .frame.x, .frame.y, .id) | nth(8).id" \
-            | xargs -I{} yabai -m window --warp {}
-
-          mywindow < i ; myinsert
-          myinsert < ctrl - g ; default
-
-          myinsert < h : skhd -k "ctrl - g"; yabai -m window --insert west
-          myinsert < j : skhd -k "ctrl - g"; yabai -m window --insert north
-          myinsert < k : skhd -k "ctrl - g"; yabai -m window --insert south
-          myinsert < l : skhd -k "ctrl - g"; yabai -m window --insert east
-
-          ctrl + cmd - return : yabai -m window --toggle zoom-fullscreen
-
-          ################################################################################
-          #
-          # space manipulation
-          #
-
-          cmd - 1 : yabai -m space --focus 1
-          cmd - 2 : yabai -m space --focus 2
-          cmd - 3 : yabai -m space --focus 3
-          cmd - 4 : yabai -m space --focus 4
-          cmd - 5 : yabai -m space --focus 5
-          cmd - 6 : yabai -m space --focus 6
-
-          # Move currently focused window to the specified space
-          ctrl + cmd - 1 : yabai -m window --space 1; yabai -m space --focus 1
-          ctrl + cmd - 2 : yabai -m window --space 2; yabai -m space --focus 2
-          ctrl + cmd - 3 : yabai -m window --space 3; yabai -m space --focus 3
-          ctrl + cmd - 4 : yabai -m window --space 4; yabai -m space --focus 4
-          ctrl + cmd - 5 : yabai -m window --space 5; yabai -m space --focus 5
-          ctrl + cmd - 6 : yabai -m window --space 6; yabai -m space --focus 6
-
-          ################################################################################
-          #
-          # Applications
-          #
-
-          ctrl + cmd - c [
-            "emacs" : skhd -k "ctrl - x" ; skhd -k "ctrl - c"
-            "finder" : skhd -k "cmd - w"
-            # "Google Chrome" : skhd -k "cmd - w" # I'll use chrome in app mode while using yabai!
-            "kitty" : skhd -k "cmd - w"
-            *       : skhd -k "cmd - q"
-          ]
-
-          ################################################################################
-          #
-          # Mode for opening applications
-          #
-
-          :: open @
-          ctrl + cmd - o ; open
-          open < ctrl - g ; default
-
-          # emacs
-          ## Doom
-          open < d : echo "doom" > $HOME/.emacs-profile; open -a "$HOME/Applications/Nix Apps/Emacs.app"&; skhd -k "ctrl - g"
-          ## d12Frosted
-          open < f : echo "d12frosted" > $HOME/.emacs-profile; open -a "$HOME/Applications/Nix Apps/Emacs.app"&; skhd -k "ctrl - g"
-          open < e : open -a "$HOME/Applications/Nix Apps/Emacs.app"&; skhd -k "ctrl - g"
-          open < shift - e : DEBUG=1 open -a "$HOME/Applications/Nix Apps/Emacs.app"&; skhd -k "ctrl - g"
-
-          # kitty or terminal
-          open < t : open_kitty &; skhd -k "ctrl - g"
-
-          # Internet Browser
-          open < b : open -a "/Applications/qutebrowser.app" &; skhd -k "ctrl - g"
-          ctrl + cmd - e : doom everywhere
-          ctrl + shift + cmd - e : skhd -k "cmd - a"; doom everywhere
-        '';
-                };
-            } else (if localconfig.hostname == "silicon" then {
-                nix-daemon.enable = false;
-                skhd = {
-                    enable = true;
-                    skhdConfig = ''
+programs = {
+  zsh = {
+    enable = true;
+    enableCompletion = false;
+    enableBashCompletion = false;
+  };
+};
+services =
+  {
+    nix-daemon.enable = true;
+    skhd = {
+      enable = true;
+      skhdConfig = ''
 ################################################################################
 #
 # window manipulation
@@ -4724,207 +2649,137 @@ open < c : skhd -k "ctrl - g"; open -a "Visual Studio Code"
 
 open < i : skhd -k "ctrl - g"; doom everywhere
 '';
-                };
-            } else {
-                nix-daemon.enable = true;
-            }));
-        nix = {
-            trustedUsers = [ "@admin" "hyunggyujang"];
-            package = pkgs.nix;
-        } // (if localconfig.hostname == "silicon" then {
-            # See Fix ‚ö†Ô∏è ‚Äî Unnecessary NIX_PATH entry for single user installation in nix_darwin.org
-            nixPath = mkForce [
-                { darwin-config = "${config.environment.darwinConfig}"; }
-                { localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix"; }
-                "$HOME/.nix-defexpr/channels"
-            ];
-        } else {
-            nixPath = [
-                { localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix"; }
-            ];
-        });
+    };
+  };
+nix = {
+  trustedUsers = [ "@admin" "hyunggyujang"];
+  package = pkgs.nix;
+  nixPath = [
+    { localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix"; }
+  ];
+};
 
-        homebrew =  {
-            enable = true;
-            autoUpdate = true;
-            cleanup = "zap";
-            global.brewfile = true;
-        } //
-        (if localconfig.hostname == "classic" then {
-            taps = [
-                "homebrew/cask"
-                "homebrew/core"
-                "homebrew/services"
-            ];
-            casks = [
-                "altserver"
-                "karabiner-elements"
-                "zotero"
-                "microsoft-teams"
-                "zoom"
-                "anki"
-                "ukelele"
-                "aquaskk"
-            ];
-            brews = [
-                "pngpaste"
-            ];
-        } else {
-            brewPrefix = "/opt/homebrew/bin";
-            taps = [
-                "homebrew/bundle"
-                "homebrew/cask"
-                "homebrew/core"
-                "homebrew/services"
-                "homebrew/cask-fonts"
-                # For beta version
-                "homebrew/cask-versions"
-                "railwaycat/emacsmacport"
-                "borkdude/brew"
-                # yabai
-                "koekeishiya/formulae"
-                # system data cleaner
-                "mac-cleanup/mac-cleanup-py"
-            ];
-            brews = [
-                "pngpaste"
-                "jq"
-                "msmtp"
-                "aspell"
-                "graphviz"
-                "zstd"
-                "isync"
-                "libvterm"
-                "ripgrep"
-                "git"
-                "gnupg"
-                "pass"
-                "lua"
-                "luarocks"
-                "gmp"
-                "coreutils"
-                "gnuplot"
-                "imagemagick"
-                "octave"
-                "fd"
-                "poppler"
-                "automake"
-                "cmake"
-                "python"
-                "findutils"
-                "z3"
-                "pandoc"
-                "pinentry-mac"
-                # Fonts
-                "svn"
-                # emacs-mac dependencies
-                "jansson"
-                "libxml2"
-                # suggested by Doom emacs
-                "pyenv"
-                "jupyterlab"
-                # For projectile
-                "ctags"
-                # Lexic
-                "sdcv"
-                # Prover
-                "lean"
-                # Clojure
-                "clj-kondo"
-                # Spacehammer
-                "fnlfmt"
-                # ISUCON
-                "go"
-                "mysql"
-                # Blog
-                "hugo"
-                # Javascript
-                "nvm"
-                # Arthswap slither
-                "poetry"
-                # emacs-mac
-                "libgccjit"
-                # Garrigue project
-                # "ocaml"
-                "opam"
-                # "coq"
-                "parallel"
-                "youtube-dl"
-                # By Sehun
-                # "htop-osx"
-                # GPU programming
-                "glslang"
-                # tezos
-                "hidapi"
-                # To cleanup system data
-                "mac-cleanup-py"
-                # python
-                "pyright"
-                # mail
-                "notmuch"
-                # rust-implemented editor
-                "helix"
-                # moonlander
-                "libusb"
-                # applied mathematics
-                "rbenv"
-                # minicaml
-                "rlwrap"
-            ];
-            casks = [
-                "appcleaner"
-                "slack"
-                "basictex"
-                "kitty"
-                "aquaskk"
-                "hammerspoon"
-                "karabiner-elements"
-                "microsoft-powerpoint"
-                "onedrive"
-                "microsoft-teams"
-                "zoom"
-                "ukelele"
-                "zotero"
-                # elegant-emacs
-                "font-roboto-mono"
-                "font-roboto-slab"
-                # math font
-                "font-dejavu"
-                # beamer with xelatex
-                "font-fira-sans"
-                "font-fira-mono"
-                "discord"
-                # Custom brew to install 2.2.18 version
-                # "vagrant-m1"
-                # "vagrant-vmware-utility"
-                # "vmware-fusion-tech-preview"
-                # Docker
-                "docker"
-                # VPN
-                "Tunnelblick"
-                # Garrigue lab
-                "element"
-                "skype"
-                # Data analysis class
-                "microsoft-excel"
-                # School
-                "microsoft-word"
-                # audit
-                "telegram"
-                # For google meet
-                "google-chrome"
-                # For Bing AI
-                "microsoft-edge"
-                # Web design
-                "figma"
-            ] ++ (if localconfig.hostname == "work" then [
-                # IBM fonts
-                "font-ibm-plex"
-            ] else []);
-            extraConfig = ''
+homebrew =  {
+  enable = true;
+  autoUpdate = true;
+  cleanup = "zap";
+  global.brewfile = true;
+  brewPrefix = "/opt/homebrew/bin";
+  taps = [
+    "homebrew/bundle"
+    "homebrew/cask"
+    "homebrew/core"
+    "homebrew/services"
+    "homebrew/cask-fonts"
+    # For beta version
+    "homebrew/cask-versions"
+    "railwaycat/emacsmacport"
+    "borkdude/brew"
+    # yabai
+    "koekeishiya/formulae"
+    # system data cleaner
+    "mac-cleanup/mac-cleanup-py"
+  ];
+  brews = [
+    "pngpaste"
+    "jq"
+    "msmtp"
+    "aspell"
+    "graphviz"
+    "zstd"
+    "isync"
+    "libvterm"
+    "ripgrep"
+    "git"
+    "gnupg"
+    "pass"
+    "lua"
+    "gmp"
+    "coreutils"
+    "gnuplot"
+    "imagemagick"
+    "fd"
+    "poppler"
+    "automake"
+    "cmake"
+    "python"
+    "findutils"
+    "pandoc"
+    "pinentry-mac"
+    # Fonts
+    "svn"
+    # emacs-mac dependencies
+    "jansson"
+    "libxml2"
+    # suggested by Doom emacs
+    "pyenv"
+    "jupyterlab"
+    # For projectile
+    "ctags"
+    # Lexic
+    "sdcv"
+    # Javascript
+    "nvm"
+    # TODO: remove this dependency for slither
+    "poetry"
+    # emacs-mac
+    "libgccjit"
+    # Garrigue project
+    # "ocaml"
+    "opam"
+    # "coq"
+    "parallel"
+    "youtube-dl"
+    # To cleanup system data
+    "mac-cleanup-py"
+    # python
+    "pyright"
+    # mail
+    "notmuch"
+    # moonlander
+    "libusb"
+    # minicaml
+    "rlwrap"
+  ];
+  casks = [
+    "appcleaner"
+    "slack"
+    "basictex"
+    "kitty"
+    "aquaskk"
+    "hammerspoon"
+    "karabiner-elements"
+    "onedrive"
+    "zoom"
+    "ukelele"
+    "zotero"
+    # elegant-emacs
+    "font-roboto-mono"
+    "font-roboto-slab"
+    # math font
+    "font-dejavu"
+    # beamer with xelatex
+    "font-fira-sans"
+    "font-fira-mono"
+    "discord"
+    # Docker
+    "docker"
+    # Garrigue lab
+    "element"
+    "skype"
+    # Data analysis class
+    "microsoft-excel"
+    # School
+    "microsoft-word"
+    # audit
+    "telegram"
+    # For Bing AI + Google meet
+    "microsoft-edge"
+  ];
+  extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
         cask "firefox", args: { language: "en-KR" }
         brew "yabai", start_service: true
       '';
-        });
-    }
+};
+  }
