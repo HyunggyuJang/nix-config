@@ -2675,7 +2675,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         };
       };
     nix = {
-      settings.trusted-users = [ "@admin" "hyunggyujang"];
+      settings.trusted-users = ["root" "hyunggyujang"];
       package = pkgs.nix;
       nixPath = [
         {
@@ -2751,6 +2751,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "poetry"
         # emacs-mac
         "libgccjit"
+        "gcc"
         # Garrigue project
         # "ocaml"
         "opam"
