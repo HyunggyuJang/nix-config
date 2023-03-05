@@ -2476,7 +2476,7 @@ yabai -m rule --add app="^zoom$" space=4
         rustup
         openssl
         # Mail
-        lieer
+        # lieer
       ];
       pathsToLink = [
         "/lib"
