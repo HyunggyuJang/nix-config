@@ -1294,7 +1294,8 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
           select = "underline"
         '';
           "zathura/zathurarc".text = "set selection-clipboard clipboard";
-          "yabai/yabairc".text = ''
+          "yabai/yabairc" = {
+            text = ''
 yabai -m config active_window_opacity 1.000000
 yabai -m config auto_balance on
 yabai -m config bottom_padding 0
@@ -1324,7 +1325,9 @@ yabai -m rule --add app=Anki space=3
 yabai -m rule --add app="^Microsoft Teams$" space=4
 yabai -m rule --add app="^zoom$" space=4
 '';
-          "karabiner/karabiner.json".text = ''
+            executable = true;
+          };
+            "karabiner/karabiner.json".text = ''
 {
     "global": {
         "check_for_updates_on_startup": false,
