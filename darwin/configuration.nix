@@ -2771,6 +2771,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "libusb"
         # minicaml
         "rlwrap"
+        # Astar
+        "protobuf"
       ];
       casks = [
         "appcleaner"
