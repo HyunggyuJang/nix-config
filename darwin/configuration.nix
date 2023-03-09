@@ -2807,6 +2807,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "telegram"
         # For Bing AI + Google meet
         "microsoft-edge"
+        # Mazda
+        "visual-studio-code"
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
