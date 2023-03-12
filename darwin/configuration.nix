@@ -2710,8 +2710,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "koekeishiya/formulae"
         # system data cleaner
         "mac-cleanup/mac-cleanup-py"
-        # mongodb
-        "mongodb/brew"
       ];
       brews = [
         "pngpaste"
@@ -2775,7 +2773,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "rlwrap"
         # Astar
         "protobuf"
-        "mongodb-community"
       ];
       casks = [
         "appcleaner"
