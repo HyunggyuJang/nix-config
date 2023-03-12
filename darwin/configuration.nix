@@ -2710,6 +2710,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "koekeishiya/formulae"
         # system data cleaner
         "mac-cleanup/mac-cleanup-py"
+        # mongodb
+        "mongodb/brew"
       ];
       brews = [
         "pngpaste"
@@ -2773,6 +2775,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "rlwrap"
         # Astar
         "protobuf"
+        "mongodb-community"
       ];
       casks = [
         "appcleaner"
@@ -2807,8 +2810,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "telegram"
         # For Bing AI + Google meet
         "microsoft-edge"
-        # Mazda
-        "visual-studio-code"
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
