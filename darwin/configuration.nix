@@ -2812,7 +2812,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
-        cask "firefox", args: { language: "en-KR" }
+        cask "firefox-developer-edition", args: { language: "en-KR" }
         brew "yabai", start_service: true
       '';
     };
