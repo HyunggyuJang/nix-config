@@ -2809,6 +2809,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "microsoft-edge"
         # Experiment with modern IDE
         "visual-studio-code"
+        # Latex
+        "mactex"
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
