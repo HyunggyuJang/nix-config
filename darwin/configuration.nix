@@ -2484,6 +2484,8 @@ yabai -m rule --add app="^zoom$" space=4
         openssl
         # Mail
         # lieer
+        # Latex
+        texlive.combined.scheme-medium
       ];
       pathsToLink = [
         "/lib"
@@ -2777,7 +2779,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
       casks = [
         "appcleaner"
         "slack"
-        "basictex"
         "kitty"
         "aquaskk"
         "hammerspoon"
@@ -2809,8 +2810,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "microsoft-edge"
         # Experiment with modern IDE
         "visual-studio-code"
-        # Latex
-        "mactex"
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
