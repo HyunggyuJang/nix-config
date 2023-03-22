@@ -2485,7 +2485,9 @@ yabai -m rule --add app="^zoom$" space=4
         # Mail
         # lieer
         # Latex
-        texlive.combined.scheme-medium
+        (texlive.combine {
+          inherit (texlive) scheme-medium;
+        })
       ];
       pathsToLink = [
         "/lib"
