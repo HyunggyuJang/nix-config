@@ -46,6 +46,20 @@ let hgj_home = builtins.getEnv "HOME";
       '';
     };
 
+    foundry = with pkgs; stdenv.mkDerivation {
+      name = "foundry";
+      src = fetchurl {
+        url = "https://github.com/foundry-rs/foundry/releases/download/nightly-6c1eee9bdb1a49a302a0afe3597985346b7fb842/foundry_nightly_darwin_arm64.tar.gz";
+        sha256 = "0ax90ammggqp9r96kdxgnnq6sl9yy7v508gfrlqym9ni12k7366h" ;
+      };
+      phases = ["installPhase"];
+      installPhase = ''
+        mkdir -p $out/bin
+        tar -xf $src
+        cp * $out/bin/
+      '';
+    };
+
 in with lib;
   rec {
     # Home manager
@@ -2488,6 +2502,8 @@ yabai -m rule --add app="^zoom$" space=4
         (texlive.combine {
           inherit (texlive) scheme-medium;
         })
+        # foundry for solidity repl
+        foundry
       ];
       pathsToLink = [
         "/lib"
