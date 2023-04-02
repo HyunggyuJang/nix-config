@@ -2753,7 +2753,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "poppler"
         "automake"
         "cmake"
-        "python"
         "findutils"
         "pinentry-mac"
         # Fonts
@@ -2784,6 +2783,9 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # To cleanup system data
         "mac-cleanup-py"
         # python
+        "python"
+        # For node v14
+        "python@3.10"
         "pyright"
         # mail
         "notmuch"
