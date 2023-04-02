@@ -2352,7 +2352,7 @@ yabai -m rule --add app="^zoom$" space=4
             fi
                                                                                 }
 
-        if ! declare -F nvm; then
+        if ! whence nvm; then
             export NVM_DIR="$HOME/.nvm"
             [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
             [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
@@ -2362,7 +2362,7 @@ yabai -m rule --add app="^zoom$" space=4
             # [[ ! -r /Users/hyunggyujang/.opam/opam-init/init.zsh ]] || source /Users/hyunggyujang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
         fi
 
-        if ! declare -F load_nvmrc; then
+        if ! whence load_nvmrc; then
             autoload -U add-zsh-hook
             load_nvmrc() {
               local node_version="$(nvm version)"
