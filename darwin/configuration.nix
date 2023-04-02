@@ -2362,9 +2362,9 @@ yabai -m rule --add app="^zoom$" space=4
             # [[ ! -r /Users/hyunggyujang/.opam/opam-init/init.zsh ]] || source /Users/hyunggyujang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
         fi
 
-        if ! declare -F load-nvmrc; then
+        if ! declare -F load_nvmrc; then
             autoload -U add-zsh-hook
-            load-nvmrc() {
+            load_nvmrc() {
               local node_version="$(nvm version)"
               local nvmrc_path="$(nvm_find_nvmrc)"
 
@@ -2381,8 +2381,8 @@ yabai -m rule --add app="^zoom$" space=4
                 nvm use default
               fi
             }
-            add-zsh-hook chpwd load-nvmrc
-            load-nvmrc
+            add-zsh-hook chpwd load_nvmrc
+            load_nvmrc
         fi
         '';
       };
