@@ -1051,7 +1051,7 @@ x[,「,「,「
           Host mail.math.nagoya-u.ac.jp
           User hyunggyu.jang.e6@math.nagoya-u.ac.jp #not XXX@me.com etc.
           AuthMechs LOGIN
-          PassCmd "pass math.nagoya-u.ac.jp"
+          PassCmd "pass Migrate/math.nagoya-u.ac.jp"
           Port 993
           SSLType IMAPS
           SSLVersions TLSv1.2
@@ -1075,36 +1075,6 @@ x[,「,「,「
 
           Group nagoya
           Channel nagoya-folders
-
-          IMAPAccount gmail
-          Host imap.gmail.com
-          SSLType IMAPS
-          AuthMechs LOGIN
-          User murasakipurplez5@gmail.com
-          PassCmd "pass email/gmail.com"
-          Port 993
-          Timeout 0
-          SSLType IMAPS
-          SSLVersions TLSv1.2
-
-          IMAPStore gmail-remote
-          Account gmail
-
-          MaildirStore gmail-local
-          Path ~/.mail/gmail/
-          Inbox ~/.mail/gmail/INBOX
-          Subfolders Verbatim
-
-          Channel gmail-folders
-          Far :gmail-remote:
-          Near :gmail-local:
-          Create Both
-          Expunge Both
-          Patterns * !"[Gmail]/All Mail" !"[Gmail]/Important" !"[Gmail]/Starred" !"[Gmail]/Bin"
-          SyncState *
-
-          Group gmail
-          Channel gmail-folders
         '';
         ".msmtprc".text = ''
           # Set default values for all following accounts.
@@ -1122,21 +1092,11 @@ x[,「,「,「
           # https://help.zoho.com/portal/en/community/topic/msmtp
           from	         hyunggyu.jang.e6@math.nagoya-u.ac.jp
           user           hyunggyu.jang.e6@math.nagoya-u.ac.jp
-          passwordeval   "pass math.nagoya-u.ac.jp"
+          passwordeval   "pass Migrate/math.nagoya-u.ac.jp"
           tls_starttls   off
 
-          # Gmail
-          account        murasakipurplez5@gmail.com
-          host           smtp.gmail.com
-          port           587
-          protocol       smtp
-          from	         murasakipurplez5@gmail.com
-          user           murasakipurplez5@gmail.com
-          passwordeval   "pass email/gmail.com"
-          tls_starttls   on
-
           # Set a default account
-          account default : murasakipurplez5@gmail.com
+          account default : hyunggyu.jang.e6@math.nagoya-u.ac.jp
         '';
         ".notmuch-config".text = ''
           [database]
@@ -2521,7 +2481,9 @@ yabai -m rule --add app="^zoom$" space=4
         pandoc
         openssl
         # Mail
-        # lieer
+        # TODO: Move emacs, notmuch, lieer, afew to Nix.
+        # lieer # Curretly installed manually by cloning the repo as instructed: https://afew.readthedocs.io/en/latest/installation.html
+        # afew # Currently installed using pip3 install afew
         # Latex
         (texlive.combine {
           inherit (texlive) scheme-medium;
