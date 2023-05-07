@@ -2490,6 +2490,8 @@ yabai -m rule --add app="^zoom$" space=4
         })
         # foundry for solidity repl
         foundry
+        # OutsideIn(X)
+        agda
       ];
       pathsToLink = [
         "/lib"
