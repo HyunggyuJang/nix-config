@@ -2491,7 +2491,8 @@ yabai -m rule --add app="^zoom$" space=4
         # foundry for solidity repl
         foundry
         # OutsideIn(X)
-        agda
+        cabal-install
+        ghc
       ];
       pathsToLink = [
         "/lib"
@@ -2783,6 +2784,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "rlwrap"
         # Astar
         "protobuf"
+        # OutsideIn(X)
+        "agda"
       ];
       casks = [
         "appcleaner"
