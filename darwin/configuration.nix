@@ -2700,8 +2700,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
 
     homebrew =  {
       enable = true;
-      onActivation.upgrade = true;
-      onActivation.autoUpdate = true;
+      onActivation.upgrade = false;
+      onActivation.autoUpdate = false;
       onActivation.cleanup = "zap";
       global.brewfile = true;
       brewPrefix = "/opt/homebrew/bin";
@@ -2784,8 +2784,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "rlwrap"
         # Astar
         "protobuf"
-        # OutsideIn(X)
-        "agda"
       ];
       casks = [
         "appcleaner"
@@ -2826,6 +2824,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
         cask "firefox-developer-edition", args: { language: "en-KR" }
         brew "yabai", start_service: true
+        # OutsideIn(X)
+        brew "agda", args: ["ignore-dependencies"]
       '';
     };
   }
