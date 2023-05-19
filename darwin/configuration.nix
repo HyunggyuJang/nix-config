@@ -2826,6 +2826,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         brew "yabai", start_service: true
         # OutsideIn(X)
         brew "agda", args: ["ignore-dependencies"]
+        brew "ghcup", args: ["ignore-dependencies"]
       '';
     };
   }
