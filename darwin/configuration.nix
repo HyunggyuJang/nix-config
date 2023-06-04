@@ -2465,6 +2465,9 @@ yabai -m rule --add app="^zoom$" space=4
         "$HOME/.cargo/bin"
         # ruby
         "$HOME/.rbenv/shims"
+        # Haskell
+        "$HOME/.ghcup/bin"
+        "$HOME/.cabal/bin"
       ];
       systemPackages = with pkgs; [
         nixfmt
@@ -2491,8 +2494,9 @@ yabai -m rule --add app="^zoom$" space=4
         # foundry for solidity repl
         foundry
         # OutsideIn(X)
-        cabal-install
-        ghc
+        # ↓ Installed from ghcup
+        # cabal-install
+        # ghc
       ];
       pathsToLink = [
         "/lib"
