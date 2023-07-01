@@ -2401,7 +2401,7 @@ yabai -m rule --add app="^zoom$" space=4
                   src = pkgs.fetchurl {
                     name = "userChrome.css";
                     url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
-                    sha256 = "1ia2azcrrbc70m8hcn7mph1allh2fly9k2kqmi4qy6mx5lf12kn8";
+                    sha256 = "sha256-xi/+PSGRif7SpJSjkz38oAIngMPc7y/3a0AneXE5nAc=";
                   };
                   tabLineColour = "#5e81ac";
                 }
@@ -2803,6 +2803,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "rlwrap"
         # Astar
         "protobuf"
+        # Haskell compiler docs
+        "sphinx-doc"
       ];
       casks = [
         "appcleaner"
