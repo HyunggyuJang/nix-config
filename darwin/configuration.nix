@@ -2506,6 +2506,7 @@ yabai -m rule --add app="^zoom$" space=4
         (texlive.combine {
           inherit (texlive) scheme-medium zxjatype ctex biblatex;
         })
+        biber
         # foundry for solidity repl
         foundry
         # OutsideIn(X)
