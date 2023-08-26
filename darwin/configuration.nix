@@ -1313,9 +1313,11 @@ yabai -m rule --add app="^zoom$" space=4
             "karabiner/karabiner.json".text = ''
 {
     "global": {
+        "ask_for_confirmation_before_quitting": true,
         "check_for_updates_on_startup": false,
         "show_in_menu_bar": true,
-        "show_profile_name_in_menu_bar": false
+        "show_profile_name_in_menu_bar": false,
+        "unsafe_ui": false
     },
     "profiles": [
         {
@@ -1385,7 +1387,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "open_bracket",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1402,7 +1406,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "close_bracket",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1419,7 +1425,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "9",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1436,7 +1444,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "0",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1485,7 +1495,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "4",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1502,7 +1514,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "6",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1519,7 +1533,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "1",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1536,7 +1552,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "slash",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1585,7 +1603,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "grave_accent_and_tilde",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1602,7 +1622,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "5",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1651,7 +1673,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "8",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1668,7 +1692,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "hyphen",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1685,7 +1711,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "7",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1702,7 +1730,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "3",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1719,7 +1749,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "backslash",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1736,7 +1768,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "equal_sign",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1769,7 +1803,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "quote",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1786,7 +1822,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "comma",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1803,7 +1841,9 @@ yabai -m rule --add app="^zoom$" space=4
                                 "to": [
                                     {
                                         "key_code": "period",
-                                        "modifiers": ["left_shift"]
+                                        "modifiers": [
+                                            "left_shift"
+                                        ]
                                     }
                                 ],
                                 "type": "basic"
@@ -1976,7 +2016,8 @@ yabai -m rule --add app="^zoom$" space=4
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "treat_as_built_in_keyboard": false
                 },
                 {
                     "disable_built_in_keyboard_if_exists": true,
@@ -2010,7 +2051,8 @@ yabai -m rule --add app="^zoom$" space=4
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "treat_as_built_in_keyboard": false
                 },
                 {
                     "disable_built_in_keyboard_if_exists": false,
@@ -2044,7 +2086,8 @@ yabai -m rule --add app="^zoom$" space=4
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "treat_as_built_in_keyboard": false
                 },
                 {
                     "disable_built_in_keyboard_if_exists": true,
@@ -2057,7 +2100,8 @@ yabai -m rule --add app="^zoom$" space=4
                     },
                     "ignore": true,
                     "manipulate_caps_lock_led": false,
-                    "simple_modifications": []
+                    "simple_modifications": [],
+                    "treat_as_built_in_keyboard": false
                 },
                 {
                     "disable_built_in_keyboard_if_exists": true,
@@ -2070,7 +2114,57 @@ yabai -m rule --add app="^zoom$" space=4
                     },
                     "ignore": true,
                     "manipulate_caps_lock_led": false,
-                    "simple_modifications": []
+                    "simple_modifications": [],
+                    "treat_as_built_in_keyboard": false
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": false,
+                        "is_pointing_device": true,
+                        "product_id": 641,
+                        "vendor_id": 1452
+                    },
+                    "ignore": true,
+                    "manipulate_caps_lock_led": false,
+                    "simple_modifications": [],
+                    "treat_as_built_in_keyboard": false
+                },
+                {
+                    "disable_built_in_keyboard_if_exists": false,
+                    "fn_function_keys": [],
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "is_pointing_device": false,
+                        "product_id": 28705,
+                        "vendor_id": 1256
+                    },
+                    "ignore": false,
+                    "manipulate_caps_lock_led": true,
+                    "simple_modifications": [
+                        {
+                            "from": {
+                                "key_code": "caps_lock"
+                            },
+                            "to": [
+                                {
+                                    "key_code": "escape"
+                                }
+                            ]
+                        },
+                        {
+                            "from": {
+                                "key_code": "escape"
+                            },
+                            "to": [
+                                {
+                                    "key_code": "caps_lock"
+                                }
+                            ]
+                        }
+                    ],
+                    "treat_as_built_in_keyboard": false
                 }
             ],
             "fn_function_keys": [
@@ -2504,7 +2598,8 @@ yabai -m rule --add app="^zoom$" space=4
         # afew # Currently installed using pip3 install afew
         # Latex
         (texlive.combine {
-          inherit (texlive) scheme-medium zxjatype ctex biblatex;
+          # https://gist.github.com/veprbl/3dc563802c97a95bcdc4eac6650ede7d
+          inherit (texlive) scheme-medium zxjatype ctex biblatex tikz-cd;
         })
         biber
         # foundry for solidity repl
@@ -2513,6 +2608,7 @@ yabai -m rule --add app="^zoom$" space=4
         # ↓ Installed from ghcup
         # cabal-install
         # ghc
+        ffmpeg-headless
       ];
       pathsToLink = [
         "/lib"
