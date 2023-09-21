@@ -2902,6 +2902,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "protobuf"
         # Haskell compiler docs
         "sphinx-doc"
+        # emacs-mac
+        "tree-sitter"
       ];
       casks = [
         "appcleaner"
@@ -2945,6 +2947,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # OutsideIn(X)
         brew "agda", args: ["ignore-dependencies"]
         brew "ghcup", args: ["ignore-dependencies"]
+        brew "dua-cli", args: ["ignore-dependencies"]
       '';
     };
   }
