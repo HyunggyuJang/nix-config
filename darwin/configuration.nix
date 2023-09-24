@@ -2940,7 +2940,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # Experiment with modern IDE
         "visual-studio-code"
         # GKE
-        # "google-cloud-sdk"
+        "google-cloud-sdk"
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
