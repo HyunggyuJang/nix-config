@@ -2891,7 +2891,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "python"
         # For node v14
         "python@3.10"
-        "pyright"
         # mail
         "notmuch"
         # moonlander
