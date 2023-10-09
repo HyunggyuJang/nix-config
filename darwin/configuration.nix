@@ -2599,7 +2599,21 @@ yabai -m rule --add app="^zoom$" space=4
         # Latex
         (texlive.combine {
           # https://gist.github.com/veprbl/3dc563802c97a95bcdc4eac6650ede7d
-          inherit (texlive) scheme-medium zxjatype ctex biblatex tikz-cd;
+          inherit (texlive)
+            scheme-medium
+            zxjatype ctex
+            biblatex tikz-cd
+            xpatch cleveref
+            svg trimspaces
+            catchfile
+            transparent
+            capt-of
+            enumitem
+            fvextra
+            upquote
+            tcolorbox
+            environ
+            pdfcol;
         })
         biber
         # foundry for solidity repl
@@ -2609,6 +2623,7 @@ yabai -m rule --add app="^zoom$" space=4
         # cabal-install
         # ghc
         ffmpeg-headless
+        inkscape
       ];
       pathsToLink = [
         "/lib"
