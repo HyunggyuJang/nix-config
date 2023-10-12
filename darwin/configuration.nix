@@ -2510,6 +2510,8 @@ yabai -m rule --add app="^zoom$" space=4
                 # For work with kazuki
                 metamask
                 # Need to add zotero-connector
+                # -> there is no official extension registered in the mozilla's store.
+                # Let's use edge's for now.
               ];
           };
         };
