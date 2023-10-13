@@ -2615,7 +2615,10 @@ yabai -m rule --add app="^zoom$" space=4
             upquote
             tcolorbox
             environ
-            pdfcol;
+            pdfcol
+            # jupyter export
+            adjustbox
+            titling;
         })
         biber
         # foundry for solidity repl
