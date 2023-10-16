@@ -2564,6 +2564,7 @@ yabai -m rule --add app="^zoom$" space=4
         DOOMLOCALDIR = "${hgj_home}/.doom";
         SHELL = "${pkgs.zsh}/bin/zsh";
         LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
+        PAPERSPACE_INSTALL = "${hgj_home}/.paperspace";
       };
       systemPath = [
         "$HOME/${hgj_localbin}"
@@ -2579,6 +2580,8 @@ yabai -m rule --add app="^zoom$" space=4
         # Haskell
         "$HOME/.ghcup/bin"
         "$HOME/.cabal/bin"
+        # Paperspace
+        "${environment.variables.PAPERSPACE_INSTALL}/bin"
       ];
       systemPackages = with pkgs; [
         nixfmt
