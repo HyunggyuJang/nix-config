@@ -2632,6 +2632,7 @@ yabai -m rule --add app="^zoom$" space=4
         # ghc
         ffmpeg-headless
         inkscape
+        go
       ];
       pathsToLink = [
         "/lib"
