@@ -2634,7 +2634,7 @@ yabai -m rule --add app="^zoom$" space=4
         inkscape
         # sourcegraph
         go
-        pnpm
+        nodePackages_latest.pnpm
       ];
       pathsToLink = [
         "/lib"
