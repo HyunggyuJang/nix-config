@@ -6,9 +6,9 @@ let darwin = builtins.fetchTarball {
     };
     nixpkgsSrc = builtins.fetchTarball {
       # Get the revision by choosing a version from https://github.com/NixOS/nixpkgs
-      url = "https://github.com/NixOS/nixpkgs/archive/7bdd297dc218b6c41996a270da9a2b5d0f1dd8d3.tar.gz";
+      url = "https://github.com/NixOS/nixpkgs/archive/66ab26fce8abdd1e5c4b77842d412f96981d47f0.tar.gz";
       # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-      sha256 = "005vc22fsycm7ddd19s8bn1qzsmyl88lf5zg9ynwz2brzwwa6l0j";
+      sha256 = "17pxlwxd5v13xm9yrv0rvs6qfvg8w45n57b2ql2nkkixwv1d1sbc";
     };
 in
 { config ? (import darwin {}).config
@@ -25,9 +25,9 @@ let hgj_home = builtins.getEnv "HOME";
 
     nur = import (builtins.fetchTarball {
       # Get the revision by choosing a version from https://github.com/nix-community/NUR/commits/master
-      url = "https://github.com/nix-community/NUR/archive/7dcad7f6b7ce15ba4fb6013deca282e7883ac3c3.tar.gz";
+      url = "https://github.com/nix-community/NUR/archive/7636d4dbfd7aa1a05239272a856c34e2c28724df.tar.gz";
       # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-      sha256 = "13qzk8qji5cnhkh55cryahsj2981zdf4qw54z57hbf6sh49axpjx";
+      sha256 = "0pp132jgyazw5ii99wqlp1gqg2q36r0s03gkc2cz5bjlpfr8dcgc";
     }) {
       inherit pkgs;
     };
@@ -62,19 +62,22 @@ let hgj_home = builtins.getEnv "HOME";
 
 in with lib;
   rec {
+    # See https://github.com/LnL7/nix-darwin/issues/701
+    documentation.enable = false;
+
     # Home manager
     imports = [
       ''${(builtins.fetchTarball {
         # Get the revision by choosing a version from https://github.com/nix-community/home-manager
-        url = "https://github.com/nix-community/home-manager/archive/b9e3a29864798d55ec1d6579ab97876bb1ee9664.tar.gz";
+        url = "https://github.com/nix-community/home-manager/archive/f92a54fef4eacdbe86b0a2054054dd58b0e2a2a4.tar.gz";
         # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-        sha256 = "04cvww0ic5kxvm09jhlsfcb1nby2rbw88jrv453zx0ipb4wndbks";
+        sha256 = "06vas2d7jmvpr7jxmq3qs7cwnrr8wdhq0r7q241v0bdq0l7w34dc";
       })}/nix-darwin''
     ];
 
     home-manager.useGlobalPkgs = true;
     home-manager.users = let userconfig = { config, ...}: rec {
-      home.stateVersion = "22.11";
+      home.stateVersion = "23.05";
       home.file = {
         ".cargo/bin/rust-analyzer".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer";
         ".gnupg/gpg-agent.conf".text = ''
@@ -2495,7 +2498,7 @@ yabai -m rule --add app="^zoom$" space=4
                   src = pkgs.fetchurl {
                     name = "userChrome.css";
                     url = "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
-                    sha256 = "sha256-xi/+PSGRif7SpJSjkz38oAIngMPc7y/3a0AneXE5nAc=";
+                    sha256 = "01ww75qpj9s0dgvjzvywqf02f0m0zhyr78wllk9gx2ci44yzwby6";
                   };
                   tabLineColour = "#5e81ac";
                 }
@@ -2542,7 +2545,7 @@ yabai -m rule --add app="^zoom$" space=4
     };
     users = {
       users.hyunggyujang = {
-        name = "Hyunggyu Jang";
+        name = "hyunggyujang";
         home = "${hgj_home}";
         shell = pkgs.zsh;
       };
@@ -2591,7 +2594,6 @@ yabai -m rule --add app="^zoom$" space=4
         shellcheck
         solc-select
         tree-sitter
-        stack
         llvm
         # WASM
         rustup
