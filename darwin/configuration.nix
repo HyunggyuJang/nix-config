@@ -25,9 +25,9 @@ let hgj_home = builtins.getEnv "HOME";
 
     nur = import (builtins.fetchTarball {
       # Get the revision by choosing a version from https://github.com/nix-community/NUR/commits/master
-      url = "https://github.com/nix-community/NUR/archive/7636d4dbfd7aa1a05239272a856c34e2c28724df.tar.gz";
+      url = "https://github.com/nix-community/NUR/archive/7415275abeadc29b8c564bf76ec4c2c15179027f.tar.gz";
       # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-      sha256 = "0pp132jgyazw5ii99wqlp1gqg2q36r0s03gkc2cz5bjlpfr8dcgc";
+      sha256 = "07m0pdxz49sxwawz3jl62zyrc0dqp7baz8iprdl4wh6s0dnpa0v3";
     }) {
       inherit pkgs;
     };
