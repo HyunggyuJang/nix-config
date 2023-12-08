@@ -2814,7 +2814,7 @@ open < k : skhd -k "ctrl - g"; open_kitty
 open < shift - k : skhd -k "ctrl - g"; open -a kitty
 
 # Internet Browser
-open < f : skhd -k "ctrl - g"; open -a "/Applications/Firefox Developer Edition.app"
+open < f : skhd -k "ctrl - g"; open -a "/Applications/Firefox.app"
 
 open < s : skhd -k "ctrl - g"; open -a Slack
 
