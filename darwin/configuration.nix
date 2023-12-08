@@ -2973,7 +2973,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
-        cask "firefox-developer-edition", args: { language: "en-KR" }
+        cask "firefox", args: { language: "en-KR" }
         brew "yabai", start_service: true
         # OutsideIn(X)
         brew "agda", args: ["ignore-dependencies"]
