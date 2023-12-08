@@ -87,7 +87,7 @@ in with lib;
             pinentry-program ${brewpath}/bin/pinentry-mac
             '';
         ".tridactylrc".text = ''
-          set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12) (internal-border-width . 0))" +%l:%c
+          # set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12) (internal-border-width . 0))" +%l:%c
           # bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           # bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
           bind --mode=browser <C-g> escapehatch
@@ -104,9 +104,9 @@ in with lib;
           bind --mode=ex <C-p> ex.prev_completion
           bind --mode=ex <C-n> ex.next_completion
           # bind --mode=ex <C-k> text.kill_line # same as default setting
-          unbind --mode=ex <C-j> # used for kakutei key in Aquaskk
+          # unbind --mode=ex <C-j> # used for kakutei key in Aquaskk
           bind --mode=ex <Tab> ex.insert_space_or_completion # ex.complete is buggy
-          unbind --mode=ex <Space>
+          # unbind --mode=ex <Space>
           bind --mode=insert <A-d> text.kill_word
           bind --mode=insert <C-u> text.backward_kill_line
           bind --mode=insert <A-f> text.forward_word
@@ -2583,6 +2583,8 @@ yabai -m rule --add app="^zoom$" space=4
         # Haskell
         "$HOME/.ghcup/bin"
         "$HOME/.cabal/bin"
+        # go
+        "$HOME/go/bin"
         # Paperspace
         "${environment.variables.PAPERSPACE_INSTALL}/bin"
       ];
