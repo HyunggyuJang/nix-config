@@ -99,8 +99,8 @@ in with lib;
           bind --mode=visual <C-g> composite js document.getSelection().empty(); mode normal; hidecmdline
           bind --mode=ex <A-n> ex.next_history
           bind --mode=ex <A-p> ex.prev_history
-          bind --mode=insert <C-p> !s skhd -k up
-          bind --mode=insert <C-n> !s skhd -k down
+          # bind --mode=insert <C-p> !s skhd -k up
+          # bind --mode=insert <C-n> !s skhd -k down
           bind --mode=ex <C-p> ex.prev_completion
           bind --mode=ex <C-n> ex.next_completion
           # bind --mode=ex <C-k> text.kill_line # same as default setting
