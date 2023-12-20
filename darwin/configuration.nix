@@ -2625,6 +2625,7 @@ yabai -m rule --add app="^zoom$" space=4
             pdfcol
             # jupyter export
             adjustbox
+            standalone
             titling;
         })
         biber
