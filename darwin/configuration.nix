@@ -6,9 +6,9 @@ let darwin = builtins.fetchTarball {
     };
     nixpkgsSrc = builtins.fetchTarball {
       # Get the revision by choosing a version from https://github.com/NixOS/nixpkgs
-      url = "https://github.com/HyunggyuJang/nixpkgs/archive/f008e3b4884c2fc93f2a5b416fb7b66a58f6591d.tar.gz";
+      url = "https://github.com/HyunggyuJang/nixpkgs/archive/2289ca104f4ebdf272e59141cbd26591eaa12ae2.tar.gz";
       # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-      sha256 = "01qfm2vg0dnb6s3k8x24c8lbfl2y9iripgkbjy9z68anp8nz0rdb";
+      sha256 = "12vll3gi2ljv5bwqxfw2p178kjkvvdvn2qch00281zn2w1avzii4";
     };
 in
 { config ? (import darwin {}).config
@@ -2640,6 +2640,8 @@ yabai -m rule --add app="^zoom$" space=4
         # sourcegraph
         go
         nodePackages_latest.pnpm
+        imagemagick
+        mupdf
       ];
       pathsToLink = [
         "/lib"
@@ -2884,7 +2886,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "gmp"
         "coreutils"
         "gnuplot"
-        "imagemagick"
         "fd"
         "poppler"
         "automake"
