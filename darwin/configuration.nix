@@ -6,9 +6,9 @@ let darwin = builtins.fetchTarball {
     };
     nixpkgsSrc = builtins.fetchTarball {
       # Get the revision by choosing a version from https://github.com/NixOS/nixpkgs
-      url = "https://github.com/HyunggyuJang/nixpkgs/archive/001e6c8785d5f136a52875b150f0e25226d34880.tar.gz";
+      url = "https://github.com/HyunggyuJang/nixpkgs/archive/cf70c3e4ceb1c011e8ed3745844fef8ce1d4ab71.tar.gz";
       # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-      sha256 = "0ljx3cdg4vv6jrllqs41rz9f77yvjl28z3asa3lm8gzf842wspp2";
+      sha256 = "0wmwmy6ngx5gzsbc2wsa00zbih068ahvlpm56g2nz770frckh8ib";
     };
 in
 { config ? (import darwin {}).config
