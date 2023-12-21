@@ -1,5 +1,5 @@
 NIX_CONF = $(HOME)/nixpkgs/darwin
-NIXPATH = "$(NIX_PATH):localconfig=$(NIX_CONF)/$(HOSTNAME).nix:darwin-config=$(NIX_CONF)/configuration.nix"
+NIXPATH = "nixpkgs=/nix/store/hbln4irwirlfcfw2mx21hib3y5cnm6k5-source:$(NIX_PATH):localconfig=$(NIX_CONF)/$(HOSTNAME).nix:darwin-config=$(NIX_CONF)/configuration.nix"
 PRENIX = PATH="/nix/var/nix/profiles/system/sw/bin:$(PATH)" NIX_PATH="$(NIXPATH)"
 
 NIX_BUILD = $(PRENIX) nix-build
