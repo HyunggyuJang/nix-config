@@ -1,8 +1,8 @@
 let darwin = builtins.fetchTarball {
       # Get the revision by choosing a version from https://github.com/LnL7/nix-darwin
-      url = "https://github.com/LnL7/nix-darwin/archive/afe83cbc2e673b1f08d32dd0f70df599678ff1e7.tar.gz";
+      url = "https://github.com/LnL7/nix-darwin/archive/4b9b83d5a92e8c1fbfd8eb27eda375908c11ec4d.tar.gz";
       # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-      sha256 = "1cbx0d745iy9qavj7jd758qqn57mpg6aak5lpg9cr8fvlr0zxb8s";
+      sha256 = "03cyhvqy6nw1p3arv0mf6xh3cyklljnxpfsmwiwzv1cf51jqncc3";
     };
     nixpkgsSrc = builtins.fetchTarball {
       # Get the revision by choosing a version from https://github.com/NixOS/nixpkgs
@@ -69,9 +69,9 @@ in with lib;
     imports = [
       ''${(builtins.fetchTarball {
         # Get the revision by choosing a version from https://github.com/nix-community/home-manager
-        url = "https://github.com/nix-community/home-manager/archive/f92a54fef4eacdbe86b0a2054054dd58b0e2a2a4.tar.gz";
+        url = "https://github.com/nix-community/home-manager/archive/3bfaacf46133c037bb356193bd2f1765d9dc82c1.tar.gz";
         # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-        sha256 = "06vas2d7jmvpr7jxmq3qs7cwnrr8wdhq0r7q241v0bdq0l7w34dc";
+        sha256 = "1wa0yb7b9q6v7s0d99ab9z3waz7dcd64hhsmv89k5p9sx5f5rsgf";
       })}/nix-darwin''
     ];
 
