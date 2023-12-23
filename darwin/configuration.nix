@@ -2638,7 +2638,6 @@ yabai -m rule --add app="^zoom$" space=4
         # cabal-install
         # ghc
         ffmpeg-headless
-        inkscape
         # sourcegraph
         go
         nodePackages_latest.pnpm
@@ -2646,7 +2645,6 @@ yabai -m rule --add app="^zoom$" space=4
       ];
       pathsToLink = [
         "/lib"
-        "/Applications"
       ];
       shells = [
         pkgs.zsh
@@ -2975,6 +2973,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # GKE
         "google-cloud-sdk"
         "obsidian"
+        "inkscape"
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
