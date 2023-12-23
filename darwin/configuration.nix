@@ -2646,6 +2646,7 @@ yabai -m rule --add app="^zoom$" space=4
       ];
       pathsToLink = [
         "/lib"
+        "/Applications"
       ];
       shells = [
         pkgs.zsh
