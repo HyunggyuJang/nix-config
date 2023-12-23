@@ -2626,6 +2626,7 @@ yabai -m rule --add app="^zoom$" space=4
             # jupyter export
             adjustbox
             standalone
+            algorithm2e
             titling;
         })
         biber
