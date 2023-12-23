@@ -2626,6 +2626,8 @@ yabai -m rule --add app="^zoom$" space=4
             adjustbox
             standalone
             algorithm2e
+            ifoddpage
+            relsize
             titling;
         })
         biber
@@ -2971,6 +2973,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "visual-studio-code"
         # GKE
         "google-cloud-sdk"
+        "obsidian"
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
