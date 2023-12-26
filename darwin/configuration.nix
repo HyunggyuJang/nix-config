@@ -1303,9 +1303,9 @@ yabai -m config window_placement second_child
 yabai -m config window_shadow off
 yabai -m config window_topmost on
 yabai -m rule --add app="^System Preferences$" manage=off
-yabai -m rule --add app="Inkscape" title="LaTeX (pdflatex)" manage=off
+yabai -m rule --add app="Inkscape" title!=" - Inkscape$" manage=off
 yabai -m rule --add app=AquaSKK manage=off
-yabai -m rule --add app=Emacs title="Emacs Everywhere ::*" manage=off
+yabai -m rule --add app=Emacs title="Emacs Everywhere ::" manage=off
 yabai -m rule --add app=Anki space=3
 yabai -m rule --add app="^Microsoft Teams$" space=4
 yabai -m rule --add app="^zoom$" space=4
