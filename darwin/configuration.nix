@@ -1279,40 +1279,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
           select = "underline"
         '';
           "zathura/zathurarc".text = "set selection-clipboard clipboard";
-          "yabai/yabairc" = {
-            text = ''
-yabai -m config active_window_opacity 1.000000
-yabai -m config auto_balance on
-yabai -m config bottom_padding 0
-yabai -m config focus_follows_mouse off
-yabai -m config layout bsp
-yabai -m config left_padding 0
-yabai -m config mouse_action1 move
-yabai -m config mouse_action2 resize
-yabai -m config mouse_follows_focus off
-yabai -m config mouse_modifier fn
-yabai -m config normal_window_opacity 0.900000
-yabai -m config right_padding 0
-yabai -m config split_ratio 0.500000
-yabai -m config top_padding 0
-yabai -m config window_border off
-yabai -m config window_gap 0
-yabai -m config window_opacity on
-yabai -m config window_opacity_duration 0.000000
-yabai -m config window_placement second_child
-yabai -m config window_shadow off
-yabai -m config window_topmost on
-yabai -m rule --add app="^System Preferences$" manage=off
-yabai -m rule --add app="Inkscape" title!=" - Inkscape$" manage=off
-yabai -m rule --add app=AquaSKK manage=off
-yabai -m rule --add app=Emacs title="Emacs Everywhere ::" manage=off
-yabai -m rule --add app=Anki space=3
-yabai -m rule --add app="^Microsoft Teams$" space=4
-yabai -m rule --add app="^zoom$" space=4
-'';
-            executable = true;
-          };
-            "karabiner/karabiner.json".text = ''
+          "karabiner/karabiner.json".text = ''
 {
     "global": {
         "ask_for_confirmation_before_quitting": true,
@@ -2699,6 +2666,41 @@ yabai -m rule --add app="^zoom$" space=4
     services =
       {
         nix-daemon.enable = true;
+        yabai = {
+          enable = true;
+          config = {
+            active_window_opacity   = 1.000000;
+            auto_balance            = "on";
+            bottom_padding          = 0;
+            focus_follows_mouse     = "off";
+            layout                  = "bsp";
+            left_padding            = 0;
+            mouse_action1           = "move";
+            mouse_action2           = "resize";
+            mouse_follows_focus     = "off";
+            mouse_modifier          = "fn";
+            normal_window_opacity   = 0.900000;
+            right_padding           = 0;
+            split_ratio             = 0.500000;
+            top_padding             = 0;
+            window_border           = "off";
+            window_gap              = 0;
+            window_opacity          = "on";
+            window_opacity_duration = 0.000000;
+            window_placement        = "second_child";
+            window_shadow           = "off";
+            window_topmost          = "on";
+          };
+          extraConfig = ''
+yabai -m rule --add app="^System Preferences$" manage=off
+yabai -m rule --add app="Inkscape" title!=" - Inkscape$" manage=off
+yabai -m rule --add app=AquaSKK manage=off
+yabai -m rule --add app=Emacs title="Emacs Everywhere ::" manage=off
+yabai -m rule --add app=Anki space=3
+yabai -m rule --add app="^Microsoft Teams$" space=4
+yabai -m rule --add app="^zoom$" space=4
+'';
+        };
         skhd = {
           enable = true;
           skhdConfig = ''
@@ -2978,7 +2980,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
         cask "firefox", args: { language: "en-KR" }
-        brew "yabai", start_service: true
         # OutsideIn(X)
         brew "agda", args: ["ignore-dependencies"]
         brew "ghcup", args: ["ignore-dependencies"]
