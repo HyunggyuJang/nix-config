@@ -2595,6 +2595,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             algorithm2e
             ifoddpage
             relsize
+            wrapfig
             titling;
         })
         biber
