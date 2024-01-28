@@ -2596,6 +2596,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             ifoddpage
             relsize
             wrapfig
+            beamertheme-metropolis
             titling;
         })
         biber
