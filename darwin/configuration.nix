@@ -46,6 +46,23 @@ let hgj_home = builtins.getEnv "HOME";
       '';
     };
 
+    # https://github.com/NixOS/nixpkgs/issues/11893
+    altacv = with pkgs; stdenv.mkDerivation rec {
+      name = "altacv";
+      src = fetchFromGitHub {
+        owner = "liantze";
+        repo = "AltaCV";
+        rev = "74bc05d";
+        sha256 = "sha256-3xbEqyg2UC8ngMos8+BzLzrUpzhA8w3QM3Cn2d0HzY4=";
+      };
+      pname = name;
+      tlType = "run";
+      installPhase = ''
+        mkdir -p $out/tex/latex
+        cp altacv.cls $out/tex/latex/
+      '';
+    };
+
     foundry = with pkgs; stdenv.mkDerivation {
       name = "foundry";
       src = fetchurl {
@@ -2597,8 +2614,10 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             relsize
             wrapfig
             beamertheme-metropolis
-            altacv
             titling;
+          altacv = {
+            pkgs = [ altacv ];
+          };
         })
         biber
         # foundry for solidity repl
