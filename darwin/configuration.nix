@@ -46,21 +46,6 @@ let hgj_home = builtins.getEnv "HOME";
       '';
     };
 
-    # https://github.com/NixOS/nixpkgs/issues/11893
-    moderncv = with pkgs; stdenv.mkDerivation {
-      name = "moderncv";
-      src = fetchFromGitHub {
-        owner = "Titan-C";
-        repo = "moderncv";
-        rev = "9d6aa96";
-        sha256 = "0000000000000000000000000000000000000000000000000000";
-      };
-      installPhase = ''
-        mkdir -p $out/tex/latex
-        cp *.cls *.sty $out/tex/latex/
-      '';
-    };
-
     foundry = with pkgs; stdenv.mkDerivation {
       name = "foundry";
       src = fetchurl {
@@ -2612,7 +2597,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             relsize
             wrapfig
             beamertheme-metropolis
-            moderncv
+            altacv
             titling;
         })
         biber
