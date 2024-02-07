@@ -2614,6 +2614,15 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             relsize
             wrapfig
             beamertheme-metropolis
+            pdfx
+            xmpincl
+            accsupp
+            fontawesome5
+            tikzfill
+            dashrule
+            ifmtarg
+            multirow
+            changepage
             titling;
           altacv = {
             pkgs = [ altacv ];
