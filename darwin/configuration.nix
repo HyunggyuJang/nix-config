@@ -2623,6 +2623,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             ifmtarg
             multirow
             changepage
+            paracol
             titling;
           altacv = {
             pkgs = [ altacv ];
