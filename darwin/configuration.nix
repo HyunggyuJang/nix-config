@@ -2618,7 +2618,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             xmpincl
             accsupp
             fontawesome5
-            tikzfill
+            tikzfill tikzmark
             dashrule
             ifmtarg
             multirow
@@ -2942,6 +2942,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "nvm"
         # TODO: remove this dependency for slither
         "poetry"
+        "certifi"
         # emacs-mac
         "libgccjit"
         "gcc"
@@ -2988,6 +2989,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # beamer with xelatex
         "font-fira-sans"
         "font-fira-mono"
+        # altacv with xelatex
+        "font-lato"
         "discord"
         # Docker
         "docker"
