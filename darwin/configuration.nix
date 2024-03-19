@@ -2958,6 +2958,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "mac-cleanup-py"
         # python
         "python"
+        "python@3.10"
         # mail
         "notmuch"
         # moonlander
