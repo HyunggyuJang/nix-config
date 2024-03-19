@@ -1073,6 +1073,7 @@ x[,¡Ö,¡Ö,¡Ö
           AuthMechs LOGIN
           PassCmd "pass Migrate/math.nagoya-u.ac.jp"
           Port 993
+          CertificateFile ~/.mail/nagoya.crt
           SSLType IMAPS
           SSLVersions TLSv1.2
 
