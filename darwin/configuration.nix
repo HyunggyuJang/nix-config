@@ -2641,6 +2641,8 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
         go
         nodePackages_latest.pnpm
         imagemagick
+        # scop
+        poetry
       ];
       pathsToLink = [
         "/lib"
@@ -2940,9 +2942,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "sdcv"
         # Javascript
         "nvm"
-        # TODO: remove this dependency for slither
-        "poetry"
-        "certifi"
         # emacs-mac
         "libgccjit"
         "gcc"
@@ -2951,13 +2950,10 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "opam"
         # "coq"
         "parallel"
-        "youtube-dl"
         # To cleanup system data
         "mac-cleanup-py"
         # python
         "python"
-        # For node v14
-        "python@3.10"
         # mail
         "notmuch"
         # moonlander
@@ -3008,7 +3004,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # Experiment with modern IDE
         "visual-studio-code"
         # GKE
-        "google-cloud-sdk"
         "obsidian"
         "inkscape"
       ];
