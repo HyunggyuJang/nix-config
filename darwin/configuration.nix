@@ -2960,6 +2960,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # python
         "python"
         "python@3.10"
+        # zulip
+        "vagrant"
         # mail
         "notmuch"
         # moonlander
