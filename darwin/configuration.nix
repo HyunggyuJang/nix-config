@@ -1256,6 +1256,10 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
           <dir>${hgj_home}/Library/Fonts</dir>
         </fontconfig>
       '';
+          "pip/pip.conf".text = ''
+          [global]
+          break-system-packages = true
+        '';
           "afew/config".text = ''
           [MailMover]
           folders = account.nagoya/Inbox account.nagoya/Trash
