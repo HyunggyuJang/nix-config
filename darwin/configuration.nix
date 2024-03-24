@@ -2952,8 +2952,10 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "gcc"
         # Garrigue project
         # "ocaml"
-        "opam"
-        # "coq"
+        # "opam"
+        # Fiat crypto
+        "coq"
+        "ocaml-findlib"
         "parallel"
         # To cleanup system data
         "mac-cleanup-py"
