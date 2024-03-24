@@ -2624,9 +2624,10 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
         poetry
         # Fiat crypto
         coq_8_19
-        ocamlPackages.findlib
+        coq_8_19.ocamlPackages.ocaml
+        coq_8_19.ocamlPackages.findlib
         # VSCode support for coq
-        coqPackages.coq-lsp
+        coqPackages_8_19.coq-lsp
       ];
       pathsToLink = [
         "/lib"
