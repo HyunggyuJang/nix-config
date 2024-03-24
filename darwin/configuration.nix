@@ -2956,7 +2956,7 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # Fiat crypto
         "coq"
         "ocaml-findlib"
-        "parallel"
+        # "parallel"
         # To cleanup system data
         "mac-cleanup-py"
         # python
