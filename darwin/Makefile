@@ -23,8 +23,8 @@ build:
 		@$(DARWIN_INSTALL)
 		@rm -f result*
 switch:
-		$(call announce,darwin-rebuild switch)
-		@$(DARWIN_REBUILD) switch -Q
+		$(call announce,darwin-rebuild switch --flake)
+		@$(DARWIN_REBUILD) switch --flake ./ --show-trace
 		@echo "Darwin generation: $$($(DARWIN_REBUILD) --list-generations | tail -1)"
 rollback:
 		$(call announce,darwin-rebuild switch --rollback)

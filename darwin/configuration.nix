@@ -1,26 +1,13 @@
-let darwin = builtins.fetchTarball {
-      # Get the revision by choosing a version from https://github.com/LnL7/nix-darwin
-      url = "https://github.com/LnL7/nix-darwin/archive/4b9b83d5a92e8c1fbfd8eb27eda375908c11ec4d.tar.gz";
-      # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-      sha256 = "03cyhvqy6nw1p3arv0mf6xh3cyklljnxpfsmwiwzv1cf51jqncc3";
-    };
-    nixpkgsSrc = builtins.fetchTarball {
-      # Get the revision by choosing a version from https://github.com/NixOS/nixpkgs
-      url = "https://github.com/HyunggyuJang/nixpkgs/archive/cf70c3e4ceb1c011e8ed3745844fef8ce1d4ab71.tar.gz";
-      # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-      sha256 = "0wmwmy6ngx5gzsbc2wsa00zbih068ahvlpm56g2nz770frckh8ib";
-    };
-in
-{ config ? (import darwin {}).config
-, pkgs ? import nixpkgsSrc { system = builtins.currentSystem; }
-, lib ? pkgs.lib
+{ config ? inputs.nix-darwin.config
+, pkgs ? inputs.nixpkgs
+, lib
+, inputs
 , ... }:
-
-let hgj_home = builtins.getEnv "HOME";
+let hgj_home = "/Users/hyunggyujang"; # builtins.getEnv "HOME";
     hgj_sync = hgj_home;
     hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
     hgj_localbin = ".local/bin";
-    localconfig = import <localconfig>;
+    localconfig = import ./silicon.nix;
     brewpath = "/opt/homebrew";
 
     nur = import (builtins.fetchTarball {
@@ -76,7 +63,6 @@ let hgj_home = builtins.getEnv "HOME";
         cp * $out/bin/
       '';
     };
-
 in with lib;
   rec {
     # See https://github.com/LnL7/nix-darwin/issues/701
@@ -84,17 +70,13 @@ in with lib;
 
     # Home manager
     imports = [
-      ''${(builtins.fetchTarball {
-        # Get the revision by choosing a version from https://github.com/nix-community/home-manager
-        url = "https://github.com/nix-community/home-manager/archive/3bfaacf46133c037bb356193bd2f1765d9dc82c1.tar.gz";
-        # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-        sha256 = "1wa0yb7b9q6v7s0d99ab9z3waz7dcd64hhsmv89k5p9sx5f5rsgf";
-      })}/nix-darwin''
+      "${inputs.home-manager}/nix-darwin"
     ];
 
     home-manager.useGlobalPkgs = true;
+    home-manager.useUserPackages = true;
     home-manager.users = let userconfig = { config, ...}: rec {
-      home.stateVersion = "23.05";
+      home.stateVersion = "24.05";
       home.file = {
         ".cargo/bin/rust-analyzer".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer";
         ".gnupg/gpg-agent.conf".text = ''
@@ -2303,7 +2285,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
       };
       programs.zsh = {
         enable = true;
-        enableAutosuggestions = true;
+        autosuggestion.enable = true;
         enableCompletion = false; # See https://github.com/NixOS/nix/issues/5445
         defaultKeymap = "emacs";
         sessionVariables = { RPROMPT = ""; };
@@ -2534,7 +2516,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
     users = {
       users.hyunggyujang = {
         name = "hyunggyujang";
-        home = "${hgj_home}";
+        home = hgj_home;
         shell = pkgs.zsh;
       };
     };
@@ -2579,7 +2561,6 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
       systemPackages = with pkgs; [
         nixfmt
         yaskkserv2
-        darwin-zsh-completions
         skhd
         shellcheck
         solc-select
@@ -2648,6 +2629,11 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
         imagemagick
         # scop
         poetry
+        # Fiat crypto
+        coq_8_19
+        ocamlPackages.findlib
+        # VSCode support for coq
+        coqPackages.coq-lsp
       ];
       pathsToLink = [
         "/lib"
@@ -2657,40 +2643,11 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
       ];
     };
 
+    nixpkgs.hostPlatform = "aarch64-darwin";
     nixpkgs.overlays =
       let path = ../overlays;
       in with builtins;
-        [
-          (self: super: {
-            darwin-zsh-completions = super.runCommandNoCC "darwin-zsh-completions-0.0.0"
-              { preferLocalBuild = true; }
-              ''
-          mkdir -p $out/share/zsh/site-functions
-          cat <<-'EOF' > $out/share/zsh/site-functions/_darwin-rebuild
-          #compdef darwin-rebuild
-          #autoload
-          _nix-common-options
-          local -a _1st_arguments
-          _1st_arguments=(
-            'switch:Build, activate, and update the current generation'\
-            'build:Build without activating or updating the current generation'\
-            'check:Build and run the activation sanity checks'\
-            'changelog:Show most recent entries in the changelog'\
-                         )
-          _arguments \
-            '--list-generations[Print a list of all generations in the active profile]'\
-            '--rollback[Roll back to the previous configuration]'\
-            {--switch-generation,-G}'[Activate specified generation]'\
-            '(--profile-name -p)'{--profile-name,-p}'[Profile to use to track current and previous system configurations]:Profile:_nix_profiles'\
-            '1:: :->subcmds' && return 0
-          case $state in
-            subcmds)
-              _describe -t commands 'darwin-rebuild subcommands' _1st_arguments
-            ;;
-          esac
-          EOF
-        '';})
-        ] ++ map (n: import (path + ("/" + n)))
+        map (n: import (path + ("/" + n)))
           (filter (n: match ".*\\.nix" n != null ||
                       pathExists (path + ("/" + n + "/default.nix")))
             (attrNames (readDir path)));
@@ -2881,8 +2838,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
       package = pkgs.nix;
       nixPath = [
         {
-          inherit darwin;
-          nixpkgs = nixpkgsSrc;
+          darwin = inputs.nix-darwin;
+          nixpkgs = inputs.nixpkgs;
           localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix";
         }
       ];
@@ -2953,9 +2910,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # Garrigue project
         # "ocaml"
         # "opam"
-        # Fiat crypto
-        "coq"
-        "ocaml-findlib"
         # "parallel"
         # To cleanup system data
         "mac-cleanup-py"
