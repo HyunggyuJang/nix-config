@@ -2368,7 +2368,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
                 prompt_short_dir=''${PWD#$parent/}
             fi
             echo $prompt_short_dir
-                                    }
+        }
         vterm_printf(){
             if [ -n "$TMUX" ]; then
                 # Tell tmux to pass the escape sequences through
@@ -2380,40 +2380,7 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             else
                 printf "\e]%s\e\\" "$1"
             fi
-                                                                                }
-
-        if ! whence nvm; then
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-            [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
-
-            # opam
-            # [[ ! -r /Users/hyunggyujang/.opam/opam-init/init.zsh ]] || source /Users/hyunggyujang/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
-        fi
-
-        if ! whence load_nvmrc; then
-            autoload -U add-zsh-hook
-            load_nvmrc() {
-              local node_version="$(nvm version)"
-              local nvmrc_path="$(nvm_find_nvmrc)"
-
-              if [ -n "$nvmrc_path" ]; then
-                local nvmrc_node_version=$(nvm version "$(cat "$nvmrc_path")")
-
-                if [ "$nvmrc_node_version" = "N/A" ]; then
-                  nvm install
-                elif [ "$nvmrc_node_version" != "$node_version" ]; then
-                  nvm use
-                fi
-              elif [ "$node_version" != "$(nvm version default)" ]; then
-                echo "Reverting to nvm default version"
-                nvm use default
-              fi
-            }
-            add-zsh-hook chpwd load_nvmrc
-            load_nvmrc
-        fi
+        }
         '';
         };
         direnv = {
@@ -2629,12 +2596,9 @@ kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
         imagemagick
         # scop
         poetry
-        # Fiat crypto
-        coq_8_19
-        coq_8_19.ocamlPackages.ocaml
-        coq_8_19.ocamlPackages.findlib
-        # VSCode support for coq
-        coqPackages_8_19.coq-lsp
+
+        # nix lsp
+        nil
       ];
       pathsToLink = [
         "/lib"
@@ -2906,8 +2870,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         "ctags"
         # Lexic
         "sdcv"
-        # Javascript
-        "nvm"
         # emacs-mac
         "libgccjit"
         "gcc"
