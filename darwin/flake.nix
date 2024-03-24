@@ -11,6 +11,7 @@
   };
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, nur }: {
+    formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
     darwinConfigurations."Hyunggyus-MacBook-Air" = nix-darwin.lib.darwinSystem {
       modules = [ ./configuration.nix nur.nixosModules.nur ];
       specialArgs = { inherit inputs; };
