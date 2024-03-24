@@ -10,14 +10,7 @@ let hgj_home = "/Users/hyunggyujang"; # builtins.getEnv "HOME";
     localconfig = import ./silicon.nix;
     brewpath = "/opt/homebrew";
 
-    nur = import (builtins.fetchTarball {
-      # Get the revision by choosing a version from https://github.com/nix-community/NUR/commits/master
-      url = "https://github.com/nix-community/NUR/archive/7415275abeadc29b8c564bf76ec4c2c15179027f.tar.gz";
-      # Get the hash by running `nix-prefetch-url --unpack <url>` on the above url
-      sha256 = "07m0pdxz49sxwawz3jl62zyrc0dqp7baz8iprdl4wh6s0dnpa0v3";
-    }) {
-      inherit pkgs;
-    };
+    nur = config.nur;
 
     kittyDracula = with pkgs; stdenv.mkDerivation {
       name = "kitty-dracula-theme";
