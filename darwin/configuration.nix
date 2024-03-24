@@ -2835,7 +2835,10 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         };
       };
     nix = {
-      settings.trusted-users = ["root" "hyunggyujang"];
+      settings = {
+        trusted-users = ["root" "hyunggyujang"];
+        experimental-features = "nix-command flakes";
+      };
       package = pkgs.nix;
       nixPath = [
         {
