@@ -2962,8 +2962,6 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # python
         "python"
         "python@3.10"
-        # zulip
-        "vagrant"
         # mail
         "notmuch"
         # moonlander
@@ -3016,6 +3014,8 @@ open < i : skhd -k "ctrl - g"; doom everywhere
         # GKE
         "obsidian"
         "inkscape"
+        # zulip
+        "vagrant"
       ];
       extraConfig = ''
         brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
