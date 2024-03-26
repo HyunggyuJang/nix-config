@@ -28,33 +28,33 @@
         ]
       },
       "locked": {
-        "lastModified": 1710717205,
-        "narHash": "sha256-Wf3gHh5uV6W1TV/A8X8QJf99a5ypDSugY4sNtdJDe0A=",
-        "owner": "LnL7",
+        "lastModified": 1711429082,
+        "narHash": "sha256-9d5ilxxq4CXw44eFw8VFrRneAKex7D8xjn95mwZjgf4=",
+        "owner": "HyunggyuJang",
         "repo": "nix-darwin",
-        "rev": "bcc8afd06e237df060c85bad6af7128e05fd61a3",
+        "rev": "83a9a41f1bc62ffedd147df4584501b6bdb992b0",
         "type": "github"
       },
       "original": {
-        "owner": "LnL7",
+        "owner": "HyunggyuJang",
         "repo": "nix-darwin",
-        "rev": "bcc8afd06e237df060c85bad6af7128e05fd61a3",
+        "rev": "83a9a41f1bc62ffedd147df4584501b6bdb992b0",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1711269599,
-        "narHash": "sha256-gbdxnmowZ2fmqY5F8xSJ0wVBeL4wv9DCYxrWiJYOBNA=",
+        "lastModified": 1711370797,
+        "narHash": "sha256-2xu0jVSjuKhN97dqc4bVtvEH52Rwh6+uyI1XCnzoUyI=",
         "owner": "HyunggyuJang",
         "repo": "nixpkgs",
-        "rev": "c95e47775fd13f2ec10014b746a53343c2f0b25f",
+        "rev": "c726225724e681b3626acc941c6f95d2b0602087",
         "type": "github"
       },
       "original": {
         "owner": "HyunggyuJang",
         "repo": "nixpkgs",
-        "rev": "c95e47775fd13f2ec10014b746a53343c2f0b25f",
+        "rev": "c726225724e681b3626acc941c6f95d2b0602087",
         "type": "github"
       }
     },
