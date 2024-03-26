@@ -1,0 +1,10 @@
+{
+    "$schema": "https://raw.githubusercontent.com/nix-community/nixd/a436786fbd8ed5aafea4b0512cb1170a6e0e39df/nixd/docs/nixd-schema.json",
+    "options": {
+        "enable": true,
+        "target": {
+            "args": [],
+            "installable": "./darwin#darwinConfigurations.Hyunggyus-MacBook-Air.options"
+        }
+    }
+}

@@ -2516,7 +2516,7 @@ in with lib; rec {
       "${environment.variables.PAPERSPACE_INSTALL}/bin"
     ];
     systemPackages = with pkgs; [
-      nixfmt
+      nixpkgs-fmt
       yaskkserv2
       skhd
       shellcheck
@@ -2560,7 +2560,7 @@ in with lib; rec {
       poetry
 
       # nix lsp
-      nil
+      nixd
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
