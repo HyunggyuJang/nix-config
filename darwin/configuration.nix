@@ -2050,6 +2050,7 @@ with lib; rec {
 
       # nix lsp
       nixd
+      yarn
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
