@@ -2051,6 +2051,7 @@ with lib; rec {
       # nix lsp
       nixd
       yarn
+      nodejs
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
