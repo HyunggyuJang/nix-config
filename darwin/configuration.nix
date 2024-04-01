@@ -2388,7 +2388,6 @@ with lib; rec {
       brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
       cask "firefox", args: { language: "en-KR" }
       # OutsideIn(X)
-      brew "agda", args: ["ignore-dependencies"]
       brew "ghcup", args: ["ignore-dependencies"]
       brew "dua-cli", args: ["ignore-dependencies"]
     '';
