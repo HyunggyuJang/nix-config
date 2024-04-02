@@ -2050,8 +2050,6 @@ with lib; rec {
 
       # nix lsp
       nixd
-      yarn
-      nodejs
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
@@ -2341,6 +2339,7 @@ with lib; rec {
       "sphinx-doc"
       # emacs-mac
       "tree-sitter"
+      "nvm"
     ];
     casks = [
       "appcleaner"
