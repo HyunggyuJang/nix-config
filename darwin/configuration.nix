@@ -1844,6 +1844,7 @@ with lib; rec {
             initExtra = ''
               PROMPT=' %{$fg_bold[blue]%}$(get_pwd)%{$reset_color%} ''${prompt_suffix}'
               local prompt_suffix="%(?:%{$fg_bold[green]%}❯ :%{$fg_bold[red]%}❯%{$reset_color%} "
+
               function get_pwd(){
                   git_root=$PWD
                   while [[ $git_root != / && ! -e $git_root/.git ]]; do
@@ -1857,7 +1858,8 @@ with lib; rec {
                       prompt_short_dir=''${PWD#$parent/}
                   fi
                   echo $prompt_short_dir
-                                          }
+              }
+
               vterm_printf(){
                   if [ -n "$TMUX" ]; then
                       # Tell tmux to pass the escape sequences through
@@ -1869,6 +1871,7 @@ with lib; rec {
                   else
                       printf "\e]%s\e\\" "$1"
                   fi
+              }
 
               if ! whence nvm; then
                   export NVM_DIR="$HOME/.nvm"
