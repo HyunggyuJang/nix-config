@@ -747,7 +747,7 @@ with lib; rec {
               macos_thicken_font 0.5
 
               macos_option_as_alt yes
-              macos_hide_from_tasks yes
+              macos_hide_from_tasks no
               macos_quit_when_last_window_closed yes
 
               include dracula.conf
