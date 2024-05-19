@@ -12,6 +12,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nur.url =
       "github:nix-community/NUR/8ef4be789b09122a98de08ef3496c65511b3b35d";
+    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/37d616abf90e7a1ee0fa33bf6d9dce6bfe164e4c";
   };
 
   outputs = inputs@{ nix-darwin, nixpkgs, nur, ... }: {

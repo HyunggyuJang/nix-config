@@ -1892,8 +1892,7 @@ with lib; rec {
         programs.browserpass.enable = true;
         programs.browserpass.browsers = [ "firefox" ];
         programs.firefox.enable = true;
-        programs.firefox.package =
-          pkgs.runCommand "firefox-0.0.0" { } "mkdir $out";
+        programs.firefox.package = pkgs.firefox-darwin;
         programs.firefox.profiles = {
           home = {
             id = 0;
@@ -2036,7 +2035,7 @@ with lib; rec {
         inherit (texlive)
           scheme-medium zxjatype ctex biblatex tikz-cd xpatch cleveref svg
           trimspaces catchfile transparent capt-of enumitem fvextra upquote
-          tcolorbox environ pdfcol
+          tcolorbox environ pdfcol nanumtype1 kotex-plain kotex-utf kotex-utils
           # jupyter export
           adjustbox standalone algorithm2e ifoddpage relsize wrapfig
           beamertheme-metropolis pdfx xmpincl accsupp fontawesome5 tikzfill
@@ -2064,14 +2063,18 @@ with lib; rec {
   };
 
   nixpkgs.hostPlatform = "aarch64-darwin";
+
   nixpkgs.overlays =
-    let path = ../overlays;
+    let
+      path = ../overlays;
     in with builtins;
-    map (n: import (path + ("/" + n))) (filter
-      (n:
-        match ".*\\.nix" n != null
-        || pathExists (path + ("/" + n + "/default.nix")))
-      (attrNames (readDir path)));
+      let
+        localOverlays = map (n: import (path + ("/" + n))) (filter
+          (n:
+            match ".*\\.nix" n != null
+            || pathExists (path + ("/" + n + "/default.nix")))
+          (attrNames (readDir path)));
+      in [ inputs.nixpkgs-firefox-darwin.overlay ] ++ localOverlays;
 
   programs = {
     zsh = {
@@ -2235,7 +2238,7 @@ with lib; rec {
         open < shift - k : skhd -k "ctrl - g"; open -a kitty
 
         # Internet Browser
-        open < f : skhd -k "ctrl - g"; open -a "/Applications/Firefox.app"
+        open < f : skhd -k "ctrl - g"; open -a Firefox
 
         open < s : skhd -k "ctrl - g"; open -a Slack
 
@@ -2393,7 +2396,6 @@ with lib; rec {
     ];
     extraConfig = ''
       brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
-      cask "firefox", args: { language: "en-KR" }
       # OutsideIn(X)
       brew "ghcup", args: ["ignore-dependencies"]
       brew "dua-cli", args: ["ignore-dependencies"]
