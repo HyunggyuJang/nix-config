@@ -1930,7 +1930,7 @@ with lib; rec {
                 name = "userChrome.css";
                 url =
                   "https://raw.githubusercontent.com/HyunggyuJang/config/main/conf.d/userChrome.css";
-                sha256 = "sha256-2FRAyjUvBd1Z2fWaWqt57aX3eHp5wlPIpA23ZvSMwfI=";
+                sha256 = "sha256-SZ7OsEh/iQqdEws89uacBiDRV1qN40nnSM/e4mjR43A=";
               };
               tabLineColour = "#5e81ac";
             }));
