@@ -1929,8 +1929,8 @@ with lib; rec {
               src = pkgs.fetchurl {
                 name = "userChrome.css";
                 url =
-                  "https://raw.githubusercontent.com/cmacrae/config/master/conf.d/userChrome.css";
-                sha256 = "01ww75qpj9s0dgvjzvywqf02f0m0zhyr78wllk9gx2ci44yzwby6";
+                  "https://raw.githubusercontent.com/HyunggyuJang/config/main/conf.d/userChrome.css";
+                sha256 = "sha256-2FRAyjUvBd1Z2fWaWqt57aX3eHp5wlPIpA23ZvSMwfI=";
               };
               tabLineColour = "#5e81ac";
             }));
