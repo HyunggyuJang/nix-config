@@ -2035,7 +2035,7 @@ with lib; rec {
         inherit (texlive)
           scheme-medium zxjatype ctex biblatex tikz-cd xpatch cleveref svg
           trimspaces catchfile transparent capt-of enumitem fvextra upquote
-          tcolorbox environ pdfcol nanumtype1 kotex-plain kotex-utf kotex-utils
+          tcolorbox environ pdfcol nanumtype1 kotex-plain kotex-utf kotex-utils xetexko
           # jupyter export
           adjustbox standalone algorithm2e ifoddpage relsize wrapfig
           beamertheme-metropolis pdfx xmpincl accsupp fontawesome5 tikzfill
