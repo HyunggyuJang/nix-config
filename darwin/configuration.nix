@@ -2319,7 +2319,7 @@ with lib; rec {
       "appcleaner"
       "slack"
       "kitty"
-      "aquaskk"
+      # "aquaskk"
       "hammerspoon"
       "karabiner-elements"
       "onedrive"
