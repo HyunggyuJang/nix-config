@@ -54,7 +54,7 @@ with lib; rec {
   home-manager.users =
     let
       userconfig = { config, ... }: rec {
-        home.stateVersion = "24.05";
+        home.stateVersion = "24.11";
         home.file = {
           ".cargo/bin/rust-analyzer".source = config.lib.file.mkOutOfStoreSymlink
             "${hgj_home}/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer";
@@ -1885,6 +1885,11 @@ with lib; rec {
             enableZshIntegration = true; # see note on other shells below
             nix-direnv.enable = true;
           };
+          emacs = {
+            enable = true;
+            package = pkgs.emacs;
+            extraPackages = (epkgs: [ epkgs.vterm ]);
+          };
         };
 
         programs.fzf.enable = true;
@@ -2026,7 +2031,6 @@ with lib; rec {
       pandoc
       openssl
       # Mail
-      # TODO: Move emacs, notmuch, lieer, afew to Nix.
       # lieer # Curretly installed manually by cloning the repo as instructed: https://afew.readthedocs.io/en/latest/installation.html
       # afew # Currently installed using pip3 install afew
       # Latex
@@ -2057,6 +2061,32 @@ with lib; rec {
 
       # nix lsp
       nixd
+
+      # System inspector & cleaner
+      dua
+
+      tree-sitter
+      msmtp
+      aspell
+      jq
+      pngpaste
+      zstd
+      isync
+      ripgrep
+      git
+      gnupg
+      gmp
+      coreutils
+      fd
+      poppler
+      pinentry_mac
+      findutils
+      cmake
+      automake
+      ctags
+      sdcv
+      notmuch
+      libusb
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
@@ -2277,79 +2307,12 @@ with lib; rec {
     global.brewfile = true;
     brewPrefix = "/opt/homebrew/bin";
     taps = [
-      "homebrew/bundle"
       "homebrew/cask"
-      "homebrew/core"
-      "homebrew/services"
       "homebrew/cask-fonts"
       # For beta version
       "homebrew/cask-versions"
-      "railwaycat/emacsmacport"
-      "borkdude/brew"
-      # yabai
-      "koekeishiya/formulae"
-      # system data cleaner
-      "mac-cleanup/mac-cleanup-py"
     ];
     brews = [
-      "pngpaste"
-      "jq"
-      "msmtp"
-      "aspell"
-      "graphviz"
-      "zstd"
-      "isync"
-      "libvterm"
-      "ripgrep"
-      "git"
-      "gnupg"
-      "pass"
-      "lua"
-      "gmp"
-      "coreutils"
-      "gnuplot"
-      "fd"
-      "poppler"
-      "automake"
-      "cmake"
-      "findutils"
-      "pinentry-mac"
-      # Fonts
-      "svn"
-      # emacs-mac dependencies
-      "jansson"
-      "libxml2"
-      "texinfo"
-      # suggested by Doom emacs
-      "pyenv"
-      # For projectile
-      "ctags"
-      # Lexic
-      "sdcv"
-      # emacs-mac
-      "libgccjit"
-      "gcc"
-      # Garrigue project
-      # "ocaml"
-      # "opam"
-      # "parallel"
-      # To cleanup system data
-      "mac-cleanup-py"
-      # python
-      "python"
-      "python@3.10"
-      # mail
-      "notmuch"
-      # moonlander
-      "libusb"
-      # minicaml
-      "rlwrap"
-      # Astar
-      "protobuf"
-      # Haskell compiler docs
-      "sphinx-doc"
-      # emacs-mac
-      "tree-sitter"
       "nvm"
     ];
     casks = [
@@ -2375,9 +2338,6 @@ with lib; rec {
       "discord"
       # Docker
       "docker"
-      # Garrigue lab
-      "element"
-      "skype"
       # Data analysis class
       "microsoft-excel"
       # School
@@ -2394,11 +2354,5 @@ with lib; rec {
       # zulip
       "vagrant"
     ];
-    extraConfig = ''
-      brew "emacs-mac", args: ["with-native-comp", "with-no-title-bars", "with-starter"]
-      # OutsideIn(X)
-      brew "ghcup", args: ["ignore-dependencies"]
-      brew "dua-cli", args: ["ignore-dependencies"]
-    '';
   };
 }

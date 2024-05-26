@@ -3,12 +3,12 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/3c1b6f75344e207a67536d834886ee9b4577ebe7";
+      "github:NixOS/nixpkgs/3305b2b25e4ae4baee872346eae133cf6f611783";
     nix-darwin.url =
-      "github:HyunggyuJang/nix-darwin/83a9a41f1bc62ffedd147df4584501b6bdb992b0";
+      "github:LnL7/nix-darwin/0bea8222f6e83247dd13b055d83e64bce02ee532";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
-      "github:nix-community/home-manager/1c2c5e4cabba4c43504ef0f8cc3f3dfa284e2dbb";
+      "github:nix-community/home-manager/850cb322046ef1a268449cf1ceda5fd24d930b05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nur.url =
       "github:nix-community/NUR/8ef4be789b09122a98de08ef3496c65511b3b35d";
