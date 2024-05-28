@@ -1996,7 +1996,7 @@ with lib; rec {
       EMACSDIR = "${hgj_home}/.emacs.d";
       DOOMLOCALDIR = "${hgj_home}/.doom";
       SHELL = "${pkgs.zsh}/bin/zsh";
-      LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
+      # LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
       PAPERSPACE_INSTALL = "${hgj_home}/.paperspace";
     };
     systemPath = [
