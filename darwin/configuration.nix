@@ -62,7 +62,7 @@ with lib; rec {
             enable-ssh-support
             default-cache-ttl 86400
             max-cache-ttl 86400
-            pinentry-program ${brewpath}/bin/pinentry-mac
+            pinentry-program /run/current-system/sw/bin/pinentry-mac
           '';
           ".tridactylrc".text = ''
             # set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12) (internal-border-width . 0))" +%l:%c
