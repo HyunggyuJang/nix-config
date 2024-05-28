@@ -2075,6 +2075,7 @@ with lib; rec {
       ripgrep
       git
       gnupg
+      pass
       gmp
       coreutils
       fd
