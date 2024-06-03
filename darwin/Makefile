@@ -10,7 +10,7 @@ all: build switch
 
 build:
 		$(call announce,nix run nix-darwin -- switch --flake)
-		@nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin -- switch --flake
+		@nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin -- switch --flake ./
 switch:
 		$(call announce,darwin-rebuild switch --flake)
 		@darwin-rebuild switch --flake ./ --show-trace
