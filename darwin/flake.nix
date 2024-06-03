@@ -19,7 +19,18 @@
     formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
     darwinConfigurations.Hyunggyus-MacBook-Air = nix-darwin.lib.darwinSystem {
       modules = [ ./configuration.nix nur.nixosModules.nur ];
-      specialArgs = { inherit inputs; };
+      specialArgs =
+        {
+          inherit inputs;
+          machineType = "MacBook-Air";
+        };
+    };
+    darwinConfigurations.Hyunggyus-MacBook-Pro = nix-darwin.lib.darwinSystem {
+      modules = [ ./configuration.nix nur.nixosModules.nur ];
+      specialArgs = {
+        inherit inputs;
+        machineType = "MacBook-Pro";
+      };
     };
     devShells.aarch64-darwin.default =
       nixpkgs.legacyPackages.aarch64-darwin.mkShell { };
