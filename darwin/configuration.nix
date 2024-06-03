@@ -1,5 +1,6 @@
-{ config ? inputs.nix-darwin.config, pkgs ? inputs.nixpkgs, lib, inputs, ... }:
+{ config ? inputs.nix-darwin.config, pkgs ? inputs.nixpkgs, lib, inputs, specialArgs, ... }:
 let
+  machineType = specialArgs.machineType or "unknown";
   hgj_home = "/Users/hyunggyujang";
   hgj_sync = hgj_home;
   hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
@@ -2320,8 +2321,6 @@ with lib; rec {
       "appcleaner"
       "slack"
       "kitty"
-      # "aquaskk"
-      "hammerspoon"
       "karabiner-elements"
       "onedrive"
       # "zoom"
@@ -2336,24 +2335,26 @@ with lib; rec {
       "font-fira-mono"
       # altacv with xelatex
       "font-lato"
-      "discord"
       # Docker
       "docker"
+      # For Bing AI + Google meet
+      "microsoft-edge"
+      # Experiment with modern IDE
+      "visual-studio-code"
+      "obsidian"
+      "inkscape"
+    ] ++ optionals (machineType == "MacBook-Air") [
+      # "aquaskk"
+      "discord"
+      "hammerspoon"
+      # zulip
+      "vagrant"
       # Data analysis class
       "microsoft-excel"
       # School
       "microsoft-word"
       # audit
       "telegram"
-      # For Bing AI + Google meet
-      "microsoft-edge"
-      # Experiment with modern IDE
-      "visual-studio-code"
-      # GKE
-      "obsidian"
-      "inkscape"
-      # zulip
-      "vagrant"
     ];
   };
 }
