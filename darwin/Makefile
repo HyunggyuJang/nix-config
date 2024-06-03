@@ -14,8 +14,8 @@ build:
 switch:
 		$(call announce,darwin-rebuild switch --flake)
 		@darwin-rebuild switch --flake ./ --show-trace
-		@echo "Darwin generation: $$($(DARWIN_REBUILD) --list-generations | tail -1)"
+		@echo "Darwin generation: $$(darwin-rebuild --list-generations | tail -1)"
 rollback:
 		$(call announce,darwin-rebuild switch --rollback)
 		@darwin-rebuild switch --rollback
-		@echo "Darwin generation: $$($(DARWIN_REBUILD) --list-generations | tail -1)"
+		@echo "Darwin generation: $$(darwin-rebuild --list-generations | tail -1)"
