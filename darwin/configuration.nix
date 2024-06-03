@@ -53,7 +53,7 @@ with lib; rec {
   home-manager.useUserPackages = false;
   home-manager.users =
     let
-      userconfig = { config, ... }: rec {
+      userconfig = { config, ... }: {
         home.stateVersion = "24.11";
         home.file = {
           ".cargo/bin/rust-analyzer".source = config.lib.file.mkOutOfStoreSymlink
@@ -2324,7 +2324,7 @@ with lib; rec {
       "hammerspoon"
       "karabiner-elements"
       "onedrive"
-      "zoom"
+      # "zoom"
       "zotero"
       # elegant-emacs
       "font-roboto-mono"
