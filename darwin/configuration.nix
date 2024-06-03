@@ -2308,12 +2308,6 @@ with lib; rec {
     onActivation.cleanup = "zap";
     global.brewfile = true;
     brewPrefix = "/opt/homebrew/bin";
-    taps = [
-      "homebrew/cask"
-      "homebrew/cask-fonts"
-      # For beta version
-      "homebrew/cask-versions"
-    ];
     brews = [
       "nvm"
     ];
