@@ -1323,7 +1323,6 @@ with lib; rec {
       "slack"
       "kitty"
       "karabiner-elements"
-      "onedrive"
       # "zoom"
       "zotero"
       # elegant-emacs
@@ -1343,8 +1342,9 @@ with lib; rec {
       # Experiment with modern IDE
       "visual-studio-code"
       "obsidian"
-      "inkscape"
     ] ++ optionals (machineType == "MacBook-Air") [
+      "inkscape"
+      "onedrive"
       # "aquaskk"
       "discord"
       "hammerspoon"
@@ -1356,6 +1356,8 @@ with lib; rec {
       "microsoft-word"
       # audit
       "telegram"
+    ] ++ optionals (machineType == "MacBook-Pro") [
+      "microsoft-teams"
     ];
   };
 }
