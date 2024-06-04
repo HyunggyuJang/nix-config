@@ -2068,7 +2068,7 @@ with lib; rec {
 
       tree-sitter
       msmtp
-      aspell
+      (aspellWithDicts (dicts: with dicts; [ en ]))
       jq
       pngpaste
       zstd
