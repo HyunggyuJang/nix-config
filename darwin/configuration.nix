@@ -1342,9 +1342,10 @@ with lib; rec {
       # Experiment with modern IDE
       "visual-studio-code"
       "obsidian"
+      # Storage using Univ Account
+      "onedrive"
     ] ++ optionals (machineType == "MacBook-Air") [
       "inkscape"
-      "onedrive"
       # "aquaskk"
       "discord"
       "hammerspoon"
