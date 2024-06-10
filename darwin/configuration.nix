@@ -42,48 +42,6 @@ let
         cp altacv.cls $out/tex/latex/
       '';
     };
-
-  vscodeWithExtensions = pkgs.vscode-with-extensions.override {
-    vscodeExtensions = (with pkgs.vscode-extensions; [
-      bierner.markdown-mermaid
-      bodil.file-browser
-      editorconfig.editorconfig
-      esbenp.prettier-vscode
-      github.copilot
-      github.copilot-chat
-      jnoortheen.nix-ide
-      kahole.magit
-      mkhl.direnv
-      streetsidesoftware.code-spell-checker
-      vspacecode.vspacecode
-      vspacecode.whichkey
-    ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-      {
-        name = "apc-extension";
-        publisher = "drcika";
-        version = "0.3.9";
-        sha256 = "sha256-VMUICGvAFWrG/uL3aGKNUIt1ARovc84TxkjgSkXuoME=";
-      }
-      {
-        name = "open-in-editor-vscode";
-        publisher = "generalov";
-        version = "1.0.1";
-        sha256 = "sha256-yrbZhp0NN4J1llyxz+FgOdc1lKg53SWlXfhsZpkP1hA=";
-      }
-      {
-        name = "vim-with-killring";
-        publisher = "hyunggyujang";
-        version = "1.0.7";
-        sha256 = "sha256-clTKqm/OFsgPLUcbfUvdHkA4JjLGWFNhqpYKZlzex1Q=";
-      }
-      {
-        name = "fuzzy-search";
-        publisher = "jacobdufault";
-        version = "0.0.3";
-        sha256 = "sha256-oN1SzXypjpKOTUzPbLCTC+H3I/40LMVdjbW3T5gib0M=";
-      }
-    ];
-  };
 in
 with lib; rec {
   # See https://github.com/LnL7/nix-darwin/issues/701
@@ -1138,13 +1096,10 @@ with lib; rec {
       sdcv
       notmuch
       libusb
-      vscodeWithExtensions
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
   };
-
-  nixpkgs.config.allowUnfree = true;
 
   nixpkgs.hostPlatform = "aarch64-darwin";
 
@@ -1384,6 +1339,8 @@ with lib; rec {
       "docker"
       # For Bing AI + Google meet
       "microsoft-edge"
+      # Experiment with modern IDE
+      "visual-studio-code"
       "obsidian"
       # Storage using Univ Account
       "onedrive"
