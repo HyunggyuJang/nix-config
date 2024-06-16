@@ -2323,8 +2323,6 @@ with lib; rec {
       "docker"
       # For Bing AI + Google meet
       "microsoft-edge"
-      # Experiment with modern IDE
-      "visual-studio-code"
       "obsidian"
       # Storage using Univ Account
       "onedrive"
