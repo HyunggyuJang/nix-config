@@ -1,6 +1,4 @@
 {
-  text = ''
-{
     "global": {
         "ask_for_confirmation_before_quitting": true,
         "check_for_updates_on_startup": false,
@@ -1112,6 +1110,4 @@
             }
         }
     ]
-}
-  '';
 }
