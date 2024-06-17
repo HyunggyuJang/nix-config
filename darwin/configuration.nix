@@ -1920,16 +1920,7 @@ with lib; rec {
               "signon.rememberSignons" = false;
               "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
             };
-            userChrome = (builtins.readFile (pkgs.substituteAll {
-              name = "homeUserChrome";
-              src = pkgs.fetchurl {
-                name = "userChrome.css";
-                url =
-                  "https://raw.githubusercontent.com/HyunggyuJang/config/main/conf.d/userChrome.css";
-                sha256 = "sha256-SZ7OsEh/iQqdEws89uacBiDRV1qN40nnSM/e4mjR43A=";
-              };
-              tabLineColour = "#5e81ac";
-            }));
+            userChrome = builtins.readFile ./userChrome.css;
             extensions = with nur.repos.rycee.firefox-addons; [
               ublock-origin
               browserpass
@@ -1940,6 +1931,9 @@ with lib; rec {
               # Need to add zotero-connector
               # -> there is no official extension registered in the mozilla's store.
               # Let's use edge's for now.
+
+              # Recommended by Lechuck
+              multi-account-containers
             ];
           };
         };
