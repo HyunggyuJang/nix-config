@@ -1390,7 +1390,7 @@ with lib; rec {
                 "slashCommands" = {
                   "*" = true;
                 };
-                "debug.overrideEngine" = "gpt-4-0125-preview";
+                # "debug.overrideEngine" = "gpt-4-0125-preview";
               };
               "workbench.activityBar.location" = "hidden";
               "githubPullRequests.pullBranch" = "never";
