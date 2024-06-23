@@ -1381,7 +1381,7 @@ with lib; rec {
                 "debug.overrideLogLevels" = {
                   "*" = "DEBUG";
                 };
-                "debug.overrideChatEngine" = "copilot-preview-gpt4-centralus";
+                "debug.overrideChatEngine" = "gpt-4-0125-preview";
                 "fix.useGPT4InInlineChat" = true;
                 "conversationLoggingEnabled" = true;
                 "workspace.useNewFlow" = true;
@@ -1390,7 +1390,7 @@ with lib; rec {
                 "slashCommands" = {
                   "*" = true;
                 };
-                "debug.overrideEngine" = "copilot-preview-gpt4-centralus";
+                "debug.overrideEngine" = "gpt-4-0125-preview";
               };
               "workbench.activityBar.location" = "hidden";
               "githubPullRequests.pullBranch" = "never";
