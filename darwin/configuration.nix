@@ -2398,8 +2398,6 @@ with lib; rec {
       "telegram"
     ] ++ optionals (machineType == "MacBook-Pro") [
       "microsoft-teams"
-      # litecoin localnet
-      "litecoin"
     ];
   };
 }
