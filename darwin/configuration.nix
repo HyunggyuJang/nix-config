@@ -1968,7 +1968,9 @@ with lib; rec {
     CustomUserPreferences = {
       # Finder's default location upon open
       "com.apple.finder" = {
-        NewWindowTargetPath = "file://${config.users.users.${owner}.home}/";
+        NewWindowTargetPath =
+          let homePath = config.users.users.${owner}.home;
+          in "file://${homePath}/";
         ShowHardDrivesOnDesktop = false;
         ShowMountedServersOnDesktop = true;
         ShowRemovableMediaOnDesktop = true;
