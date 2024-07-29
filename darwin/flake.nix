@@ -32,7 +32,7 @@
         machineType = "MacBook-Pro";
       };
     };
-    darwinConfigurations.A13884ui-MacBook-Pro = nix-darwin.lib.darwinSystem {
+    darwinConfigurations.A13884ui-MacBookPro = nix-darwin.lib.darwinSystem {
       modules = [ ./configuration.nix nur.nixosModules.nur ];
       specialArgs = {
         inherit inputs;
