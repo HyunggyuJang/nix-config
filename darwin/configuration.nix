@@ -1,7 +1,8 @@
 { config ? inputs.nix-darwin.config, pkgs ? inputs.nixpkgs, lib, inputs, specialArgs, ... }:
 let
   machineType = specialArgs.machineType or "unknown";
-  hgj_home = "/Users/hyunggyujang";
+  owner = if machineType == "M3-Pro" then "a13884" else "hyunggyujang";
+  hgj_home = "/Users/${owner}";
   hgj_sync = hgj_home;
   hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
   hgj_localbin = ".local/bin";
@@ -534,7 +535,7 @@ with lib; rec {
                 <key>active</key>
                 <true/>
                 <key>location</key>
-                <string>/Users/hyunggyujang/.doom/etc/skk/aquaskk-jisyo.utf8</string>
+                <string>${hgj_home}/.doom/etc/skk/aquaskk-jisyo.utf8</string>
                 <key>type</key>
                 <integer>5</integer>
               </dict>
@@ -2025,7 +2026,7 @@ with lib; rec {
   };
   users = {
     users.hyunggyujang = {
-      name = "hyunggyujang";
+      name = owner;
       home = hgj_home;
       shell = pkgs.zsh;
     };
@@ -2338,7 +2339,7 @@ with lib; rec {
   };
   nix = {
     settings = {
-      trusted-users = [ "root" "hyunggyujang" ];
+      trusted-users = [ "root" owner ];
       experimental-features = "nix-command flakes";
     };
     package = pkgs.nix;
