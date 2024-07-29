@@ -1940,7 +1940,7 @@ with lib; rec {
         };
       };
     in
-      { hyunggyujang = userconfig; };
+      { ${owner} = userconfig; };
   system.defaults = {
     dock = {
       orientation = "left";
@@ -1965,12 +1965,10 @@ with lib; rec {
 
     loginwindow.GuestEnabled = false;
 
-    universalaccess.reduceMotion = machineType != "M3-Pro";
-
     CustomUserPreferences = {
       # Finder's default location upon open
       "com.apple.finder" = {
-        NewWindowTargetPath = "file://${config.users.users.hyunggyujang.home}/";
+        NewWindowTargetPath = "file://${config.users.users.${owner}.home}/";
         ShowHardDrivesOnDesktop = false;
         ShowMountedServersOnDesktop = true;
         ShowRemovableMediaOnDesktop = true;
@@ -2025,7 +2023,7 @@ with lib; rec {
     };
   };
   users = {
-    users.hyunggyujang = {
+    users.${owner} = {
       name = owner;
       home = hgj_home;
       shell = pkgs.zsh;
