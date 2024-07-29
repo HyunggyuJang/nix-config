@@ -1965,7 +1965,7 @@ with lib; rec {
 
     loginwindow.GuestEnabled = false;
 
-    universalaccess.reduceMotion = true;
+    universalaccess.reduceMotion = machineType != "M3-Pro";
 
     CustomUserPreferences = {
       # Finder's default location upon open
@@ -2362,7 +2362,6 @@ with lib; rec {
     ];
     casks = [
       "appcleaner"
-      "slack"
       "kitty"
       "karabiner-elements"
       # "zoom"
@@ -2379,12 +2378,13 @@ with lib; rec {
       "font-lato"
       # Docker
       "docker"
-      # For Bing AI + Google meet
-      "microsoft-edge"
       "obsidian"
+    ] ++ optionals (machineType == "MacBook-Air") [
+      "slack"
       # Storage using Univ Account
       "onedrive"
-    ] ++ optionals (machineType == "MacBook-Air") [
+      # For Bing AI + Google meet
+      "microsoft-edge"
       "inkscape"
       # "aquaskk"
       "discord"
