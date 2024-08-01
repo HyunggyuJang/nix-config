@@ -2379,10 +2379,10 @@ with lib; rec {
       # Docker
       "docker"
       "obsidian"
+      # Storage using Univ Account, but also needed to store images and screen shots from emacs
+      "onedrive"
     ] ++ optionals (machineType == "MacBook-Air") [
       "slack"
-      # Storage using Univ Account
-      "onedrive"
       # For Bing AI + Google meet
       "microsoft-edge"
       "inkscape"
