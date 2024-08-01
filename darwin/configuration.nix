@@ -2399,6 +2399,8 @@ with lib; rec {
       "telegram"
     ] ++ optionals (machineType == "MacBook-Pro") [
       "microsoft-teams"
+    ] ++ optionals (machineType == "M3-Pro") [
+      "cloudflare-warp"
     ];
   };
 }
