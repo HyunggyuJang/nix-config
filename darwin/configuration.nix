@@ -542,11 +542,6 @@ with lib; rec {
             </array>
             </plist>
           '';
-          ".gitconfig".text = ''
-            [user]
-              name = Hyunggyu Jang
-              email = murasakipurplez5@gmail.com
-          '';
           ".mailcap".text = ''
             # HTML
             text/html; open %s; description=HTML Text; test=test -n "$DISPLAY";  nametemplate=%s.html
@@ -677,7 +672,13 @@ with lib; rec {
           };
           "storage".source = config.lib.file.mkOutOfStoreSymlink
             "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
-        };
+        } // (if machineType != "M3-Pro" then {
+          ".gitconfig".text = ''
+            [user]
+              name = Hyunggyu Jang
+              email = murasakipurplez5@gmail.com
+          '';
+        } else {});
         # https://github.com/nix-community/home-manager/blob/db00b39a9abec04245486a01b236b8d9734c9ad0/tests/modules/targets-darwin/default.nix
         # Has to be set explicitly as it disabled by default, preferring nix-darwin
         targets.darwin.keybindings = {
