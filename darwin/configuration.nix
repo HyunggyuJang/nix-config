@@ -2103,7 +2103,6 @@ with lib; rec {
       # ghc
       ffmpeg-headless
       # sourcegraph
-      go
       nodePackages_latest.pnpm
       imagemagick
       # scop
