@@ -22,28 +22,12 @@ modulesPath="${installationPath}/${modules}"
 browserEntrypointPath="${patchPath}/${browserMain}"
 
 patchBootstrap() {
-  local bootstrapResourcesPath="${extensionPath}/resources/${bootstrapName}"
-  local inject='  if (entrypoint === "vs/code/electron-main/main") {
-    const fs = nodeRequire("fs");
-    const p = nodeRequire("path");
-    const readFile = fs.readFile;
-    fs.readFile = function (path, options, callback) {
-      if (path.endsWith(p.join("electron-main", "main.js"))) {
-        readFile(path, options, function () {
-          loader(["vs/patch/main"], console.log, console.log);
-          callback.apply(this, arguments);
-        });
-      } else readFile(...arguments);
-    };
-  }
-  performance.mark("code/fork/willLoadCode");
-  '
+  local bootstrapResourcesPath="${extensionPath}/resources"
 
-  local patchedbootstrapJs
-  sed "/performance.mark('code\/fork\/willLoadCode');/{
-  r /dev/stdin
-  d
-  }" "${bootstrapResourcesPath}" > "${bootstrapPath}" <<< "$inject"
+  cp "${bootstrapResourcesPath}/${bootstrapName}" "${installationPath}/${bootstrapName}"
+  cp "${bootstrapResourcesPath}/bootstrap-meta.js" "${installationPath}/bootstrap-meta.js"
+  cp "${bootstrapResourcesPath}/bootstrap.js" "${installationPath}/bootstrap.js"
+  cp "${bootstrapResourcesPath}/performance.js" "${installationPath}/performance.js"
 }
 
 patchMain() {
