@@ -3,15 +3,15 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/3bcedce9f4de37570242faf16e1e143583407eab";
+      "github:NixOS/nixpkgs/d04953086551086b44b6f3c6b7eeb26294f207da";
     nix-darwin.url =
-      "github:LnL7/nix-darwin/315aa649ba307704db0b16c92f097a08a65ec955";
+      "github:LnL7/nix-darwin/f7142b8024d6b70c66fd646e1d099d3aa5bfec49";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
-      "github:nix-community/home-manager/3d65009effd77cb0d6e7520b68b039836a7606cf";
+      "github:nix-community/home-manager/afc892db74d65042031a093adb6010c4c3378422";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nur.url =
-      "github:nix-community/NUR/b2adfc00254cf5bca52f1951955e801534130d63";
+      "github:nix-community/NUR/5605ce776b3d21c0ee477fcd028a817bd3524e6f";
     nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/ec1dd891c812cc220b6b1a3805db6b577de4f2eb";
   };
 
