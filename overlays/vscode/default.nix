@@ -7,7 +7,7 @@ self: pkgs:
         name = "apc-extension";
         publisher = "drcika";
         version = "0.4.1";
-        sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+        sha256 = "sha256-fq2qlxc7+MpwkraVClB0FGsR0K1/2MTzQ0SYULMx4Kg=";
       }
     ];
 
