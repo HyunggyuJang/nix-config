@@ -1383,7 +1383,7 @@ with lib; rec {
                 "debug.overrideLogLevels" = {
                   "*" = "DEBUG";
                 };
-                "debug.overrideChatEngine" = "gpt-4-0125-preview";
+                "debug.overrideChatEngine" = "gpt-4o-2024-05-13";
                 "fix.useGPT4InInlineChat" = true;
                 "conversationLoggingEnabled" = true;
                 "workspace.useNewFlow" = true;
