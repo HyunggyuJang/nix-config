@@ -2032,8 +2032,7 @@ with lib; rec {
     };
   };
   fonts = {
-    fontDir.enable = true;
-    fonts = [ pkgs.ibm-plex ];
+    packages = [ pkgs.ibm-plex ];
   };
   environment = {
     darwinConfig = "${hgj_darwin_home}/configuration.nix";
