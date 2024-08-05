@@ -8,11 +8,11 @@
       "github:LnL7/nix-darwin/f7142b8024d6b70c66fd646e1d099d3aa5bfec49";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
-      "github:nix-community/home-manager/afc892db74d65042031a093adb6010c4c3378422";
+      "github:nix-community/home-manager/3d65009effd77cb0d6e7520b68b039836a7606cf";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nur.url =
       "github:nix-community/NUR/5605ce776b3d21c0ee477fcd028a817bd3524e6f";
-    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/ec1dd891c812cc220b6b1a3805db6b577de4f2eb";
+    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/1e21b72d579f06362e01f594b713fa1d51622c21";
   };
 
   outputs = inputs@{ nix-darwin, nixpkgs, nur, ... }: {
