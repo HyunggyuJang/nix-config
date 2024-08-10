@@ -8,7 +8,7 @@
       "github:LnL7/nix-darwin/f7142b8024d6b70c66fd646e1d099d3aa5bfec49";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
-      "github:nix-community/home-manager/3d65009effd77cb0d6e7520b68b039836a7606cf";
+      "github:HyunggyuJang/home-manager/0b3077dbadb1fd3095ee76d18f7387a0e1bfdcae";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nur.url =
       "github:nix-community/NUR/5605ce776b3d21c0ee477fcd028a817bd3524e6f";
