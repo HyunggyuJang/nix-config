@@ -2399,6 +2399,7 @@ with lib; rec {
       "microsoft-teams"
     ] ++ optionals (machineType == "M3-Pro") [
       "cloudflare-warp"
+      "sdm"
     ];
   };
 }
