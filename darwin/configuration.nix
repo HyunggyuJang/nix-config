@@ -1021,10 +1021,11 @@ with lib; rec {
                 "vspacecode.vspacecode"
               ];
               "workbench.layoutControl.enabled" = false;
-              "apc.electron" = {
-                "frame" = false;
-              };
+              # "apc.electron" = {
+              #   "frame" = false;
+              # };
               "window.titleBarStyle" = "native";
+              "window.customTitleBarVisibility" = "never";
               "editor.minimap.renderCharacters" = false;
               "editor.minimap.enabled" = false;
               "editor.scrollbar.horizontal" = "hidden";
@@ -1941,6 +1942,7 @@ with lib; rec {
       };
     in
       { ${owner} = userconfig; };
+  system.stateVersion = 5;
   system.defaults = {
     dock = {
       orientation = "left";
