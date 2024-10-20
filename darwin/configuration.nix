@@ -2403,5 +2403,8 @@ with lib; rec {
       "cloudflare-warp"
       "sdm"
     ];
+    extraConfig = ''
+      brew "aptos", args: ["force_bottle: true"]
+    '';
   };
 }
