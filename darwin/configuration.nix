@@ -2136,7 +2136,6 @@ with lib; rec {
       ctags
       sdcv
       notmuch
-      libusb
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
