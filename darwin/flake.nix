@@ -3,16 +3,16 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/b69de56fac8c2b6f8fd27f2eca01dcda8e0a4221";
+      "github:NixOS/nixpkgs/85f7e662eda4fa3a995556527c87b2524b691933";
     nix-darwin.url =
-      "github:LnL7/nix-darwin/48b50b3b137be5cfb9f4d006835ce7c3fe558ccc";
+      "github:LnL7/nix-darwin/2fbf4a8417c28cf45bae6e6e97248cbbd9b78632";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
-      "github:nix-community/home-manager/2b13611eaed8326789f76f70d21d06fbb14e3e47";
+      "github:nix-community/home-manager/2f607e07f3ac7e53541120536708e824acccfaa8";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nur.url =
-      "github:nix-community/NUR/26bd630cdb134384463f007ebf06fb9282f2c002";
-    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/8a3143c1ce147481db4463e71bc3b7002e6ebc56";
+      "github:nix-community/NUR/5e6755e038226196809096a0ad58e9eae7347f8f";
+    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/545b84eea261aa797378f69de81282ee49174fa8";
   };
 
   outputs = inputs@{ nix-darwin, nixpkgs, nur, ... }: {
