@@ -814,8 +814,8 @@ with lib; rec {
               {
                 name = "vim-with-killring";
                 publisher = "hyunggyujang";
-                version = "1.0.7";
-                sha256 = "sha256-clTKqm/OFsgPLUcbfUvdHkA4JjLGWFNhqpYKZlzex1Q=";
+                version = "1.0.8";
+                sha256 = "sha256-8JD/GaPqwFqxW5WOV+24Fs0xDkb2GEbJS57xVuClmRA=";
               }
               {
                 name = "fuzzy-search";
