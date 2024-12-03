@@ -2404,6 +2404,7 @@ with lib; rec {
     ];
     extraConfig = ''
       brew "aptos", args: ["force_bottle: true"]
+      brew "android-studio", args: ["force_bottle: true"]
     '';
   };
 }
