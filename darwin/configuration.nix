@@ -2136,6 +2136,7 @@ with lib; rec {
       ctags
       sdcv
       notmuch
+      mermaid-cli
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
