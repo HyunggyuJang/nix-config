@@ -9,8 +9,6 @@ let
   localconfig = import ./silicon.nix;
   brewpath = "/opt/homebrew";
 
-  nur = config.nur;
-
   kittyDracula = with pkgs;
     stdenv.mkDerivation {
       name = "kitty-dracula-theme";
@@ -1923,7 +1921,7 @@ with lib; rec {
               "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
             };
             userChrome = builtins.readFile ./userChrome.css;
-            extensions = with nur.repos.rycee.firefox-addons; [
+            extensions = with inputs.firefox-addons.packages.${pkgs.stdenv.system}; [
               ublock-origin
               browserpass
               tridactyl
