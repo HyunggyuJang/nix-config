@@ -3,22 +3,22 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/85f7e662eda4fa3a995556527c87b2524b691933";
+      "github:NixOS/nixpkgs/1da52dd49a127ad74486b135898da2cef8c62665";
     nix-darwin.url =
-      "github:LnL7/nix-darwin/2fbf4a8417c28cf45bae6e6e97248cbbd9b78632";
+      "github:LnL7/nix-darwin/ae406c04577ff9a64087018c79b4fdc02468c87c";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
-      "github:nix-community/home-manager/2f607e07f3ac7e53541120536708e824acccfaa8";
+      "github:nix-community/home-manager/433799271274c9f2ab520a49527ebfe2992dcfbd";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    nur.url =
-      "github:nix-community/NUR/5e6755e038226196809096a0ad58e9eae7347f8f";
-    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/545b84eea261aa797378f69de81282ee49174fa8";
+    firefox-addons.url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+    firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/debb9b889951b74cee5cbdb45074dd9d289f25d6";
   };
 
-  outputs = inputs@{ nix-darwin, nixpkgs, nur, ... }: {
+  outputs = inputs@{ nix-darwin, nixpkgs, ... }: {
     formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
     darwinConfigurations.Hyunggyus-MacBook-Air = nix-darwin.lib.darwinSystem {
-      modules = [ ./configuration.nix nur.nixosModules.nur ];
+      modules = [ ./configuration.nix ];
       specialArgs =
         {
           inherit inputs;
@@ -26,14 +26,14 @@
         };
     };
     darwinConfigurations.Hyunggyus-MacBook-Pro = nix-darwin.lib.darwinSystem {
-      modules = [ ./configuration.nix nur.nixosModules.nur ];
+      modules = [ ./configuration.nix ];
       specialArgs = {
         inherit inputs;
         machineType = "MacBook-Pro";
       };
     };
     darwinConfigurations.A13884ui-MacBookPro = nix-darwin.lib.darwinSystem {
-      modules = [ ./configuration.nix nur.nixosModules.nur ];
+      modules = [ ./configuration.nix ];
       specialArgs = {
         inherit inputs;
         machineType = "M3-Pro";
