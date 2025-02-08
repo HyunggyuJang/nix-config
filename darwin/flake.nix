@@ -8,7 +8,7 @@
       "github:LnL7/nix-darwin/ae406c04577ff9a64087018c79b4fdc02468c87c";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
-      "github:nix-community/home-manager/433799271274c9f2ab520a49527ebfe2992dcfbd";
+      "github:HyunggyuJang/home-manager/248f678471f4bcc2061bba57bd82588996f06ec2";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     firefox-addons.url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";

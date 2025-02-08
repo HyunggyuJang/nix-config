@@ -788,7 +788,7 @@ with lib; rec {
         programs = {
           vscode = {
             enable = true;
-            package = pkgs.vscode;
+            package = pkgs.code-cursor;
             extensions = (with pkgs.vscode-extensions; [
               bierner.markdown-mermaid
               bodil.file-browser
@@ -2135,7 +2135,6 @@ with lib; rec {
       sdcv
       notmuch
       mermaid-cli
-      code-cursor
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
@@ -2330,7 +2329,7 @@ with lib; rec {
 
         open < t : skhd -k "ctrl - g"; open -a "Microsoft Teams"
 
-        open < c : skhd -k "ctrl - g"; open -a "Visual Studio Code"
+        open < c : skhd -k "ctrl - g"; open -a Cursor
 
         open < i : skhd -k "ctrl - g"; doom everywhere
       '';
