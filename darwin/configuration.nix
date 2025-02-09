@@ -1424,6 +1424,7 @@ with lib; rec {
               };
               "github.copilot.editor.enableAutoCompletions" = true;
               "redhat.telemetry.enabled" = false;
+              "workbench.preferredLightColorTheme" = "Default Light Modern";
             };
             keybindings = [
               {
