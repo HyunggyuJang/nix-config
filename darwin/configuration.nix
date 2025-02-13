@@ -1509,10 +1509,6 @@ with lib; rec {
                 command = "editor.action.transformToTitlecase";
               }
               {
-                key = "cmd+k tab";
-                command = "editor.action.insertSnippet";
-              }
-              {
                 key = "alt+w";
                 command = "workbench.action.switchWindow";
               }
