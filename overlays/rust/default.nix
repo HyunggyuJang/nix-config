@@ -12,7 +12,7 @@ with prev;
     };
     # target = "x86_64-apple-darwin";
 
-    cargoSha256 = "sha256-r5PWeRvUyzuV26Eq4FWW67WCXBqQmpT8gBJujCys4k4=";
+    cargoSha256 = "sha256-f9jW6yPDnVbpqY5QE/jH6folz9fHfRRwKF70/UwmgFs=";
 
     buildInputs = [ darwin.apple_sdk.frameworks.Security ];
 
