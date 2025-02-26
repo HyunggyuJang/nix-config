@@ -2132,6 +2132,7 @@ with lib; rec {
       sdcv
       notmuch
       mermaid-cli
+      mise
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
