@@ -1868,6 +1868,85 @@ with lib; rec {
               fi
             '';
           };
+          mise = {
+            enable = true;
+            enableZshIntegration = true;
+            globalConfig = {
+              tasks = {
+                "llm:generate_bundle" = {
+                  description = "Generate LLM bundle output file using repomix";
+                  hide = true;
+                  run = ''
+      #!/usr/bin/env bash
+      npx repomix --style xml --output-show-line-numbers --output output.txt --ignore **/uv.lock,**/package-lock.json,**/.env,**/Cargo.lock,**/node_modules,**/target,**/dist,**/build,**/output.txt,**/yarn.lock
+    '';
+                };
+
+                "llm:clean_bundles" = {
+                  description = "Generate LLM bundle output file using repomix";
+                  run = ''
+      #!/usr/bin/env bash
+      find . -name "output.txt" -print -delete
+    '';
+                };
+
+                "llm:generate_readme" = {
+                  depends = ["llm:generate_bundle"];
+                  description = "Generate README.md from repository content stored in output.txt using LLM generation";
+                  run = ''
+      #!/usr/bin/env bash
+      cat output.txt | llm -t readme-gen > README.md
+    '';
+                };
+
+                "llm:copy_buffer_bundle" = {
+                  depends = ["llm:generate_bundle"];
+                  description = "Copy generated LLM bundle from output.txt to system clipboard for external use";
+                  run = ''
+      #!/usr/bin/env bash
+      cat output.txt | pbcopy
+      echo "Pushed output.txt to the copy buffer"
+    '';
+                };
+
+                "llm:generate_github_issues" = {
+                  depends = ["llm:generate_bundle"];
+                  description = "Generate GitHub issues from repository content stored in output.txt using LLM generation";
+                  run = ''
+      #!/usr/bin/env bash
+      cat output.txt | llm -m claude-3.5-sonnet -t github-issue-gen > issues.md
+    '';
+                };
+
+                "llm:generate_code_review" = {
+                  depends = ["llm:generate_bundle"];
+                  description = "Generate code review output from repository content stored in output.txt using LLM generation";
+                  run = ''
+      #!/usr/bin/env bash
+      cat output.txt | llm -m claude-3.5-sonnet -t code-review-gen > code-review.md
+    '';
+                };
+
+                "llm:generate_missing_tests" = {
+                  depends = ["llm:generate_bundle"];
+                  description = "Generate missing tests for code in repository content stored in output.txt using LLM generation";
+                  run = ''
+      #!/usr/bin/env bash
+      cat output.txt | llm -m claude-3.5-sonnet -t missing-tests-gen > missing-tests.md
+    '';
+                };
+
+                "llm:generate_issue_prompts" = {
+                  depends = ["llm:generate_bundle"];
+                  description = "Generate issue prompts from repository content stored in output.txt using LLM generation";
+                  run = ''
+      #!/usr/bin/env bash
+      cat output.txt | llm -m o3-mini -t issue-prompts-gen > issue-prompts.md
+    '';
+                };
+              };
+            };
+          };
           direnv = {
             enable = true;
             enableZshIntegration = true; # see note on other shells below
@@ -1879,7 +1958,6 @@ with lib; rec {
             extraPackages = (epkgs: [ epkgs.vterm ]);
           };
         };
-
         programs.fzf.enable = true;
         programs.fzf.enableZshIntegration = true;
         programs.browserpass.enable = true;
@@ -2132,7 +2210,6 @@ with lib; rec {
       sdcv
       notmuch
       mermaid-cli
-      mise
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
