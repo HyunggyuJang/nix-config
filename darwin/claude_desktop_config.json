@@ -5,7 +5,7 @@
       "args": [
         "--from",
         "git+https://github.com/ezyang/codemcp@prod",
-        "codemcp",
+        "codemcp"
       ]
     }
   }
