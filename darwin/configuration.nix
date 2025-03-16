@@ -2454,6 +2454,7 @@ with lib; rec {
       "obsidian"
       # Storage using Univ Account, but also needed to store images and screen shots from emacs
       "onedrive"
+      "claude"
     ] ++ optionals (machineType == "MacBook-Air") [
       "slack"
       # For Bing AI + Google meet
