@@ -7,6 +7,14 @@
         "git+https://github.com/ezyang/codemcp@prod",
         "codemcp"
       ]
+    },
+    "notes": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/a13884/notes"
+      ]
     }
   }
 }
