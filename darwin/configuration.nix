@@ -2483,4 +2483,6 @@ with lib; rec {
       cask "android-studio"
     '';
   };
+
+  ids.gids.nixbld = 30000;
 }
