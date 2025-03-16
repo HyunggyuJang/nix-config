@@ -2479,6 +2479,7 @@ with lib; rec {
     ];
     extraConfig = ''
       brew "aptos", args: ["force_bottle: true"]
+      brew "uv", args: ["force_bottle: true"]
       cask "android-studio"
     '';
   };
