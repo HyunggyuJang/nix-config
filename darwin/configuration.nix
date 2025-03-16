@@ -2239,7 +2239,6 @@ with lib; rec {
     };
   };
   services = {
-    nix-daemon.enable = true;
     yabai = {
       enable = true;
       config = {
