@@ -668,6 +668,7 @@ with lib; rec {
               kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
             '';
           };
+          "Library/Application Support/Claude/claude_desktop_config.json".source = ./claude_desktop_config.json;
           "storage".source = config.lib.file.mkOutOfStoreSymlink
             "${hgj_home}/OneDrive - j.mbox.nagoya-u.ac.jp/";
         } // (if machineType != "M3-Pro" then {
