@@ -5,7 +5,7 @@
     nixpkgs.url =
       "github:NixOS/nixpkgs/32fb99ba93fea2798be0e997ea331dd78167f814";
     nix-darwin.url =
-      "github:LnL7/nix-darwin/ae406c04577ff9a64087018c79b4fdc02468c87c";
+      "github:LnL7/nix-darwin/9175b4bb5f127fb7b5784b14f7e01abff24c378f";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
       "github:HyunggyuJang/home-manager/248f678471f4bcc2061bba57bd82588996f06ec2";
