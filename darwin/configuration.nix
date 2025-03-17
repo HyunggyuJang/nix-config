@@ -2477,6 +2477,7 @@ with lib; rec {
     ] ++ optionals (machineType == "M3-Pro") [
       "cloudflare-warp"
       "sdm"
+      "cursor"
     ];
     extraConfig = ''
       brew "aptos", args: ["force_bottle: true"]
