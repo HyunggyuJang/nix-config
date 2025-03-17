@@ -25,5 +25,18 @@ let
     });
 in {
   vscode      = applyPatch pkgs.vscode      {};           # No prefix
-  code-cursor = applyPatch pkgs.code-cursor { prefix = "Cursor.app/"; };
+  # Replaces the code-cursor package, which will be installed via brew; nixpkgs version is not updated due to https://github.com/NixOS/nixpkgs/issues/386176
+  # code-cursor = applyPatch pkgs.code-cursor { prefix = "Cursor.app/"; };
+  code-cursor = pkgs.stdenv.mkDerivation {
+    pname = "cursor";
+    version = "0.0.0";
+    src = null;
+    dontUnpack = true;
+    phases = [ "installPhase" ];
+
+    # The installPhase must produce the output in $out.
+    installPhase = ''
+      mkdir -p $out
+    '';
+  };
 }
