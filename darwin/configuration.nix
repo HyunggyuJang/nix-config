@@ -1411,6 +1411,7 @@ with lib; rec {
                 }
               ];
               "workbench.startupEditor" = "none";
+              "cursor.cpp.disabledLanguages" = [];
               "github.copilot.enable" = {
                 "plaintext" = "true";
                 "markdown" = "true";
@@ -2205,7 +2206,7 @@ with lib; rec {
       poppler
       pinentry_mac
       findutils
-      cmake
+      # cmake
       automake
       ctags
       sdcv
@@ -2480,8 +2481,9 @@ with lib; rec {
       "cursor"
     ];
     extraConfig = ''
-      brew "aptos", args: ["force_bottle: true"]
-      brew "uv", args: ["force_bottle: true"]
+      brew "aptos", args: ["force-bottle", "ignore-dependencies"]
+      brew "uv", args: ["force-bottle", "ignore-dependencies"]
+      brew "tilt", args: ["force-bottle", "ignore-dependencies"]
       cask "android-studio"
     '';
   };
