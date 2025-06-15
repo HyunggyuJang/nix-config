@@ -1965,7 +1965,7 @@ with lib; rec {
         programs.browserpass.enable = true;
         programs.browserpass.browsers = [ "firefox" ];
         programs.firefox.enable = true;
-        programs.firefox.package = pkgs.firefox-darwin;
+        programs.firefox.package = pkgs.firefox;
         programs.firefox.profiles = {
           home = {
             id = 0;
@@ -2017,6 +2017,7 @@ with lib; rec {
       };
     in
       { ${owner} = userconfig; };
+  system.primaryUser = owner;
   system.stateVersion = 5;
   system.defaults = {
     dock = {
@@ -2213,6 +2214,7 @@ with lib; rec {
       notmuch
       mermaid-cli
       nodejs
+      awscli2
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
@@ -2222,16 +2224,13 @@ with lib; rec {
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays =
-    let
-      path = ../overlays;
+    let path = ../overlays;
     in with builtins;
-      let
-        localOverlays = map (n: import (path + ("/" + n))) (filter
-          (n:
-            match ".*\\.nix" n != null
-            || pathExists (path + ("/" + n + "/default.nix")))
-          (attrNames (readDir path)));
-      in [ inputs.nixpkgs-firefox-darwin.overlay ] ++ localOverlays;
+    map (n: import (path + ("/" + n))) (filter
+      (n:
+        match ".*\\.nix" n != null
+        || pathExists (path + ("/" + n + "/default.nix")))
+      (attrNames (readDir path)));
 
   programs = {
     zsh = {
