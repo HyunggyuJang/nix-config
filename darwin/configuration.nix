@@ -790,7 +790,7 @@ with lib; rec {
           vscode = {
             enable = true;
             package = pkgs.code-cursor;
-            extensions = (with pkgs.vscode-extensions; [
+            profiles.default.extensions = (with pkgs.vscode-extensions; [
               bierner.markdown-mermaid
               bodil.file-browser
               editorconfig.editorconfig
@@ -823,7 +823,7 @@ with lib; rec {
                 sha256 = "sha256-oN1SzXypjpKOTUzPbLCTC+H3I/40LMVdjbW3T5gib0M=";
               }
             ];
-            userSettings = {
+            profiles.default.userSettings = {
               "vim.easymotion" = true;
               "vim.sneak" = true;
               "vim.incsearch" = true;
@@ -1428,7 +1428,7 @@ with lib; rec {
               "redhat.telemetry.enabled" = false;
               "workbench.preferredLightColorTheme" = "Default Light Modern";
             };
-            keybindings = [
+            profiles.default.keybindings = [
               {
                 key = "g g";
                 command = "cursorTop";
