@@ -13,9 +13,9 @@ build:
 		@nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin -- switch --flake ./
 switch:
 		$(call announce,darwin-rebuild switch --flake)
-		@darwin-rebuild switch --flake ./ --show-trace
-		@echo "Darwin generation: $$(darwin-rebuild --list-generations | tail -1)"
+		@sudo darwin-rebuild switch --flake ./ --show-trace
+		@echo "Darwin generation: $$(sudo darwin-rebuild --list-generations | tail -1)"
 rollback:
 		$(call announce,darwin-rebuild switch --rollback)
-		@darwin-rebuild switch --rollback
-		@echo "Darwin generation: $$(darwin-rebuild --list-generations | tail -1)"
+		@sudo darwin-rebuild switch --rollback
+		@echo "Darwin generation: $$(sudo darwin-rebuild --list-generations | tail -1)"
