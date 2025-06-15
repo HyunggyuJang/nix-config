@@ -33,7 +33,6 @@ in {
     src = null;
     dontUnpack = true;
     phases = [ "installPhase" ];
-    meta.mainProgram = "cursor";
 
     # The installPhase must produce the output in $out.
     installPhase = ''
