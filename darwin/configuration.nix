@@ -1998,13 +1998,13 @@ with lib; rec {
               "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
             };
             userChrome = builtins.readFile ./userChrome.css;
-            extensions = with inputs.firefox-addons.packages.${pkgs.stdenv.system}; [
+            extensions.packages = with inputs.firefox-addons.packages.${pkgs.stdenv.system}; [
               ublock-origin
               browserpass
               tridactyl
               darkreader
               # For work with kazuki
-              metamask
+              # metamask
               # Need to add zotero-connector
               # -> there is no official extension registered in the mozilla's store.
               # Let's use edge's for now.
@@ -2194,7 +2194,7 @@ with lib; rec {
       msmtp
       (aspellWithDicts (dicts: with dicts; [ en ]))
       jq
-      pngpaste
+      # pngpaste # until https://github.com/NixOS/nixpkgs/pull/416855 is handled
       zstd
       isync
       ripgrep

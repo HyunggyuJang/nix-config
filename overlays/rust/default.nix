@@ -11,7 +11,7 @@ with prev;
       sha256 = "sha256-i1Nsga1BJgG0gdeTvg0KvkpmKb1qp/PlXfgjJHSGAxQ=";
     };
 
-    cargoHash = "sha256-f9jW6yPDnVbpqY5QE/jH6folz9fHfRRwKF70/UwmgFs=";
+    cargoHash = "sha256-DiAY1/UCfciaYiCQpjOAk0jJrmXGKjrX1PaiM8lCM98=";
 
     doCheck = false;
 
