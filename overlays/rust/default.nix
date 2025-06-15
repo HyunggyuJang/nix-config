@@ -10,11 +10,8 @@ with prev;
       rev = "c5e2e32807e9871205e1bfb58dfaaa40f5957021";
       sha256 = "sha256-i1Nsga1BJgG0gdeTvg0KvkpmKb1qp/PlXfgjJHSGAxQ=";
     };
-    # target = "x86_64-apple-darwin";
 
     cargoHash = "sha256-f9jW6yPDnVbpqY5QE/jH6folz9fHfRRwKF70/UwmgFs=";
-
-    buildInputs = [ darwin.apple_sdk.frameworks.Security ];
 
     doCheck = false;
 
