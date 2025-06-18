@@ -2194,7 +2194,8 @@ with lib; rec {
       msmtp
       (aspellWithDicts (dicts: with dicts; [ en ]))
       jq
-      # pngpaste # until https://github.com/NixOS/nixpkgs/pull/416855 is handled
+      pngpaste
+      claude-code
       zstd
       isync
       ripgrep
