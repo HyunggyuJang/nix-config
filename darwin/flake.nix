@@ -12,6 +12,8 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     firefox-addons.url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/c769118c5765a1253ef809d042dd511ceeaeb41d";
+    nixpkgs-firefox-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs@{ nix-darwin, nixpkgs, ... }: {
