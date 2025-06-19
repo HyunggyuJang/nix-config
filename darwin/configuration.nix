@@ -2218,6 +2218,7 @@ with lib; rec {
       mermaid-cli
       nodejs
       awscli2
+      gh
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
