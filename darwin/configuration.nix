@@ -1965,7 +1965,9 @@ with lib; rec {
         programs.browserpass.enable = true;
         programs.browserpass.browsers = [ "firefox" ];
         programs.firefox.enable = true;
-        programs.firefox.package = pkgs.firefox;
+        programs.firefox.package = pkgs.firefox-bin.overrideAttrs (_: {
+          override = _: pkgs.firefox-bin;
+        });
         programs.firefox.profiles = {
           home = {
             id = 0;
@@ -2225,13 +2227,16 @@ with lib; rec {
   nixpkgs.config.allowUnfree = true;
 
   nixpkgs.overlays =
-    let path = ../overlays;
+    let
+      path = ../overlays;
     in with builtins;
-    map (n: import (path + ("/" + n))) (filter
-      (n:
-        match ".*\\.nix" n != null
-        || pathExists (path + ("/" + n + "/default.nix")))
-      (attrNames (readDir path)));
+      let
+        localOverlays = map (n: import (path + ("/" + n))) (filter
+          (n:
+            match ".*\\.nix" n != null
+            || pathExists (path + ("/" + n + "/default.nix")))
+          (attrNames (readDir path)));
+      in [ inputs.nixpkgs-firefox-darwin.overlay ] ++ localOverlays;
 
   programs = {
     zsh = {
