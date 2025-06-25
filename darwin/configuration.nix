@@ -2418,31 +2418,6 @@ with lib; rec {
       '';
     };
   };
-
-  launchd = {
-    user = {
-      agents = {
-        claude-token-refresh = {
-          script = ''
-            cd /Users/a13884/notes
-            ${pkgs.python3}/bin/python3 ./bin/claude-token-refresh.py --force
-          '';
-          environment = {
-            PATH = "/run/current-system/sw/bin:/usr/bin:/bin:/usr/sbin:/sbin";
-          };
-          serviceConfig = {
-            Label = "com.claudecode.tokenrefresh";
-            StartInterval = 3600; # Every hour
-            StandardOutPath = "/Users/a13884/notes/logs/claude-token-refresh.log";
-            StandardErrorPath = "/Users/a13884/notes/logs/claude-token-refresh.log";
-            RunAtLoad = true;
-            KeepAlive = false;
-          };
-        };
-      };
-    };
-  };
-
   nix = {
     settings = {
       trusted-users = [ "root" owner ];
