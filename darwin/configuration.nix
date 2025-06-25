@@ -2147,6 +2147,7 @@ with lib; rec {
     ];
     systemPackages = with pkgs; [
       nixpkgs-fmt
+      tree
       yaskkserv2
       skhd
       shellcheck
