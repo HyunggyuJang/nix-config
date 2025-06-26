@@ -2219,6 +2219,8 @@ with lib; rec {
       nodejs
       awscli2
       gh
+      go
+      yq-go
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
