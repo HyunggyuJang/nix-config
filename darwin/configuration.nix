@@ -2197,7 +2197,6 @@ with lib; rec {
       (aspellWithDicts (dicts: with dicts; [ en ]))
       jq
       pngpaste
-      claude-code
       zstd
       isync
       ripgrep
@@ -2462,8 +2461,6 @@ with lib; rec {
       # Docker
       "docker"
       "obsidian"
-      # Storage using Univ Account, but also needed to store images and screen shots from emacs
-      "claude"
     ] ++ optionals (machineType == "MacBook-Air") [
       "slack"
       # For Bing AI + Google meet
