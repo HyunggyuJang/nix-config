@@ -2125,6 +2125,7 @@ with lib; rec {
       SHELL = "${pkgs.zsh}/bin/zsh";
       # LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
       PAPERSPACE_INSTALL = "${hgj_home}/.paperspace";
+      npm_config_prefix = "$HOME/${hgj_localbin}";
     };
     systemPath = [
       "$HOME/${hgj_localbin}"
