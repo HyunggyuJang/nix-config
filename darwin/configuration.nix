@@ -5,7 +5,8 @@ let
   hgj_home = "/Users/${owner}";
   hgj_sync = hgj_home;
   hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
-  hgj_localbin = ".local/bin";
+  hgj_local = ".local";
+  hgj_localbin = "${hgj_local}/bin";
   localconfig = import ./silicon.nix;
   brewpath = "/opt/homebrew";
 
@@ -1761,8 +1762,8 @@ with lib; rec {
                 "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color caffeinate -i make switch && cd -";
               drb =
                 "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
-              claude-monitor =
-                "cd ~/notes/3-Resources/ai-development-tools/Claude-Code-Usage-Monitor && nix develop --command claude-monitor --timezone Asia/Seoul";
+              # claude-monitor =
+              #   "cd ~/notes/3-Resources/ai-development-tools/Claude-Code-Usage-Monitor && nix develop --command claude-monitor --timezone Asia/Seoul";
             };
 
             oh-my-zsh.enable = true;
@@ -2125,7 +2126,7 @@ with lib; rec {
       SHELL = "${pkgs.zsh}/bin/zsh";
       # LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
       PAPERSPACE_INSTALL = "${hgj_home}/.paperspace";
-      npm_config_prefix = "$HOME/${hgj_localbin}";
+      npm_config_prefix = "$HOME/${hgj_local}";
     };
     systemPath = [
       "$HOME/${hgj_localbin}"
@@ -2221,6 +2222,7 @@ with lib; rec {
       gh
       go
       yq-go
+      typescript-language-server
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
