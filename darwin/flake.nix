@@ -3,17 +3,15 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/f45e75fc63fc8a7ffc3da382b2f6b681c5b71875";
+      "github:NixOS/nixpkgs/9807714d6944a957c2e036f84b0ff8caf9930bc0";
     nix-darwin.url =
-      "github:LnL7/nix-darwin/2f140d6ac8840c6089163fb43ba95220c230f22b";
+      "github:LnL7/nix-darwin/e04a388232d9a6ba56967ce5b53a8a6f713cdfcf";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
-      "github:nix-community/home-manager/c5f345153397f62170c18ded1ae1f0875201d49a";
+      "github:nix-community/home-manager/bf893ad4cbf46610dd1b620c974f824e266cd1df";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     firefox-addons.url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
-    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/c769118c5765a1253ef809d042dd511ceeaeb41d";
-    nixpkgs-firefox-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs@{ nix-darwin, nixpkgs, ... }: {
