@@ -1,1 +1,44 @@
 **/.DS_Store
+
+# Security: Local overrides and sensitive files
+local.nix
+secrets.nix
+private.nix
+*-local.nix
+*-private.nix
+*-secrets.nix
+
+# Sensitive configuration files
+*.key
+*.pem
+*.p12
+*.p8
+*.mobileprovision
+*.cer
+*.crt
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# SSH and GPG keys
+id_rsa*
+id_ed25519*
+*.gpg
+*.asc
+
+# Personal files that might accidentally be added
+passwords.txt
+credentials.txt
+auth.txt
+tokens.txt
+
+# macOS sensitive files
+*.keychain
+*.keychain-db
+
+# Backup files that might contain sensitive data
+*.bak
+*.backup
+*.old

@@ -34,6 +34,12 @@ This file provides security and development guidance for the nixpkgs-config proj
 - ⚠️ **NEUTRAL**: `/Users/username/specific-path` (acceptable but not ideal)
 - ❌ **BAD**: Paths that reveal sensitive company or personal information
 
+### Email Addresses
+- ⚠️ **ACCEPTABLE**: Git configuration emails (required for git to function)
+- ⚠️ **ACCEPTABLE**: Mail client configuration for personal use
+- ❌ **BAD**: Corporate/work email addresses that shouldn't be public
+- 💡 **TIP**: Consider using environment variables for sensitive email configs
+
 ### Configuration References
 - ✅ **GOOD**: Reference external secret management tools
 - ✅ **GOOD**: Use environment variables for sensitive data
