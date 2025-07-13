@@ -2141,6 +2141,7 @@ with lib; rec {
       go
       yq-go
       typescript-language-server
+      vscode-json-languageserver
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
