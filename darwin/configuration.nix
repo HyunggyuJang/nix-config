@@ -2406,7 +2406,8 @@ with lib; rec {
     extraConfig = ''
       brew "aptos", args: ["force-bottle", "ignore-dependencies"]
       brew "uv", args: ["force-bottle", "ignore-dependencies"]
-      brew "tilt", args: ["force-bottle", "ignore-dependencies"]
+      brew "glab", args: ["force-bottle", "ignore-dependencies"]
+      # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
       cask "android-studio"
     '';
   };
