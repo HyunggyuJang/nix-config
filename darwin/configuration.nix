@@ -2142,6 +2142,7 @@ with lib; rec {
       yq-go
       typescript-language-server
       vscode-json-languageserver
+      kubectl
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
