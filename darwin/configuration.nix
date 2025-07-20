@@ -1409,6 +1409,7 @@ with lib; rec {
                 }
               ];
               "workbench.startupEditor" = "none";
+              "baml.cliPath" = "baml-cli";
               "cursor.cpp.disabledLanguages" = [];
               "github.copilot.enable" = {
                 "plaintext" = "true";
@@ -2143,6 +2144,7 @@ with lib; rec {
       typescript-language-server
       vscode-json-languageserver
       kubectl
+      bun
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
