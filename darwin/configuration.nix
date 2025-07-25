@@ -1426,6 +1426,8 @@ with lib; rec {
               "github.copilot.editor.enableAutoCompletions" = true;
               "redhat.telemetry.enabled" = false;
               "workbench.preferredLightColorTheme" = "Default Light Modern";
+              "plantuml.server" = "https://www.plantuml.com/plantuml";
+              "plantuml.render" = "PlantUMLServer";
             };
             profiles.default.keybindings = [
               {
