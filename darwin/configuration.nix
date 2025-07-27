@@ -2147,6 +2147,7 @@ with lib; rec {
       vscode-json-languageserver
       kubectl
       bun
+      kubernetes-helm
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
