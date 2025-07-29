@@ -2148,6 +2148,7 @@ with lib; rec {
       kubectl
       bun
       kubernetes-helm
+      istioctl
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
