@@ -2385,7 +2385,7 @@ with lib; rec {
       # altacv with xelatex
       "font-lato"
       # Docker
-      "docker"
+      "docker-desktop"
       "obsidian"
     ] ++ optionals (machineType == "MacBook-Air") [
       "slack"
