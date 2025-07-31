@@ -2149,6 +2149,8 @@ with lib; rec {
       bun
       kubernetes-helm
       istioctl
+      # glab is provided via custom overlay to get v1.65.0
+      glab
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
@@ -2160,7 +2162,36 @@ with lib; rec {
   nixpkgs.overlays =
     let path = ../overlays;
     in with builtins;
-    map (n: import (path + ("/" + n))) (filter
+    [
+      (final: prev: {
+        # Simple derivation that just extracts the binary from the tarball
+        glab = prev.stdenv.mkDerivation {
+          pname = "glab";
+          version = "1.65.0";
+          
+          src = prev.fetchurl {
+            url = "https://gitlab.com/gitlab-org/cli/-/releases/v1.65.0/downloads/glab_1.65.0_darwin_arm64.tar.gz";
+            sha256 = "13prz9lvfnr3iyflpy1qdgss3q4c9gxwngx0kwxc4zgn6aqva1cq";
+          };
+          
+          dontUnpack = false;
+          sourceRoot = ".";
+          
+          installPhase = ''
+            mkdir -p $out/bin
+            cp bin/glab $out/bin/
+            chmod +x $out/bin/glab
+          '';
+          
+          meta = with prev.lib; {
+            description = "GitLab CLI tool";
+            homepage = "https://gitlab.com/gitlab-org/cli";
+            license = licenses.mit;
+            platforms = platforms.darwin;
+          };
+        };
+      })
+    ] ++ map (n: import (path + ("/" + n))) (filter
       (n:
         match ".*\\.nix" n != null
         || pathExists (path + ("/" + n + "/default.nix")))
@@ -2413,7 +2444,7 @@ with lib; rec {
     extraConfig = ''
       brew "aptos", args: ["force-bottle", "ignore-dependencies"]
       brew "uv", args: ["force-bottle", "ignore-dependencies"]
-      brew "glab", args: ["force-bottle", "ignore-dependencies"]
+      # brew "glab", args: ["force-bottle", "ignore-dependencies"]
       # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
       cask "android-studio"
     '';
