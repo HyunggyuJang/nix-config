@@ -1749,6 +1749,14 @@ with lib; rec {
                 key = "ctrl+g";
                 command = "-workbench.action.gotoLine";
               }
+              {
+                key = "ctrl+alt+k";
+                command = "opencode.addFilepathToTerminal";
+              }
+              {
+                key = "alt+cmd+k";
+                command = "-opencode.addFilepathToTerminal";
+              }
             ];
           };
           zsh = {
