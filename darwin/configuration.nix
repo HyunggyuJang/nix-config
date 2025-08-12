@@ -2208,8 +2208,7 @@ with lib; rec {
   programs = {
     zsh = {
       enable = true;
-      enableCompletion = false;
-      enableBashCompletion = false;
+      enableCompletion = true;
     };
   };
   services = {
