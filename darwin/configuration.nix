@@ -1762,8 +1762,6 @@ with lib; rec {
           zsh = {
             enable = true;
             autosuggestion.enable = true;
-            enableCompletion =
-              false; # See https://github.com/NixOS/nix/issues/5445
             defaultKeymap = "emacs";
             sessionVariables = { RPROMPT = ""; };
             shellAliases = {
@@ -1833,13 +1831,14 @@ with lib; rec {
               }
             ];
             initExtraBeforeCompInit = ''
-              if [[ $INSIDE_EMACS != vterm && $TERM_PROGRAM != vscode ]]; then
-                  echo >&2 "Homebrew completion path..."
-                  if [ -f ${brewpath}/bin/brew ]; then
-                      PATH=${brewpath}/bin:$PATH fpath+=$(brew --prefix)/share/zsh/site-functions
-                  else
-                      echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
+              echo >&2 "Homebrew completion path..."
+              if [ -f ${brewpath}/bin/brew ]; then
+                  fpath+=$(brew --prefix)/share/zsh/site-functions
+                  if [[ $INSIDE_EMACS != vterm && $TERM_PROGRAM != vscode ]]; then
+                     PATH=${brewpath}/bin:$PATH
                   fi
+              else
+                  echo -e "\e[1;31merror: Homebrew is not installed, skipping...\e[0m" >&2
               fi
             '';
             initExtra = ''
