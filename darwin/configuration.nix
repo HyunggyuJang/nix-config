@@ -2454,6 +2454,7 @@ with lib; rec {
       # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
       brew "terraform-ls", args: ["force-bottle", "ignore-dependencies"]
       cask "android-studio"
+      cask "claude"
     '';
   };
 
