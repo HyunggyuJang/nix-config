@@ -2455,6 +2455,7 @@ with lib; rec {
       brew "terraform-ls", args: ["force-bottle", "ignore-dependencies"]
       cask "android-studio"
       cask "claude"
+      cask "neo4j"
     '';
   };
 
