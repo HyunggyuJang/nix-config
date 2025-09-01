@@ -2158,6 +2158,7 @@ with lib; rec {
       istioctl
       # glab is provided via custom overlay to get v1.65.0
       glab
+      postgresql_15
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
