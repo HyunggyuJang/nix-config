@@ -2425,6 +2425,9 @@ with lib; rec {
       # Docker
       "docker-desktop"
       "obsidian"
+      "neo4j-desktop"
+      "android-studio"
+      "figma"
     ] ++ optionals (machineType == "MacBook-Air") [
       "slack"
       # For Bing AI + Google meet
@@ -2454,9 +2457,6 @@ with lib; rec {
       # brew "glab", args: ["force-bottle", "ignore-dependencies"]
       # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
       brew "terraform-ls", args: ["force-bottle", "ignore-dependencies"]
-      cask "android-studio"
-      cask "claude"
-      cask "neo4j-desktop"
     '';
   };
 
