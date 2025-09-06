@@ -2428,6 +2428,7 @@ with lib; rec {
       "neo4j-desktop"
       "android-studio"
       "figma"
+      "zed"
     ] ++ optionals (machineType == "MacBook-Air") [
       "slack"
       # For Bing AI + Google meet
