@@ -37,7 +37,8 @@
   {
     "context": "Editor",
     "bindings": {
-      "cmd-l": "workspace::ToggleRightDock"
+      "cmd-l": "workspace::ToggleRightDock",
+      "cmd-alt-k": "agent::QuoteSelection"
     }
   }
 ]
