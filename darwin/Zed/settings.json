@@ -1,0 +1,62 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "features": {
+    "edit_prediction_provider": "copilot"
+  },
+  "edit_predictions": {
+    "mode": "eager"
+  },
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  "vim_mode": true,
+  "base_keymap": "Emacs",
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "theme": {
+    "mode": "system",
+    "light": "Nano Light",
+    "dark": "Nano Dark"
+  },
+  "buffer_font_family": "Roboto Mono",
+  "buffer_font_weight": 300,
+  "ui_font_family": "Roboto",
+  "ui_font_weight": 300,
+  "scrollbar": {
+    "show": "never"
+  },
+  "tab_bar": {
+    "show": false
+  },
+  "toolbar": {
+    "breadcrumbs": false,
+    "quick_actions": false
+  },
+  "gutter": {
+    "line_numbers": false,
+    "min_line_number_digits": 0,
+    "breakpoints": false,
+    "folds": false,
+    "runnables": false
+  },
+  "title_bar": {
+    "show_onboarding_banner": false,
+    "show_user_picture": false,
+    "show_sign_in": false,
+    "show_project_items": true,
+    "show_branch_icon": true
+  },
+  "git": {
+    "inline_blame": {
+      "enabled": false
+    }
+  }
+}

@@ -39,4 +39,16 @@ in {
       mkdir -p $out
     '';
   };
+  zed-editor = pkgs.stdenv.mkDerivation {
+    pname = "zed-editor";
+    version = "0.0.0";
+    src = null;
+    dontUnpack = true;
+    phases = [ "installPhase" ];
+
+    # The installPhase must produce the output in $out.
+    installPhase = ''
+      mkdir -p $out
+    '';
+  };
 }

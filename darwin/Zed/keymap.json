@@ -1,0 +1,43 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "alt-space w h": "workspace::ActivatePaneLeft",
+      "alt-space w j": "workspace::ActivatePaneDown",
+      "alt-space w k": "workspace::ActivatePaneUp",
+      "alt-space w l": "workspace::ActivatePaneRight",
+      "alt-space w q": "pane::CloseActiveItem",
+      "alt-space !": "terminal_panel::ToggleFocus",
+      "cmd-r": "projects::OpenRecent"
+    }
+  },
+  {
+    "context": "vim_mode == normal",
+    "bindings": {
+      "space w": ["workspace::SendKeystrokes", "ctrl-w"],
+      "space !": "terminal_panel::ToggleFocus",
+      "space j v": "outline::Toggle"
+    }
+  },
+  {
+    "context": "vim_mode == insert",
+    "bindings": {
+      "shift-space": "editor::ShowCompletions",
+      "alt-space": ["workspace::SendKeystrokes", "escape space"],
+      "ctrl-e": "editor::MoveToEndOfLine"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-l": "workspace::ToggleRightDock"
+    }
+  }
+]
