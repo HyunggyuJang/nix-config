@@ -782,6 +782,9 @@ with lib; rec {
               # Save all vides under Youtube directory in cloud server
               -o ~/storage/Youtube/%(title)s.%(ext)s
             '';
+            "zed/themes/Nano.json".source = ./Zed/Nano.json;
+            "zed/keymap.json".source = ./Zed/keymap.json;
+            "zed/settings.json".source = ./Zed/settings.json;
           };
         };
         programs = {
