@@ -2053,8 +2053,8 @@ with lib; rec {
       DOOMLOCALDIR = "${hgj_home}/.doom";
       SHELL = "${pkgs.zsh}/bin/zsh";
       # LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
-      PAPERSPACE_INSTALL = "${hgj_home}/.paperspace";
       npm_config_prefix = "$HOME/${hgj_local}";
+      BUN_HOME =  "$HOME/.cache/.bun";
     };
     systemPath = [
       "$HOME/${hgj_localbin}"
@@ -2072,8 +2072,7 @@ with lib; rec {
       "$HOME/.cabal/bin"
       # go
       "$HOME/go/bin"
-      # Paperspace
-      "${environment.variables.PAPERSPACE_INSTALL}/bin"
+      "${environment.variables.BUN_HOME}/bin"
     ];
     systemPackages = with pkgs; [
       nixpkgs-fmt
