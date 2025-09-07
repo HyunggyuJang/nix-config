@@ -2414,7 +2414,7 @@ with lib; rec {
       "zotero"
       # elegant-emacs
       "font-roboto-mono"
-      "font-roboto-slab"
+      "font-roboto"
       # math font
       "font-dejavu"
       # beamer with xelatex
