@@ -23,7 +23,8 @@
     "bindings": {
       "space w": ["workspace::SendKeystrokes", "ctrl-w"],
       "space !": "terminal_panel::ToggleFocus",
-      "space j v": "outline::Toggle"
+      "space j v": "outline::Toggle",
+      "space t l": "editor::ToggleSoftWrap"
     }
   },
   {

@@ -113,7 +113,9 @@ with lib; rec {
             bind --mode=insert <A-u> text.backward_kill_line
             bind --mode=insert <A-a> text.beginning_of_line
             bind --mode=insert <A-e> text.end_of_line
-            set theme dark
+            set theme auto
+            autocmd DocStart https://excalidraw.com/ mode ignore
+            autocmd DocStart https://www.figma.com/ mode ignore
           '';
           ".qutebrowser/config.py".text = ''
             config.load_autoconfig(True)
