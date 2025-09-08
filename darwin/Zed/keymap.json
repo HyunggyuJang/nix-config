@@ -33,7 +33,22 @@
     "bindings": {
       "shift-space": "editor::ShowCompletions",
       "alt-space": ["workspace::SendKeystrokes", "escape space"],
-      "ctrl-e": "editor::MoveToEndOfLine"
+      "ctrl-e": "editor::MoveToEndOfLine",
+      "alt-k": ["vim::PushDigraph", {}],
+      "ctrl-k": "editor::KillRingCut",
+      "alt-y": "editor::KillRingYank"
+    }
+  },
+  {
+    "context": "vim_mode == replace",
+    "bindings": {
+      "alt-k": ["vim::PushDigraph", {}]
+    }
+  },
+  {
+    "context": "vim_mode == waiting",
+    "bindings": {
+      "alt-k": ["vim::PushDigraph", {}]
     }
   },
   {
