@@ -7,6 +7,13 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "agent_servers": {},
+  "agent": {
+    "default_model": {
+      "model": "gpt-4.1",
+      "provider": "copilot_chat"
+    }
+  },
   "features": {
     "edit_prediction_provider": "copilot"
   },
