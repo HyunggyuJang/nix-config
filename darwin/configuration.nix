@@ -2431,6 +2431,7 @@ with lib; rec {
       "obsidian"
       "neo4j-desktop"
       "android-studio"
+      "figma"
       "zed"
     ] ++ optionals (machineType == "MacBook-Air") [
       "slack"
