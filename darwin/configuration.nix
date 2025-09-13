@@ -1433,6 +1433,7 @@ with lib; rec {
               "workbench.preferredLightColorTheme" = "Default Light Modern";
               "plantuml.server" = "https://www.plantuml.com/plantuml";
               "plantuml.render" = "PlantUMLServer";
+              "git.blame.statusBarItem.enabled" = false;
             };
             profiles.default.keybindings = [
               {
