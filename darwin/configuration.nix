@@ -1901,6 +1901,7 @@ with lib; rec {
         programs.browserpass.enable = true;
         programs.browserpass.browsers = [ "firefox" ];
         programs.firefox.enable = true;
+        programs.firefox.package = lib.makeOverridable ({...}: pkgs.firefox-bin) {};
         programs.firefox.profiles = {
           home = {
             id = 0;
@@ -2203,6 +2204,7 @@ with lib; rec {
           };
         };
       })
+      inputs.nixpkgs-firefox-darwin.overlay
     ] ++ map (n: import (path + ("/" + n))) (filter
       (n:
         match ".*\\.nix" n != null
