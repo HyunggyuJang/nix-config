@@ -2165,6 +2165,7 @@ with lib; rec {
       # glab is provided via custom overlay to get v1.65.0
       glab
       postgresql_15
+      mongosh
     ];
     pathsToLink = [ "/lib" ];
     shells = [ pkgs.zsh ];
