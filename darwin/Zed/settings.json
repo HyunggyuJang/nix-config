@@ -65,5 +65,8 @@
     "inline_blame": {
       "enabled": false
     }
+  },
+  "terminal": {
+    "option_as_meta": true // make alt+r to work
   }
 }
