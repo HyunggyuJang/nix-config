@@ -2423,6 +2423,8 @@ with lib; rec {
       # elegant-emacs
       "font-roboto-mono"
       "font-roboto"
+      # doom emacs's symbol font
+      "font-juliamono"
       # math font
       "font-dejavu"
       # beamer with xelatex
