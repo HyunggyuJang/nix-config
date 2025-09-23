@@ -2164,10 +2164,11 @@ with lib; rec {
       istioctl
       # glab is provided via custom overlay to get v1.65.0
       glab
-      postgresql_15
+      postgresql
       mongosh
+      tmux
     ];
-    pathsToLink = [ "/lib" ];
+    pathsToLink = [ "/lib" "/share" ];
     shells = [ pkgs.zsh ];
   };
 
