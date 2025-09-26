@@ -2440,6 +2440,8 @@ with lib; rec {
       "android-studio"
       "figma"
       "zed"
+      # Demian
+      "mongodb-compass"
     ] ++ optionals (machineType == "MacBook-Air") [
       "slack"
       # For Bing AI + Google meet
