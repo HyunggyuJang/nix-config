@@ -15,7 +15,5 @@ self: pkgs:
          patch -p1 < $multiTtyPatch
          '';
   });
-  emacs = self.emacsMacport.override {
-    withNativeCompilation = true;
-  };
+  emacs = self.emacsMacport;
 }
