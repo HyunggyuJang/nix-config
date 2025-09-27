@@ -2181,13 +2181,13 @@ with lib; rec {
     [
       (final: prev: {
         # Simple derivation that just extracts the binary from the tarball
-        glab = prev.stdenv.mkDerivation {
+        glab = prev.stdenv.mkDerivation rec {
           pname = "glab";
-          version = "1.65.0";
+          version = "1.72.0";
           
           src = prev.fetchurl {
-            url = "https://gitlab.com/gitlab-org/cli/-/releases/v1.65.0/downloads/glab_1.65.0_darwin_arm64.tar.gz";
-            sha256 = "13prz9lvfnr3iyflpy1qdgss3q4c9gxwngx0kwxc4zgn6aqva1cq";
+            url = "https://gitlab.com/gitlab-org/cli/-/releases/v${version}/downloads/${pname}_${version}_darwin_arm64.tar.gz";
+            sha256 = "sha256-XAR5DOfHJ1YN2B6RY0//szgs66McOuFe1y03trLi10I=";
           };
           
           dontUnpack = false;
@@ -2420,26 +2420,26 @@ with lib; rec {
       "kitty"
       "karabiner-elements"
       # "zoom"
-      "zotero"
+      # "zotero"
       # elegant-emacs
       "font-roboto-mono"
       "font-roboto"
       # doom emacs's symbol font
       "font-juliamono"
       # math font
-      "font-dejavu"
+      # "font-dejavu"
       # beamer with xelatex
-      "font-fira-sans"
-      "font-fira-mono"
+      # "font-fira-sans"
+      # "font-fira-mono"
       # altacv with xelatex
-      "font-lato"
+      # "font-lato"
       # Docker
       "docker-desktop"
       "obsidian"
       "neo4j-desktop"
-      "android-studio"
+      # "android-studio"
       "figma"
-      "zed"
+      # "zed"
       # Demian
       "mongodb-compass"
     ] ++ optionals (machineType == "MacBook-Air") [
@@ -2466,7 +2466,7 @@ with lib; rec {
       "cursor"
     ];
     extraConfig = ''
-      brew "aptos", args: ["force-bottle", "ignore-dependencies"]
+      # brew "aptos", args: ["force-bottle", "ignore-dependencies"]
       brew "uv", args: ["force-bottle", "ignore-dependencies"]
       # brew "glab", args: ["force-bottle", "ignore-dependencies"]
       # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
