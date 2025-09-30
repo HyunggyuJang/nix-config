@@ -1035,9 +1035,9 @@ with lib; rec {
               "cSpell.diagnosticLevel" = "Hint";
               "editor.overviewRulerBorder" = false;
               "editor.glyphMargin" = false;
-              "extensions.experimental.affinity" = {
-                "HyunggyuJang.vim-with-killring" = 1;
-              };
+              # "extensions.experimental.affinity" = {
+              #   "HyunggyuJang.vim-with-killring" = 1;
+              # };
               "editor.lineDecorationsWidth" = 0;
               "editor.overviewRulerLanes" = 0;
               "editor.hideCursorInOverviewRuler" = true;
