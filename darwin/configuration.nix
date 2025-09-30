@@ -1414,7 +1414,6 @@ with lib; rec {
                 }
               ];
               "workbench.startupEditor" = "none";
-              "baml.cliPath" = "baml-cli";
               "cursor.cpp.disabledLanguages" = [];
               "github.copilot.enable" = {
                 "plaintext" = "true";
