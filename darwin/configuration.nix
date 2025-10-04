@@ -5,6 +5,7 @@ let
   hgj_home = "/Users/${owner}";
   hgj_sync = hgj_home;
   hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
+  hgj_projects = "${hgj_home}/notes/1-Projects";
   hgj_local = ".local";
   hgj_localbin = "${hgj_local}/bin";
   localconfig = import ./silicon.nix;
@@ -1776,8 +1777,9 @@ with lib; rec {
                 "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color caffeinate -i make switch && cd -";
               drb =
                 "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
-              # claude-monitor =
-              #   "cd ~/notes/3-Resources/ai-development-tools/Claude-Code-Usage-Monitor && nix develop --command claude-monitor --timezone Asia/Seoul";
+              cognee = "uv run --project ${hgj_projects}/cognee cognee-cli";
+              cognee-mcp-stdio = "cd ${hgj_projects}/cognee/cognee-mcp && uv run python src/server.py";
+              cognee-mcp-http = "cd ${hgj_projects}/cognee/cognee-mcp && uv run python src/server.py --transport http --port 8000";
             };
 
             oh-my-zsh.enable = true;
