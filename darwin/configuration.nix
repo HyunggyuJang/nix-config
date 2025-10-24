@@ -33,8 +33,8 @@ let
       src = fetchFromGitHub {
         owner = "liantze";
         repo = "AltaCV";
-        rev = "74bc05d";
-        sha256 = "sha256-3xbEqyg2UC8ngMos8+BzLzrUpzhA8w3QM3Cn2d0HzY4=";
+        rev = "91373530c55843533a4de12a29d28896f9b14c0d";
+        sha256 = "sha256-fRnElZqCN4hbjdyjjhxNTvKLwSzJf6WnaQDEFl5pGW4=";
       };
       pname = name;
       tlType = "run";
@@ -2433,7 +2433,7 @@ with lib; rec {
       # "font-fira-sans"
       # "font-fira-mono"
       # altacv with xelatex
-      # "font-lato"
+      "font-lato"
       # Docker
       "docker-desktop"
       "obsidian"
