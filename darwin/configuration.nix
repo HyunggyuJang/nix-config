@@ -2467,7 +2467,7 @@ with lib; rec {
       "cursor"
     ];
     extraConfig = ''
-      # brew "aptos", args: ["force-bottle", "ignore-dependencies"]
+      brew "aptos", args: ["force-bottle", "ignore-dependencies"]
       brew "uv", args: ["force-bottle", "ignore-dependencies"]
       # brew "glab", args: ["force-bottle", "ignore-dependencies"]
       # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
