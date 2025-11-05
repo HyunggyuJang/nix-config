@@ -2443,6 +2443,8 @@ with lib; rec {
       # "zed"
       # Demian
       "mongodb-compass"
+      # onyx zsa moonlander
+      "keymapp"
     ] ++ optionals (machineType == "MacBook-Air") [
       "slack"
       # For Bing AI + Google meet
