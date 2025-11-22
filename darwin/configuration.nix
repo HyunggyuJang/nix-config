@@ -2120,6 +2120,7 @@ with lib; rec {
       # sourcegraph
       nodePackages_latest.pnpm
       imagemagick
+      ghostscript
       # scop
       poetry
 
