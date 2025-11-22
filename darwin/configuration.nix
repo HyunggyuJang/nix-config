@@ -2108,7 +2108,7 @@ with lib; rec {
           # jupyter export
           adjustbox standalone algorithm2e ifoddpage relsize wrapfig
           beamertheme-metropolis pdfx xmpincl accsupp fontawesome5 tikzfill
-          tikzmark dashrule ifmtarg multirow changepage paracol titling;
+          tikzmark dashrule ifmtarg multirow changepage paracol titling titlesec;
         altacv = { pkgs = [ altacv ]; };
       })
       biber
