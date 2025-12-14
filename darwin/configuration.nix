@@ -2298,6 +2298,8 @@ with lib; rec {
       postgresql
       mongosh
       tmux
+      python3
+      uv
     ];
     pathsToLink = [ "/lib" "/share" ];
     shells = [ pkgs.zsh ];
@@ -2600,7 +2602,6 @@ with lib; rec {
     ];
     extraConfig = ''
       brew "aptos", args: ["force-bottle", "ignore-dependencies"]
-      brew "uv", args: ["force-bottle", "ignore-dependencies"]
       # brew "glab", args: ["force-bottle", "ignore-dependencies"]
       # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
       brew "terraform-ls", args: ["force-bottle", "ignore-dependencies"]
