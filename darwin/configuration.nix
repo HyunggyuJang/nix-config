@@ -2084,7 +2084,7 @@ with lib; rec {
       # javascript
       "${environment.variables.BUN_HOME}/bin"
       # Java
-      "${environment.variables.JAVA_HOME}/bin"
+      "\"${environment.variables.JAVA_HOME}/bin\""
     ];
     systemPackages = with pkgs; [
       nixpkgs-fmt
