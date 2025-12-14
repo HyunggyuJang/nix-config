@@ -2439,7 +2439,7 @@ with lib; rec {
       "docker-desktop"
       "obsidian"
       "neo4j-desktop"
-      # "android-studio"
+      "android-studio"
       "figma"
       # "zed"
       # Demian
