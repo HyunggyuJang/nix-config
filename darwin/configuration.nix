@@ -2063,6 +2063,7 @@ with lib; rec {
       # LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
       npm_config_prefix = "$HOME/${hgj_local}";
       BUN_HOME =  "$HOME/.cache/.bun";
+      JAVA_HOME = "/Applications/Android Studio.app/Contents/jbr/Contents/Home";
     };
     systemPath = [
       "$HOME/${hgj_localbin}"
@@ -2080,7 +2081,10 @@ with lib; rec {
       "$HOME/.cabal/bin"
       # go
       "$HOME/go/bin"
+      # javascript
       "${environment.variables.BUN_HOME}/bin"
+      # Java
+      "${environment.variables.JAVA_HOME}/bin"
     ];
     systemPackages = with pkgs; [
       nixpkgs-fmt
