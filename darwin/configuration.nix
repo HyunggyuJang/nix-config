@@ -2063,7 +2063,7 @@ with lib; rec {
       # LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
       npm_config_prefix = "$HOME/${hgj_local}";
       BUN_HOME =  "$HOME/.cache/.bun";
-      JAVA_HOME = "/Applications/Android Studio.app/Contents/jbr/Contents/Home";
+      JAVA_HOME = "$HOME/.gradle/jdks/eclipse_adoptium-17-aarch64-os_x/jdk-17.0.17+10/Contents/Home";
     };
     systemPath = [
       "$HOME/${hgj_localbin}"
