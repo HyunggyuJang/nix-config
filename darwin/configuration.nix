@@ -2316,11 +2316,11 @@ with lib; rec {
         # Simple derivation that just extracts the binary from the tarball
         glab = prev.stdenv.mkDerivation rec {
           pname = "glab";
-          version = "1.72.0";
+          version = "1.79.0";
           
           src = prev.fetchurl {
             url = "https://gitlab.com/gitlab-org/cli/-/releases/v${version}/downloads/${pname}_${version}_darwin_arm64.tar.gz";
-            sha256 = "sha256-XAR5DOfHJ1YN2B6RY0//szgs66McOuFe1y03trLi10I=";
+            sha256 = "sha256-W7b4CUzglMulQiW3mxMzoSn6rg3V8WmAFu5ru63Uc+4=";
           };
           
           dontUnpack = false;
