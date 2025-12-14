@@ -1298,6 +1298,131 @@ with lib; rec {
                 {
                   "keys" = [
                     "m"
+                    "languageId:kotlin"
+                  ];
+                  "name" = "+Major";
+                  "icon" = "code";
+                  "type" = "bindings";
+                  "bindings" = [
+                    {
+                      "key" = "g";
+                      "name" = "+Goto";
+                      "icon" = "go-to-file";
+                      "type" = "bindings";
+                      "bindings" = [
+                        {
+                          "key" = "d";
+                          "name" = "Go to definition";
+                          "icon" = "symbol-function";
+                          "type" = "command";
+                          "command" = "editor.action.revealDefinition";
+                        }
+                        {
+                          "key" = "h";
+                          "name" = "Show call hierarchy";
+                          "icon" = "type-hierarchy";
+                          "type" = "command";
+                          "command" = "references-view.showCallHierarchy";
+                        }
+                        {
+                          "key" = "i";
+                          "name" = "Go to implementations";
+                          "icon" = "symbol-module";
+                          "type" = "command";
+                          "command" = "editor.action.goToImplementation";
+                        }
+                        {
+                          "key" = "r";
+                          "name" = "Go to references";
+                          "icon" = "symbol-reference";
+                          "type" = "command";
+                          "command" = "editor.action.goToReferences";
+                        }
+                        {
+                          "key" = "s";
+                          "name" = "Go to symbol in buffer";
+                          "icon" = "file";
+                          "type" = "command";
+                          "command" = "workbench.action.gotoSymbol";
+                        }
+                        {
+                          "key" = "t";
+                          "name" = "Go to type definition";
+                          "icon" = "symbol-struct";
+                          "type" = "command";
+                          "command" = "editor.action.goToTypeDefinition";
+                        }
+                        {
+                          "key" = "I";
+                          "name" = "Find implementations";
+                          "icon" = "symbol-module";
+                          "type" = "command";
+                          "command" = "references-view.findImplementations";
+                        }
+                        {
+                          "key" = "R";
+                          "name" = "Find references";
+                          "icon" = "symbol-reference";
+                          "type" = "command";
+                          "command" = "references-view.findReferences";
+                        }
+                        {
+                          "key" = "S";
+                          "name" = "Go to symbol in project";
+                          "icon" = "project";
+                          "type" = "command";
+                          "command" = "workbench.action.showAllSymbols";
+                        }
+                        {
+                          "key" = "t";
+                          "name" = "Go to type definition";
+                          "icon" = "symbol-struct";
+                          "type" = "command";
+                          "command" = "editor.action.goToTypeDefinition";
+                        }
+                      ];
+                    }
+                    {
+                      "key" = "G";
+                      "name" = "+Peek";
+                      "icon" = "eye";
+                      "type" = "bindings";
+                      "bindings" = [
+                        {
+                          "key" = "d";
+                          "name" = "Peek definition";
+                          "icon" = "symbol-function";
+                          "type" = "command";
+                          "command" = "editor.action.peekDefinition";
+                        }
+                        {
+                          "key" = "h";
+                          "name" = "Peek call hierarchy";
+                          "icon" = "type-hierarchy";
+                          "type" = "command";
+                          "command" = "editor.showCallHierarchy";
+                        }
+                        {
+                          "key" = "i";
+                          "name" = "Peek implementations";
+                          "icon" = "symbol-module";
+                          "type" = "command";
+                          "command" = "editor.action.peekImplementation";
+                        }
+                        {
+                          "key" = "r";
+                          "name" = "Peek references";
+                          "icon" = "symbol-reference";
+                          "type" = "command";
+                          "command" = "editor.action.referenceSearch.trigger";
+                        }
+                      ];
+                    }
+                  ];
+                }
+                {
+                  "keys" = [
+                    "m"
                     "languageId:python"
                     "g"
                     "t"
