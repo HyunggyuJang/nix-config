@@ -1559,6 +1559,9 @@ with lib; rec {
               "plantuml.server" = "https://www.plantuml.com/plantuml";
               "plantuml.render" = "PlantUMLServer";
               "git.blame.statusBarItem.enabled" = false;
+              # nightly cursor
+              "update.releaseTrack" = "dev";
+              "update.mode" = "silentlyApplyOnQuit";
             };
             profiles.default.keybindings = [
               {
