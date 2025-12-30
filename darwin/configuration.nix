@@ -2303,6 +2303,7 @@ with lib; rec {
       tmux
       python3
       uv
+      buf
     ];
     pathsToLink = [ "/lib" "/share" ];
     shells = [ pkgs.zsh ];
