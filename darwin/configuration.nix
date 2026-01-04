@@ -2609,6 +2609,7 @@ with lib; rec {
       # brew "glab", args: ["force-bottle", "ignore-dependencies"]
       # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
       brew "terraform-ls", args: ["force-bottle", "ignore-dependencies"]
+      brew "aqua", args: ["force-bottle", "ignore-dependencies"]
     '';
   };
 
