@@ -2213,6 +2213,8 @@ with lib; rec {
       "${environment.variables.BUN_HOME}/bin"
       # Java
       "\"${environment.variables.JAVA_HOME}/bin\""
+      # opencode
+      "$HOME/.opencode/bin"
     ];
     systemPackages = with pkgs; [
       nixpkgs-fmt
