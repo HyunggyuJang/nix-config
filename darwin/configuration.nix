@@ -2612,6 +2612,7 @@ with lib; rec {
       # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
       brew "terraform-ls", args: ["force-bottle", "ignore-dependencies"]
       brew "aqua", args: ["force-bottle", "ignore-dependencies"]
+      brew "git-filter-repo", args: ["force-bottle", "ignore-dependencies"]
     '';
   };
 
