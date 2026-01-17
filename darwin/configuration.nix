@@ -78,6 +78,7 @@ with lib; rec {
           '';
           ".cargo/bin/rust-analyzer".source = config.lib.file.mkOutOfStoreSymlink
             "${hgj_home}/.rustup/toolchains/stable-aarch64-apple-darwin/bin/rust-analyzer";
+          ".antigravity/extensions".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/.cursor/extensions";
           ".gnupg/gpg-agent.conf".text = ''
             enable-ssh-support
             default-cache-ttl 86400

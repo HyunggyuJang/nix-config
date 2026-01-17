@@ -36,7 +36,9 @@ in {
 
     # The installPhase must produce the output in $out.
     installPhase = ''
-      mkdir -p $out
+      mkdir -p $out/bin
+      touch $out/bin/cursor
+      chmod +x $out/bin/cursor
     '';
   };
   zed-editor = pkgs.stdenv.mkDerivation {
