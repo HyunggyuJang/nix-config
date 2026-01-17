@@ -2605,6 +2605,7 @@ with lib; rec {
       "cloudflare-warp"
       "sdm"
       "cursor"
+      "antigravity"
     ];
     extraConfig = ''
       brew "aptos", args: ["force-bottle", "ignore-dependencies"]
