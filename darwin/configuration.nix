@@ -799,8 +799,6 @@ with lib; rec {
               bodil.file-browser
               editorconfig.editorconfig
               esbenp.prettier-vscode
-              github.copilot
-              github.copilot-chat
               jnoortheen.nix-ide
               kahole.magit
               mkhl.direnv
