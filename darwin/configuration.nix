@@ -1561,6 +1561,7 @@ with lib; rec {
               # nightly cursor
               "update.releaseTrack" = "dev";
               "update.mode" = "silentlyApplyOnQuit";
+              "terminal.integrated.macOptionIsMeta" = true;
             };
             profiles.default.keybindings = [
               {
@@ -1632,22 +1633,22 @@ with lib; rec {
                 command = "-extension.vim_ctrl+t";
                 when = "editorTextFocus && vim.active && vim.use<C-t> && !inDebugRepl";
               }
-              {
-                key = "alt+l";
-                command = "editor.action.transformToLowercase";
-              }
-              {
-                key = "alt+u";
-                command = "editor.action.transformToUppercase";
-              }
-              {
-                key = "alt+c";
-                command = "editor.action.transformToTitlecase";
-              }
-              {
-                key = "alt+w";
-                command = "workbench.action.switchWindow";
-              }
+              # {
+              #   key = "alt+l";
+              #   command = "editor.action.transformToLowercase";
+              # }
+              # {
+              #   key = "alt+u";
+              #   command = "editor.action.transformToUppercase";
+              # }
+              # {
+              #   key = "alt+c";
+              #   command = "editor.action.transformToTitlecase";
+              # }
+              # {
+              #   key = "alt+w";
+              #   command = "workbench.action.switchWindow";
+              # }
               {
                 key = "ctrl+w";
                 command = "-workbench.action.switchWindow";
@@ -1745,54 +1746,54 @@ with lib; rec {
                   after = [ "<C-Right>" "<C-w>" ];
                 };
               }
-              {
-                key = "alt+b";
-                command = "workbench.action.terminal.sendSequence";
-                when = "terminalFocus && !terminalTextSelected";
-                args = {
-                  text = "[1;5D";
-                };
-              }
-              {
-                key = "alt+f";
-                command = "workbench.action.terminal.sendSequence";
-                when = "terminalFocus && !terminalTextSelected";
-                args = {
-                  text = "[1;5C";
-                };
-              }
-              {
-                key = "alt+d";
-                command = "workbench.action.terminal.sendSequence";
-                when = "terminalFocus && !terminalTextSelected";
-                args = {
-                  text = "d";
-                };
-              }
-              {
-                key = "alt+r";
-                command = "workbench.action.terminal.sendSequence";
-                when = "terminalFocus && !terminalTextSelected";
-                args = {
-                  text = "r";
-                };
-              }
-              {
-                key = "alt+t";
-                command = "workbench.action.terminal.sendSequence";
-                when = "terminalFocus && !terminalTextSelected";
-                args = {
-                  text = "t";
-                };
-              }
-              {
-                key = "alt+c";
-                command = "workbench.action.terminal.sendSequence";
-                when = "terminalFocus && !terminalTextSelected";
-                args = {
-                  text = "c";
-                };
-              }
+              # {
+              #   key = "alt+b";
+              #   command = "workbench.action.terminal.sendSequence";
+              #   when = "terminalFocus && !terminalTextSelected";
+              #   args = {
+              #     text = "\u001b[1;5D";
+              #   };
+              # }
+              # {
+              #   key = "alt+f";
+              #   command = "workbench.action.terminal.sendSequence";
+              #   when = "terminalFocus && !terminalTextSelected";
+              #   args = {
+              #     text = "\u001b[1;5C";
+              #   };
+              # }
+              # {
+              #   key = "alt+d";
+              #   command = "workbench.action.terminal.sendSequence";
+              #   when = "terminalFocus && !terminalTextSelected";
+              #   args = {
+              #     text = "\u001bd";
+              #   };
+              # }
+              # {
+              #   key = "alt+r";
+              #   command = "workbench.action.terminal.sendSequence";
+              #   when = "terminalFocus && !terminalTextSelected";
+              #   args = {
+              #     text = "\u001br";
+              #   };
+              # }
+              # {
+              #   key = "alt+t";
+              #   command = "workbench.action.terminal.sendSequence";
+              #   when = "terminalFocus && !terminalTextSelected";
+              #   args = {
+              #     text = "\u001bt";
+              #   };
+              # }
+              # {
+              #   key = "alt+c";
+              #   command = "workbench.action.terminal.sendSequence";
+              #   when = "terminalFocus && !terminalTextSelected";
+              #   args = {
+              #     text = "\u001bc";
+              #   };
+              # }
               {
                 key = "space";
                 command = "vspacecode.space";
