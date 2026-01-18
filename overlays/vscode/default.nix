@@ -40,6 +40,7 @@ in {
       touch $out/bin/cursor
       chmod +x $out/bin/cursor
     '';
+    meta.mainProgram = "cursor";
   };
   zed-editor = pkgs.stdenv.mkDerivation {
     pname = "zed-editor";
