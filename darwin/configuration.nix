@@ -1893,6 +1893,14 @@ with lib; rec {
                 key = "alt+cmd+k";
                 command = "-opencode.addFilepathToTerminal";
               }
+              {
+                key = "ctrl+alt+g";
+                command = "workbench.action.terminal.sendSequence";
+                when = "terminalFocus";
+                args = {
+                  text = "\u001b[F";
+                };
+              }
             ];
           };
           zsh = {
