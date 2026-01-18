@@ -1895,11 +1895,8 @@ with lib; rec {
               }
               {
                 key = "ctrl+alt+g";
-                command = "workbench.action.terminal.sendSequence";
+                command = "-workbench.action.terminal.sendSequence";
                 when = "terminalFocus";
-                args = {
-                  text = "[F";
-                };
               }
             ];
           };
