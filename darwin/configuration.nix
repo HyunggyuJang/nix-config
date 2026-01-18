@@ -1753,7 +1753,7 @@ with lib; rec {
               #   command = "workbench.action.terminal.sendSequence";
               #   when = "terminalFocus && !terminalTextSelected";
               #   args = {
-              #     text = "\u001b[1;5D";
+              #     text = "[1;5D";
               #   };
               # }
               # {
@@ -1761,7 +1761,7 @@ with lib; rec {
               #   command = "workbench.action.terminal.sendSequence";
               #   when = "terminalFocus && !terminalTextSelected";
               #   args = {
-              #     text = "\u001b[1;5C";
+              #     text = "[1;5C";
               #   };
               # }
               # {
@@ -1769,7 +1769,7 @@ with lib; rec {
               #   command = "workbench.action.terminal.sendSequence";
               #   when = "terminalFocus && !terminalTextSelected";
               #   args = {
-              #     text = "\u001bd";
+              #     text = "d";
               #   };
               # }
               # {
@@ -1777,7 +1777,7 @@ with lib; rec {
               #   command = "workbench.action.terminal.sendSequence";
               #   when = "terminalFocus && !terminalTextSelected";
               #   args = {
-              #     text = "\u001br";
+              #     text = "r";
               #   };
               # }
               # {
@@ -1785,7 +1785,7 @@ with lib; rec {
               #   command = "workbench.action.terminal.sendSequence";
               #   when = "terminalFocus && !terminalTextSelected";
               #   args = {
-              #     text = "\u001bt";
+              #     text = "t";
               #   };
               # }
               # {
@@ -1793,7 +1793,7 @@ with lib; rec {
               #   command = "workbench.action.terminal.sendSequence";
               #   when = "terminalFocus && !terminalTextSelected";
               #   args = {
-              #     text = "\u001bc";
+              #     text = "c";
               #   };
               # }
               {
@@ -1898,7 +1898,7 @@ with lib; rec {
                 command = "workbench.action.terminal.sendSequence";
                 when = "terminalFocus";
                 args = {
-                  text = "\u001b[F";
+                  text = "[F";
                 };
               }
             ];
