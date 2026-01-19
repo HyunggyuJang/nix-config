@@ -815,12 +815,12 @@ with lib; rec {
                 version = "1.0.1";
                 sha256 = "sha256-yrbZhp0NN4J1llyxz+FgOdc1lKg53SWlXfhsZpkP1hA=";
               }
-              {
-                name = "vim-with-killring";
-                publisher = "hyunggyujang";
-                version = "1.0.8";
-                sha256 = "sha256-8JD/GaPqwFqxW5WOV+24Fs0xDkb2GEbJS57xVuClmRA=";
-              }
+              # {
+              #   name = "vim-with-killring";
+              #   publisher = "hyunggyujang";
+              #   version = "1.0.8";
+              #   sha256 = "sha256-8JD/GaPqwFqxW5WOV+24Fs0xDkb2GEbJS57xVuClmRA=";
+              # }
               {
                 name = "fuzzy-search";
                 publisher = "jacobdufault";
