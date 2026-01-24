@@ -2316,6 +2316,7 @@ with lib; rec {
       python3
       uv
       buf
+      poppler-utils
     ];
     pathsToLink = [ "/lib" "/share" ];
     shells = [ pkgs.zsh ];
