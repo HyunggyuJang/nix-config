@@ -2616,6 +2616,7 @@ with lib; rec {
       "sdm"
       "cursor"
       "antigravity"
+      "opencode-desktop"
     ];
     extraConfig = ''
       brew "aptos", args: ["force-bottle", "ignore-dependencies"]
