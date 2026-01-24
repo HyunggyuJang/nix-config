@@ -2615,7 +2615,6 @@ with lib; rec {
       "cloudflare-warp"
       "sdm"
       "cursor"
-      "antigravity"
       "opencode-desktop"
     ];
     extraConfig = ''
