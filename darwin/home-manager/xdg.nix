@@ -42,11 +42,11 @@ in
       "kitty/kitty.conf".source = ./files/xdg/kitty/kitty.conf;
       "helix/config.toml".source = ./files/xdg/helix/config.toml;
       "zathura/zathurarc".source = ./files/xdg/zathura/zathurarc;
-      "karabiner/karabiner.json".source = ../karabiner.json;
+      "karabiner/karabiner.json".source = ./files/xdg/karabiner/karabiner.json;
       "youtube-dl/config".source = ./files/xdg/youtube-dl/config;
-      "zed/themes/Nano.json".source = ../Zed/Nano.json;
-      "zed/keymap.json".source = ../Zed/keymap.json;
-      "zed/settings.json".source = ../Zed/settings.json;
+      "zed/themes/Nano.json".source = ./files/xdg/zed/Nano.json;
+      "zed/keymap.json".source = ./files/xdg/zed/keymap.json;
+      "zed/settings.json".source = ./files/xdg/zed/settings.json;
     };
   };
 }
