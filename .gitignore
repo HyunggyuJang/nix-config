@@ -1,4 +1,5 @@
 **/.DS_Store
+.worktrees/
 
 # Security: Local overrides and sensitive files
 local.nix
