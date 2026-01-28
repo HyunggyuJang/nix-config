@@ -6,7 +6,7 @@ local.nix
 secrets.nix
 private.nix
 *-local.nix
-*.local.nix
+darwin/hosts/*.local.nix
 *-private.nix
 *-secrets.nix
 

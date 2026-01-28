@@ -26,6 +26,8 @@
    }
    ```
 
+   Note: flake-only setup expects these host fields to be set.
+
 3. (Optional) Create a private host-local file at `darwin/hosts/<host>.local.nix` for secrets or personal mail configs. Keep it gitignored.
 
    For mail setup, add `home.file` entries for:
