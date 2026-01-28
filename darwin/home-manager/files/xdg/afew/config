@@ -1,0 +1,12 @@
+[MailMover]
+folders = account.nagoya/Inbox account.nagoya/Trash
+rename = True
+
+account.nagoya/Inbox = 'tag:trash':'account.nagoya/Trash' 'NOT tag:inbox AND tag:lab':'account.nagoya/Lab' 'NOT tag:inbox AND tag:school':'account.nagoya/School' 'NOT tag:inbox AND NOT tag:trash':'account.nagoya/Archive'
+account.nagoya/Trash = 'NOT tag:trash':'account.nagoya/Inbox'
+
+[FolderNameFilter]
+folder_blacklist = account.nagoya account.gmail mail Archive
+folder_transforms = Drafts:draft Junk:spam
+folder_lowercases = true
+maildir_separator = /
