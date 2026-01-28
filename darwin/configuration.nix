@@ -33,7 +33,7 @@ with lib; rec {
   documentation.enable = false;
 
   _module.args = {
-    inherit host hostName owner machineType hgj_home hgj_sync hgj_darwin_home hgj_projects hgj_local hgj_localbin brewpath;
+    inherit host hostName owner machineType hgj_home hgj_sync hgj_darwin_home hgj_projects hgj_local hgj_localbin brewpath inputs;
   };
 
   # Home manager
@@ -45,6 +45,8 @@ with lib; rec {
     ./modules/system-defaults.nix
     ./modules/environment.nix
     ./modules/services.nix
+    ./modules/system-programs.nix
+    ./modules/nix-settings.nix
     ./modules/system-packages.nix
   ] ++ lib.optional (builtins.pathExists hostLocalPath) hostLocalPath;
 
@@ -2022,22 +2024,4 @@ with lib; rec {
       };
     in
       { ${owner} = userconfig; };
-  programs = {
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-    };
-  };
-  nix = {
-    settings = {
-      trusted-users = [ "root" owner ];
-      experimental-features = "nix-command flakes";
-    };
-    package = pkgs.nix;
-    nixPath = [{
-      darwin = inputs.nix-darwin;
-      nixpkgs = inputs.nixpkgs;
-    }];
-  };
-
 }
