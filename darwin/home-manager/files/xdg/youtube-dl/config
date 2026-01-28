@@ -1,0 +1,2 @@
+# Save all vides under Youtube directory in cloud server
+-o ~/storage/Youtube/%(title)s.%(ext)s

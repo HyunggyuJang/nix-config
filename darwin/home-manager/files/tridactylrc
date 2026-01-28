@@ -1,0 +1,32 @@
+# set editorcmd emacsclient --eval "(setq mac-use-title-bar t)"; emacsclient -c -F "((name . \"Emacs Everywhere :: firefox\") (width . 80) (height . 12) (internal-border-width . 0))" +%l:%c
+# bind <M-p> js location.href='org-protocol://capture?template=p&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
+# bind <M-i> js location.href='org-protocol://capture?template=L&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
+bind --mode=browser <C-g> escapehatch
+bind <C-g> composite mode normal ; hidecmdline
+bind --mode=ex <C-g> ex.hide_and_clear
+bind --mode=insert <C-g> composite unfocus | mode normal
+bind --mode=input <C-g> composite unfocus | mode normal
+bind --mode=hint <C-g> hint.reset
+bind --mode=visual <C-g> composite js document.getSelection().empty(); mode normal; hidecmdline
+bind --mode=ex <A-n> ex.next_history
+bind --mode=ex <A-p> ex.prev_history
+# bind --mode=insert <C-p> !s skhd -k up
+# bind --mode=insert <C-n> !s skhd -k down
+bind --mode=ex <C-p> ex.prev_completion
+bind --mode=ex <C-n> ex.next_completion
+# bind --mode=ex <C-k> text.kill_line # same as default setting
+# unbind --mode=ex <C-j> # used for kakutei key in Aquaskk
+bind --mode=ex <Tab> ex.insert_space_or_completion # ex.complete is buggy
+# unbind --mode=ex <Space>
+bind --mode=insert <A-d> text.kill_word
+bind --mode=insert <C-u> text.backward_kill_line
+bind --mode=insert <A-f> text.forward_word
+bind --mode=insert <A-b> text.backward_word
+# For international language mode navigation -- specifically for Korean
+bind --mode=insert <A-k> text.kill_line
+bind --mode=insert <A-u> text.backward_kill_line
+bind --mode=insert <A-a> text.beginning_of_line
+bind --mode=insert <A-e> text.end_of_line
+set theme auto
+autocmd DocStart https://excalidraw.com/ mode ignore
+autocmd DocStart https://www.figma.com/ mode ignore

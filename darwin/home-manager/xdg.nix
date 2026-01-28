@@ -34,55 +34,16 @@ in
           <dir>${hgj_home}/Library/Fonts</dir>
         </fontconfig>
       '';
-      "pip/pip.conf".text = ''
-        [global]
-        break-system-packages = true
-      '';
-      "afew/config".text = ''
-        [MailMover]
-        folders = account.nagoya/Inbox account.nagoya/Trash
-        rename = True
-
-        account.nagoya/Inbox = 'tag:trash':'account.nagoya/Trash' 'NOT tag:inbox AND tag:lab':'account.nagoya/Lab' 'NOT tag:inbox AND tag:school':'account.nagoya/School' 'NOT tag:inbox AND NOT tag:trash':'account.nagoya/Archive'
-        account.nagoya/Trash = 'NOT tag:trash':'account.nagoya/Inbox'
-
-        [FolderNameFilter]
-        folder_blacklist = account.nagoya account.gmail mail Archive
-        folder_transforms = Drafts:draft Junk:spam
-        folder_lowercases = true
-        maildir_separator = /
-      '';
+      "pip/pip.conf".source = ./files/xdg/pip.conf;
+      "afew/config".source = ./files/xdg/afew/config;
 
       "kitty/dracula.conf".source = "${kittyDracula}/dracula.conf";
       "kitty/diff.conf".source = "${kittyDracula}/diff.conf";
-      "kitty/kitty.conf".text = ''
-        allow_remote_control yes
-
-        hide_window_decorations yes
-
-        font_family      Roboto Mono
-        font_size        14.0
-
-        macos_thicken_font 0.5
-
-        macos_option_as_alt yes
-        macos_hide_from_tasks no
-        macos_quit_when_last_window_closed yes
-
-        include dracula.conf
-      '';
-      "helix/config.toml".text = ''
-        [editor.cursor-shape]
-        insert = "bar"
-        normal = "block"
-        select = "underline"
-      '';
-      "zathura/zathurarc".text = "set selection-clipboard clipboard";
+      "kitty/kitty.conf".source = ./files/xdg/kitty/kitty.conf;
+      "helix/config.toml".source = ./files/xdg/helix/config.toml;
+      "zathura/zathurarc".source = ./files/xdg/zathura/zathurarc;
       "karabiner/karabiner.json".source = ../karabiner.json;
-      "youtube-dl/config".text = ''
-        # Save all vides under Youtube directory in cloud server
-        -o ~/storage/Youtube/%(title)s.%(ext)s
-      '';
+      "youtube-dl/config".source = ./files/xdg/youtube-dl/config;
       "zed/themes/Nano.json".source = ../Zed/Nano.json;
       "zed/keymap.json".source = ../Zed/keymap.json;
       "zed/settings.json".source = ../Zed/settings.json;
