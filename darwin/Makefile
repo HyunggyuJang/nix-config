@@ -6,16 +6,18 @@ define announce
 	@echo '└────────────────────────────────────────────────────────────────────────────┘'
 endef
 
+HOST ?= $(shell scutil --get LocalHostName 2>/dev/null || hostname -s)
+
 all: build switch
 
 build:
-		$(call announce,nix run nix-darwin -- switch --flake)
-		@nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin -- switch --flake ./
+		$(call announce,nix run nix-darwin -- switch --flake .#$(HOST))
+		@nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin -- switch --flake .#$(HOST)
 switch:
-		$(call announce,darwin-rebuild switch --flake)
-		@sudo darwin-rebuild switch --flake ./ --show-trace
+		$(call announce,darwin-rebuild switch --flake .#$(HOST))
+		@sudo darwin-rebuild switch --flake .#$(HOST) --show-trace
 		@echo "Darwin generation: $$(sudo darwin-rebuild --list-generations | tail -1)"
 rollback:
-		$(call announce,darwin-rebuild switch --rollback)
-		@sudo darwin-rebuild switch --rollback
+		$(call announce,darwin-rebuild switch --rollback --flake .#$(HOST))
+		@sudo darwin-rebuild switch --rollback --flake .#$(HOST)
 		@echo "Darwin generation: $$(sudo darwin-rebuild --list-generations | tail -1)"

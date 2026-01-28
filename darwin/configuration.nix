@@ -1,14 +1,14 @@
-{ config ? inputs.nix-darwin.config, pkgs ? inputs.nixpkgs, lib, inputs, specialArgs, ... }:
+{ config ? inputs.nix-darwin.config, pkgs ? inputs.nixpkgs, lib, inputs, host, ... }:
 let
-  machineType = specialArgs.machineType or "unknown";
-  owner = if machineType == "M3-Pro" then "a13884" else "hyunggyujang";
+  machineType = host.machineType;
+  owner = host.owner;
+  hostName = host.name;
   hgj_home = "/Users/${owner}";
   hgj_sync = hgj_home;
   hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
   hgj_projects = "${hgj_home}/notes/1-Projects";
   hgj_local = ".local";
   hgj_localbin = "${hgj_local}/bin";
-  localconfig = import ./silicon.nix;
   brewpath = "/opt/homebrew";
 
   kittyDracula = with pkgs;
@@ -1895,11 +1895,11 @@ with lib; rec {
             sessionVariables = { RPROMPT = ""; };
             shellAliases = {
               dbuild =
-                "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make && cd -";
+                "cd ${hgj_darwin_home} && TERM=xterm-256color make && cd -";
               dswitch =
-                "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color caffeinate -i make switch && cd -";
+                "cd ${hgj_darwin_home} && TERM=xterm-256color caffeinate -i make switch && cd -";
               drb =
-                "cd ${hgj_darwin_home} && HOSTNAME=${localconfig.hostname} TERM=xterm-256color make rollback && cd -";
+                "cd ${hgj_darwin_home} && TERM=xterm-256color make rollback && cd -";
               cognee = "uv run --project ${hgj_projects}/cognee cognee-cli";
               cognee-mcp-stdio = "cd ${hgj_projects}/cognee/cognee-mcp && uv run python src/server.py";
               cognee-mcp-http = "cd ${hgj_projects}/cognee/cognee-mcp && uv run python src/server.py --transport http --port 8000";
@@ -2047,7 +2047,7 @@ with lib; rec {
               "browser.urlbar.update1" = true;
               "distribution.searchplugins.defaultLocale" = "en-KR";
               "general.useragent.locale" = "en-KR";
-              "identity.fxaccounts.account.device.name" = localconfig.hostname;
+              "identity.fxaccounts.account.device.name" = hostName;
               "privacy.trackingprotection.enabled" = true;
               "privacy.trackingprotection.socialtracking.enabled" = true;
               "privacy.trackingprotection.socialtracking.annotate.enabled" = true;
@@ -2406,7 +2406,6 @@ with lib; rec {
     nixPath = [{
       darwin = inputs.nix-darwin;
       nixpkgs = inputs.nixpkgs;
-      localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix";
     }];
   };
 

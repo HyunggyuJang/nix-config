@@ -18,28 +18,39 @@
 
   outputs = inputs@{ nix-darwin, nixpkgs, ... }: {
     formatter.aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
-    darwinConfigurations.Hyunggyus-MacBook-Air = nix-darwin.lib.darwinSystem {
-      modules = [ ./configuration.nix ];
-      specialArgs =
-        {
-          inherit inputs;
-          machineType = "MacBook-Air";
+    darwinConfigurations.Hyunggyus-MacBook-Air =
+      let
+        hostModule = import ./hosts/Hyunggyus-MacBook-Air.nix;
+        host = (hostModule { }).host;
+      in
+      nix-darwin.lib.darwinSystem {
+        modules = [ ./configuration.nix ];
+        specialArgs = {
+          inherit inputs host;
         };
-    };
-    darwinConfigurations.Hyunggyus-MacBook-Pro = nix-darwin.lib.darwinSystem {
-      modules = [ ./configuration.nix ];
-      specialArgs = {
-        inherit inputs;
-        machineType = "MacBook-Pro";
       };
-    };
-    darwinConfigurations.A13884ui-MacBookPro = nix-darwin.lib.darwinSystem {
-      modules = [ ./configuration.nix ];
-      specialArgs = {
-        inherit inputs;
-        machineType = "M3-Pro";
+    darwinConfigurations.Hyunggyus-MacBook-Pro =
+      let
+        hostModule = import ./hosts/Hyunggyus-MacBook-Pro.nix;
+        host = (hostModule { }).host;
+      in
+      nix-darwin.lib.darwinSystem {
+        modules = [ ./configuration.nix ];
+        specialArgs = {
+          inherit inputs host;
+        };
       };
-    };
+    darwinConfigurations.A13884ui-MacBookPro =
+      let
+        hostModule = import ./hosts/A13884ui-MacBookPro.nix;
+        host = (hostModule { }).host;
+      in
+      nix-darwin.lib.darwinSystem {
+        modules = [ ./configuration.nix ];
+        specialArgs = {
+          inherit inputs host;
+        };
+      };
     devShells.aarch64-darwin.default =
       nixpkgs.legacyPackages.aarch64-darwin.mkShell { };
   };
