@@ -39,7 +39,7 @@
         "signon.rememberSignons" = false;
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
       };
-      userChrome = builtins.readFile ../../userChrome.css;
+      userChrome = builtins.readFile ../files/firefox/userChrome.css;
       extensions.packages = with inputs.firefox-addons.packages.${pkgs.stdenv.system}; [
         ublock-origin
         browserpass
