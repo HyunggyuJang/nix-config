@@ -1,6 +1,6 @@
-{ lib, specialArgs, ... }:
+{ lib, host, ... }:
 let
-  machineType = specialArgs.machineType;
+  machineType = host.machineType;
 in
 {
   homebrew = {
