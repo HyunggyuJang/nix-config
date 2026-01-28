@@ -20,14 +20,34 @@
     "~&gt;" = "moveToEndOfDocument:";
     "~v" = "pageUp:";
     "~/" = "complete:";
-    "~c" = [ "capitalizeWord:" "moveForward:" "moveForward:" ];
-    "~u" = [ "uppercaseWord:" "moveForward:" "moveForward:" ];
-    "~l" = [ "lowercaseWord:" "moveForward:" "moveForward:" ];
+    "~c" = [
+      "capitalizeWord:"
+      "moveForward:"
+      "moveForward:"
+    ];
+    "~u" = [
+      "uppercaseWord:"
+      "moveForward:"
+      "moveForward:"
+    ];
+    "~l" = [
+      "lowercaseWord:"
+      "moveForward:"
+      "moveForward:"
+    ];
     "~d" = "deleteWordForward:";
     "^~h" = "deleteWordBackward:";
     "~t" = "transposeWords:";
-    "~\\@" = [ "setMark:" "moveWordForward:" "swapWithMark:" ];
-    "~h" = [ "setMark:" "moveToEndOfParagraph:" "swapWithMark:" ];
+    "~\\@" = [
+      "setMark:"
+      "moveWordForward:"
+      "swapWithMark:"
+    ];
+    "~h" = [
+      "setMark:"
+      "moveToEndOfParagraph:"
+      "swapWithMark:"
+    ];
     # C-x shortcuts
     "^x" = {
       "u" = "undo:";

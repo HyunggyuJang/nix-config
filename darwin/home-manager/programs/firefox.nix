@@ -1,7 +1,13 @@
-{ lib, pkgs, hostName, inputs, ... }:
+{
+  lib,
+  pkgs,
+  hostName,
+  inputs,
+  ...
+}:
 {
   programs.firefox.enable = true;
-  programs.firefox.package = lib.makeOverridable ({...}: pkgs.firefox-bin) {};
+  programs.firefox.package = lib.makeOverridable ({ ... }: pkgs.firefox-bin) { };
   programs.firefox.profiles = {
     home = {
       id = 0;
