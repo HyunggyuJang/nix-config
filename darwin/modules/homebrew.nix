@@ -1,6 +1,6 @@
 { lib, specialArgs, ... }:
 let
-  machineType = specialArgs.machineType or "unknown";
+  machineType = specialArgs.machineType;
 in
 {
   homebrew = {
