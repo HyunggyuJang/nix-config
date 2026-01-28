@@ -104,6 +104,10 @@ Before committing ANY changes:
 - [Nix Security Best Practices](https://nixos.org/manual/nixos/stable/index.html#sec-security)
 - [macOS Keychain Integration](https://developer.apple.com/documentation/security/keychain_services)
 
+## Documentation
+
+- docs/agents/index.md
+
 ---
 
 **Remember: When in doubt, DON'T commit. Ask for review if unsure about content safety.**
