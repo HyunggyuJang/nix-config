@@ -1,6 +1,7 @@
 { pkgs, hgj_home, ... }:
 let
-  kittyDracula = with pkgs;
+  kittyDracula =
+    with pkgs;
     stdenv.mkDerivation {
       name = "kitty-dracula-theme";
       src = fetchFromGitHub {

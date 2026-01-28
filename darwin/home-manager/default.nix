@@ -1,9 +1,33 @@
-{ config, lib, pkgs, inputs, owner, hostName, machineType, hgj_home, hgj_projects, hgj_darwin_home, hgj_localbin, brewpath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  owner,
+  hostName,
+  machineType,
+  hgj_home,
+  hgj_projects,
+  hgj_darwin_home,
+  hgj_localbin,
+  brewpath,
+  ...
+}:
 {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
   home-manager.extraSpecialArgs = {
-    inherit hostName owner machineType hgj_home hgj_projects hgj_darwin_home hgj_localbin brewpath inputs;
+    inherit
+      hostName
+      owner
+      machineType
+      hgj_home
+      hgj_projects
+      hgj_darwin_home
+      hgj_localbin
+      brewpath
+      inputs
+      ;
   };
   home-manager.users.${owner} = {
     home.stateVersion = "24.11";
