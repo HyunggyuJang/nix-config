@@ -26,23 +26,6 @@ let
       '';
     };
 
-  # https://github.com/NixOS/nixpkgs/issues/11893
-  altacv = with pkgs;
-    stdenv.mkDerivation rec {
-      name = "altacv";
-      src = fetchFromGitHub {
-        owner = "liantze";
-        repo = "AltaCV";
-        rev = "91373530c55843533a4de12a29d28896f9b14c0d";
-        sha256 = "sha256-fRnElZqCN4hbjdyjjhxNTvKLwSzJf6WnaQDEFl5pGW4=";
-      };
-      pname = name;
-      tlType = "run";
-      installPhase = ''
-        mkdir -p $out/tex/latex
-        cp altacv.cls $out/tex/latex/
-      '';
-    };
 in
 with lib; rec {
   # See https://github.com/LnL7/nix-darwin/issues/701
@@ -51,7 +34,9 @@ with lib; rec {
   # Home manager
   imports = [
     "${inputs.home-manager}/nix-darwin"
+    ./modules/homebrew.nix
     ./modules/overlays.nix
+    ./modules/system-packages.nix
   ];
 
   home-manager.useGlobalPkgs = true;
@@ -2229,100 +2214,6 @@ with lib; rec {
       # opencode
       "$HOME/.opencode/bin"
     ];
-    systemPackages = with pkgs; [
-      nixpkgs-fmt
-      tree
-      yaskkserv2
-      skhd
-      shellcheck
-      solc-select
-      tree-sitter
-      llvm
-      # WASM
-      rustup
-      pandoc
-      openssl
-      # Mail
-      # lieer # Curretly installed manually by cloning the repo as instructed: https://afew.readthedocs.io/en/latest/installation.html
-      # afew # Currently installed using pip3 install afew
-      # Latex
-      (texlive.combine {
-        # https://gist.github.com/veprbl/3dc563802c97a95bcdc4eac6650ede7d
-        inherit (texlive)
-          scheme-medium zxjatype ctex biblatex tikz-cd xpatch cleveref svg
-          trimspaces catchfile transparent capt-of enumitem fvextra upquote
-          tcolorbox environ pdfcol nanumtype1 kotex-plain kotex-utf kotex-utils xetexko
-          # jupyter export
-          adjustbox standalone algorithm2e ifoddpage relsize wrapfig
-          beamertheme-metropolis pdfx xmpincl accsupp fontawesome5 tikzfill
-          tikzmark dashrule ifmtarg multirow changepage paracol titling titlesec;
-        altacv = { pkgs = [ altacv ]; };
-      })
-      biber
-      # OutsideIn(X)
-      # ↓ Installed from ghcup
-      # cabal-install
-      # ghc
-      ffmpeg-headless
-      # sourcegraph
-      nodePackages_latest.pnpm
-      imagemagick
-      ghostscript
-      # scop
-      # poetry
-
-      # nix lsp
-      nixd
-
-      # System inspector & cleaner
-      dua
-
-      tree-sitter
-      msmtp
-      (aspellWithDicts (dicts: with dicts; [ en ]))
-      jq
-      pngpaste
-      zstd
-      isync
-      ripgrep
-      git
-      gnupg
-      pass
-      gmp
-      coreutils
-      fd
-      poppler
-      pinentry_mac
-      findutils
-      # cmake
-      automake
-      ctags
-      sdcv
-      notmuch
-      mermaid-cli
-      nodejs
-      awscli2
-      gh
-      go
-      yq-go
-      typescript-language-server
-      vscode-json-languageserver
-      kubectl
-      bun
-      kubernetes-helm
-      istioctl
-      # glab is provided via custom overlay to get v1.65.0
-      glab
-      postgresql
-      mongosh
-      tmux
-      python3
-      uv
-      buf
-      poppler-utils
-    ];
-    pathsToLink = [ "/lib" "/share" ];
-    shells = [ pkgs.zsh ];
   };
 
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -2517,80 +2408,6 @@ with lib; rec {
       nixpkgs = inputs.nixpkgs;
       localconfig = "${hgj_darwin_home}/${localconfig.hostname}.nix";
     }];
-  };
-
-  homebrew = {
-    enable = true;
-    onActivation.upgrade = false;
-    onActivation.autoUpdate = false;
-    onActivation.cleanup = "zap";
-    global.brewfile = true;
-    brewPrefix = "/opt/homebrew/bin";
-    brews = [
-      "nvm"
-    ];
-    casks = [
-      "appcleaner"
-      "kitty"
-      "karabiner-elements"
-      # "zoom"
-      # "zotero"
-      # elegant-emacs
-      "font-roboto-mono"
-      "font-roboto"
-      # doom emacs's symbol font
-      "font-juliamono"
-      # math font
-      # "font-dejavu"
-      # beamer with xelatex
-      # "font-fira-sans"
-      # "font-fira-mono"
-      # altacv with xelatex
-      "font-lato"
-      # Docker
-      "docker-desktop"
-      "obsidian"
-      "neo4j-desktop"
-      "android-studio"
-      "figma"
-      # "zed"
-      # Demian
-      "mongodb-compass"
-      # onyx zsa moonlander
-      "keymapp"
-    ] ++ optionals (machineType == "MacBook-Air") [
-      "slack"
-      # For Bing AI + Google meet
-      "microsoft-edge"
-      "inkscape"
-      # "aquaskk"
-      "discord"
-      "hammerspoon"
-      # zulip
-      "vagrant"
-      # Data analysis class
-      "microsoft-excel"
-      # School
-      "microsoft-word"
-      # audit
-      "telegram"
-    ] ++ optionals (machineType == "MacBook-Pro") [
-      "microsoft-teams"
-    ] ++ optionals (machineType == "M3-Pro") [
-      "cloudflare-warp"
-      "sdm"
-      "cursor"
-      "opencode-desktop"
-    ];
-    extraConfig = ''
-      brew "aptos", args: ["force-bottle", "ignore-dependencies"]
-      # brew "glab", args: ["force-bottle", "ignore-dependencies"]
-      # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
-      brew "terraform-ls", args: ["force-bottle", "ignore-dependencies"]
-      brew "aqua", args: ["force-bottle", "ignore-dependencies"]
-      brew "git-filter-repo", args: ["force-bottle", "ignore-dependencies"]
-      brew "ast-grep", args: ["force-bottle", "ignore-dependencies"]
-    '';
   };
 
   ids.gids.nixbld = 30000;
