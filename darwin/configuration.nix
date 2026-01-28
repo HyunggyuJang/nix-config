@@ -3,6 +3,7 @@ let
   machineType = host.machineType;
   owner = host.owner;
   hostName = host.name;
+  hostLocalPath = ./hosts + "/${host.name}.local.nix";
   hgj_home = "/Users/${owner}";
   hgj_sync = hgj_home;
   hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
@@ -37,7 +38,7 @@ with lib; rec {
     ./modules/homebrew.nix
     ./modules/overlays.nix
     ./modules/system-packages.nix
-  ];
+  ] ++ lib.optional (builtins.pathExists hostLocalPath) hostLocalPath;
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
@@ -538,74 +539,6 @@ with lib; rec {
           ".mailcap".text = ''
             # HTML
             text/html; open %s; description=HTML Text; test=test -n "$DISPLAY";  nametemplate=%s.html
-          '';
-          ".mbsyncrc".text = ''
-            IMAPAccount nagoya
-            Host mail.math.nagoya-u.ac.jp
-            User hyunggyu.jang.e6@math.nagoya-u.ac.jp #not XXX@me.com etc.
-            AuthMechs LOGIN
-            PassCmd "pass Migrate/math.nagoya-u.ac.jp"
-            Port 993
-            CertificateFile ~/.mail/nagoya.crt
-            SSLType IMAPS
-            SSLVersions TLSv1.2
-
-            IMAPStore nagoya-remote
-            Account nagoya
-
-            MaildirStore nagoya-local
-            Path ~/.mail/account.nagoya/
-            Inbox ~/.mail/account.nagoya/Inbox
-            SubFolders Verbatim
-
-            Channel nagoya-folders
-            Far :nagoya-remote:
-            Near :nagoya-local:
-            Patterns *
-            Create Both
-            Expunge Both
-            SyncState *
-            CopyArrivalDate Yes
-
-            Group nagoya
-            Channel nagoya-folders
-          '';
-          ".msmtprc".text = ''
-            # Set default values for all following accounts.
-            defaults
-            auth           on
-            tls            on
-            tls_trust_file /etc/ssl/certs/ca-certificates.crt
-            logfile        ~/.msmtp.log
-
-            # Nagoya-U mail
-            account        hyunggyu.jang.e6@math.nagoya-u.ac.jp
-            host           smtp.math.nagoya-u.ac.jp
-            port           443
-            protocol       smtp
-            # https://help.zoho.com/portal/en/community/topic/msmtp
-            from	         hyunggyu.jang.e6@math.nagoya-u.ac.jp
-            user           hyunggyu.jang.e6@math.nagoya-u.ac.jp
-            passwordeval   "pass Migrate/math.nagoya-u.ac.jp"
-            tls_starttls   off
-
-            # Set a default account
-            account default : hyunggyu.jang.e6@math.nagoya-u.ac.jp
-          '';
-          ".notmuch-config".text = ''
-            [database]
-            path=${hgj_home}/.mail
-            [user]
-            name=Hyunggyu Jang
-            primary_email=murasakipurplez5@gmail.com
-            other_email=hyunggyu.jang.e6@math.nagoya-u.ac.jp
-            [new]
-            tags=new
-            ignore=/.*[.](json|lock|bak)$/;.mbsyncstate;.uidvalidity;.DS_Store
-            [search]
-            exclude_tags=deleted;spam;
-            [maildir]
-            synchronize_flags=true
           '';
           "${hgj_localbin}/open_kitty" = {
             executable = true;
