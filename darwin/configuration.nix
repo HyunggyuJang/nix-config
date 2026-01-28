@@ -32,11 +32,17 @@ with lib; rec {
   # See https://github.com/LnL7/nix-darwin/issues/701
   documentation.enable = false;
 
+  _module.args = {
+    inherit host hostName owner machineType hgj_home hgj_sync hgj_darwin_home hgj_projects hgj_local hgj_localbin brewpath;
+  };
+
   # Home manager
   imports = [
     "${inputs.home-manager}/nix-darwin"
     ./modules/homebrew.nix
     ./modules/overlays.nix
+    ./modules/system-base.nix
+    ./modules/system-defaults.nix
     ./modules/system-packages.nix
   ] ++ lib.optional (builtins.pathExists hostLocalPath) hostLocalPath;
 
@@ -2014,101 +2020,6 @@ with lib; rec {
       };
     in
       { ${owner} = userconfig; };
-  system.primaryUser = owner;
-  system.stateVersion = 5;
-  system.defaults = {
-    dock = {
-      orientation = "left";
-      autohide = true;
-      launchanim = false;
-      show-process-indicators = true;
-      show-recents = false;
-      static-only = true;
-      mru-spaces = false;
-      minimize-to-application = true;
-    };
-
-    spaces.spans-displays = false;
-
-    finder = {
-      AppleShowAllExtensions = true;
-      FXEnableExtensionChangeWarning = false;
-      CreateDesktop = false;
-      FXPreferredViewStyle = "Nlsv"; # list view
-      ShowPathbar = true;
-    };
-
-    loginwindow.GuestEnabled = false;
-
-    CustomUserPreferences = {
-      # Finder's default location upon open
-      "com.apple.finder" = {
-        NewWindowTargetPath =
-          let homePath = config.users.users.${owner}.home;
-          in "file://${homePath}/";
-        ShowHardDrivesOnDesktop = false;
-        ShowMountedServersOnDesktop = true;
-        ShowRemovableMediaOnDesktop = true;
-        _FXSortFoldersFirst = true;
-        # When performing a search, search the current folder by default
-        FXDefaultSearchScope = "SCcf";
-      };
-      "com.apple.desktopservices" = {
-        # Avoid creating .DS_Store files on network or USB volumes
-        DSDontWriteNetworkStores = true;
-        DSDontWriteUSBStores = true;
-      };
-      "com.apple.AdLib" = {
-        allowApplePersonalizedAdvertising = false;
-      };
-      # Prevent Photos from opening automatically when devices are plugged in
-      "com.apple.ImageCapture".disableHotPlug = true;
-      "com.apple.SoftwareUpdate" = {
-        AutomaticCheckEnabled = true;
-        # Check for software updates daily, not just once per week
-        ScheduleFrequency = 1;
-        # Do not download newly available updates in background
-        AutomaticDownload = 0;
-        # Install System data files & security updates
-        CriticalUpdateInstall = 1;
-      };
-      "com.apple.TimeMachine".DoNotOfferNewDisksForBackup = true;
-    };
-
-    NSGlobalDomain = {
-      ApplePressAndHoldEnabled = false;
-      AppleKeyboardUIMode = 3;
-      AppleShowScrollBars = "WhenScrolling";
-      AppleInterfaceStyleSwitchesAutomatically = true;
-      NSAutomaticCapitalizationEnabled = false;
-      NSAutomaticDashSubstitutionEnabled = false;
-      NSAutomaticPeriodSubstitutionEnabled = false;
-      NSAutomaticQuoteSubstitutionEnabled = false;
-      NSAutomaticSpellingCorrectionEnabled = false;
-      NSScrollAnimationEnabled = false;
-      NSUseAnimatedFocusRing = false;
-      NSTextShowsControlCharacters = true;
-      NSNavPanelExpandedStateForSaveMode = true;
-      NSNavPanelExpandedStateForSaveMode2 = true;
-      NSTableViewDefaultSizeMode = 1;
-      _HIHideMenuBar = true;
-      "com.apple.mouse.tapBehavior" = 1;
-      "com.apple.trackpad.forceClick" = true;
-      "com.apple.swipescrolldirection" = true;
-      "com.apple.trackpad.trackpadCornerClickBehavior" = null;
-      "com.apple.keyboard.fnState" = true;
-    };
-  };
-  users = {
-    users.${owner} = {
-      name = owner;
-      home = hgj_home;
-      shell = pkgs.zsh;
-    };
-  };
-  fonts = {
-    packages = [ pkgs.ibm-plex ];
-  };
   environment = {
     darwinConfig = "${hgj_darwin_home}/configuration.nix";
     variables = {
@@ -2148,9 +2059,6 @@ with lib; rec {
       "$HOME/.opencode/bin"
     ];
   };
-
-  nixpkgs.hostPlatform = "aarch64-darwin";
-  nixpkgs.config.allowUnfree = true;
 
   programs = {
     zsh = {
@@ -2342,5 +2250,4 @@ with lib; rec {
     }];
   };
 
-  ids.gids.nixbld = 30000;
 }
