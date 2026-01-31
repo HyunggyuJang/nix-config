@@ -23,6 +23,7 @@
         cognee = "uv run --project ${hgj_projects}/cognee cognee-cli";
         cognee-mcp-stdio = "cd ${hgj_projects}/cognee/cognee-mcp && uv run python src/server.py";
         cognee-mcp-http = "cd ${hgj_projects}/cognee/cognee-mcp && uv run python src/server.py --transport http --port 8000";
+        code = "cursor";
       };
 
       oh-my-zsh.enable = true;
