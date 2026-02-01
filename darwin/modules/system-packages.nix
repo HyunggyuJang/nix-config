@@ -77,7 +77,7 @@ in
     ripgrep
     git
     gnupg
-    inputs.agenix.packages.${pkgs.system}.default
+    inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
     pass
     gmp
     coreutils
