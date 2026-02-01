@@ -106,7 +106,6 @@ in
     glab
     postgresql
     mongosh
-    tmux
     python3
     uv
     buf
