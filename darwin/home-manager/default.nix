@@ -42,6 +42,7 @@
       ./programs/firefox.nix
       ./programs/fzf.nix
       ./programs/browserpass.nix
+      ./programs/tmux.nix
     ];
   };
 }
