@@ -3,7 +3,6 @@ let
   machineType = host.machineType;
   owner = host.owner;
   hostName = host.name;
-  hostLocalPath = ./hosts + "/${host.name}.local.nix";
   hgj_home = "/Users/${owner}";
   hgj_sync = hgj_home;
   hgj_darwin_home = "${hgj_sync}/nixpkgs/darwin";
@@ -34,5 +33,5 @@ with lib; rec {
     ./modules/nix-settings.nix
     ./modules/home-manager.nix
     ./modules/system-packages.nix
-  ] ++ lib.optional (builtins.pathExists hostLocalPath) hostLocalPath;
+  ];
 }

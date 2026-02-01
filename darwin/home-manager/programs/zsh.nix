@@ -16,6 +16,12 @@
       sessionVariables = {
         RPROMPT = "";
       };
+      initExtra = ''
+        # Brave Search API key (from pass)
+        if [ -z "$BRAVE_API_KEY" ] && command -v pass >/dev/null 2>&1; then
+          export BRAVE_API_KEY="$(pass brave-search-api-key 2>/dev/null)"
+        fi
+      '';
       shellAliases = {
         dbuild = "cd ${hgj_darwin_home} && TERM=xterm-256color make && cd -";
         dswitch = "cd ${hgj_darwin_home} && TERM=xterm-256color caffeinate -i make switch && cd -";
