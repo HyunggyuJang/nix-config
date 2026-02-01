@@ -1,6 +1,5 @@
 {
   config,
-  machineType,
   hgj_home,
   hgj_localbin,
   ...
@@ -264,17 +263,53 @@
         kitty --listen-on unix:/tmp/mykitty --single-instance --directory "$DIR"
       '';
     };
-  }
-  // (
-    if machineType != "M3-Pro" then
-      {
-        ".gitconfig".text = ''
-          [user]
-            name = Hyunggyu Jang
-            email = murasakipurplez5@gmail.com
-        '';
-      }
-    else
-      { }
-  );
+    "${hgj_localbin}/kitty-diff" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        PATH="/Applications/kitty.app/Contents/MacOS${"\${PATH:+:\${PATH}}"}"
+
+        appearance=$(defaults read -g AppleInterfaceStyle 2>/dev/null || true)
+        if [[ "$appearance" == "Dark" ]]; then
+            config="$HOME/.config/kitty/diff-dark.conf"
+        else
+            config="$HOME/.config/kitty/diff-light.conf"
+        fi
+
+        exec kitty +kitten diff --config "$config" "$@"
+      '';
+    };
+    ".gitconfig".text = ''
+      [user]
+        name = Hyunggyu Jang
+        email = murasakipurplez5@gmail.com
+
+      [filter "lfs"]
+        clean = git-lfs clean -- %f
+        smudge = git-lfs smudge -- %f
+        process = git-lfs filter-process
+        required = true
+
+      [color]
+        ui = auto
+
+      [includeIf "hasconfig:remote.*.url:gitlab.42dot.ai"]
+        path = ${hgj_home}/.gitconfig-work
+
+      [diff]
+        tool = kitty
+
+      [difftool]
+        prompt = false
+        trustExitCode = true
+
+      [difftool "kitty"]
+        cmd = kitty-diff "$LOCAL" "$REMOTE"
+
+      [difftool "kitty.gui"]
+        cmd = kitty-diff "$LOCAL" "$REMOTE"
+    '';
+  };
 }

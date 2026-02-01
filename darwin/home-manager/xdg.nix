@@ -1,22 +1,4 @@
-{ pkgs, hgj_home, ... }:
-let
-  kittyDracula =
-    with pkgs;
-    stdenv.mkDerivation {
-      name = "kitty-dracula-theme";
-      src = fetchFromGitHub {
-        owner = "dracula";
-        repo = "kitty";
-        rev = "6d6239a";
-        sha256 = "1fyclzglw4jz0vrglwg6v644bhr7w7mb1d95lagy7iz14gybli0i";
-      };
-      installPhase = ''
-        mkdir -p $out
-        cp dracula.conf diff.conf $out/
-      '';
-    };
-
-in
+{ hgj_home, ... }:
 {
   xdg = {
     enable = true;
@@ -37,8 +19,14 @@ in
       "pip/pip.conf".source = ./files/xdg/pip.conf;
       "afew/config".source = ./files/xdg/afew/config;
 
-      "kitty/dracula.conf".source = "${kittyDracula}/dracula.conf";
-      "kitty/diff.conf".source = "${kittyDracula}/diff.conf";
+      "kitty/dracula.conf".source = ./files/xdg/kitty/dracula.conf;
+      "kitty/diff.conf".source = ./files/xdg/kitty/diff.conf;
+      "kitty/diff-dark.conf".source = ./files/xdg/kitty/diff-dark.conf;
+      "kitty/diff-light.conf".source = ./files/xdg/kitty/diff-light.conf;
+      "kitty/alucard-light.conf".source = ./files/xdg/kitty/alucard-light.conf;
+      "kitty/dark-theme.auto.conf".source = ./files/xdg/kitty/dark-theme.auto.conf;
+      "kitty/light-theme.auto.conf".source = ./files/xdg/kitty/light-theme.auto.conf;
+      "kitty/no-preference-theme.auto.conf".source = ./files/xdg/kitty/no-preference-theme.auto.conf;
       "kitty/kitty.conf".source = ./files/xdg/kitty/kitty.conf;
       "helix/config.toml".source = ./files/xdg/helix/config.toml;
       "zathura/zathurarc".source = ./files/xdg/zathura/zathurarc;
