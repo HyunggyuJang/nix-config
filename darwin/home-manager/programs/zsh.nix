@@ -21,6 +21,10 @@
         if [ -z "$BRAVE_API_KEY" ] && command -v pass >/dev/null 2>&1; then
           export BRAVE_API_KEY="$(pass brave-search-api-key 2>/dev/null)"
         fi
+        # Groq API key (from pass)
+        if [ -z "$GROQ_API_KEY" ] && command -v pass >/dev/null 2>&1; then
+          export GROQ_API_KEY="$(pass groq-api-key 2>/dev/null)"
+        fi
       '';
       shellAliases = {
         dbuild = "cd ${hgj_darwin_home} && TERM=xterm-256color make && cd -";
