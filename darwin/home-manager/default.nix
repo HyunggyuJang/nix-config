@@ -37,6 +37,7 @@
       ./xdg.nix
       ./programs/vscode.nix
       ./programs/zsh.nix
+      ./programs/ssh.nix
       ./programs/direnv.nix
       ./programs/emacs.nix
       ./programs/firefox.nix
