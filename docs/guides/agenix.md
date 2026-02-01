@@ -30,15 +30,17 @@ This repo uses [agenix](https://github.com/ryantm/agenix) for encrypted, file-ba
    agenix -e ssh/<host>/id_ed25519.pub.age
    ```
 
-## SSH keys
+## SSH config + keys
 
-Place per-host SSH key secrets under:
+Place per-host SSH secrets under:
 
 ```
 secrets/ssh/<host>/
 ```
 
-Any `.age` file in that folder will be installed into `~/.ssh/<filename>` on that host. Files ending in `.pub.age` are installed with mode `0644`; everything else uses `0600`.
+- `config.private.age` is included from `~/.ssh/config` for private host blocks.
+- Any other `.age` file in that folder is installed into `~/.ssh/<filename>` on that host.
+- Files ending in `.pub.age` are installed with mode `0644`; everything else uses `0600`.
 
 ## Notes
 

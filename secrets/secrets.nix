@@ -23,6 +23,7 @@ let
     "ios"
     "ios.pub"
     "poc-ec2.pem"
+    "config.private"
   ];
 in
 sshSecrets sshFiles
