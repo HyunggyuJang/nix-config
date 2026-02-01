@@ -13,6 +13,13 @@ let
   sshSecrets = names:
     builtins.foldl' (acc: name: acc // (sshSecret name)) { } names;
 
+  gitSecret = name: {
+    "git/${host}/${name}.age".publicKeys = recipients;
+  };
+
+  gitSecrets = names:
+    builtins.foldl' (acc: name: acc // (gitSecret name)) { } names;
+
   sshFiles = [
     "id_ed25519"
     "id_ed25519.pub"
@@ -25,5 +32,9 @@ let
     "poc-ec2.pem"
     "config.private"
   ];
+
+  gitFiles = [
+    "gitconfig-work"
+  ];
 in
-sshSecrets sshFiles
+sshSecrets sshFiles // gitSecrets gitFiles
