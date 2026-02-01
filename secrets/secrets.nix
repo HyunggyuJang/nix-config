@@ -1,7 +1,7 @@
 let
   host = "A13884ui-MacBookPro";
   users = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPb+1f40ul2LmtRfs6wuT3F5gGDymSWIl3yPfOZOI/ea"
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJVsWrnD/1BacGzvtFIaOSPRt8JZXKcmjMU7RiGnUWGA"
   ];
   systems = [ ];
   recipients = users ++ systems;

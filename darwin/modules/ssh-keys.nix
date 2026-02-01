@@ -28,6 +28,6 @@ let
   );
 in
 {
-  age.identityPaths = lib.mkDefault [ "${hgj_home}/.ssh/id_ed25519" ];
+  age.identityPaths = lib.mkDefault [ "${hgj_home}/.ssh/agenix_ed25519" ];
   age.secrets = lib.mkIf (sshSecretFiles != [ ]) secretAttrs;
 }

@@ -26,6 +26,8 @@ darwin/hosts/*.local.nix
 # SSH and GPG keys
 id_rsa*
 id_ed25519*
+!secrets/ssh/**/id_rsa*.age
+!secrets/ssh/**/id_ed25519*.age
 *.gpg
 *.asc
 

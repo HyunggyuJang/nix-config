@@ -42,6 +42,7 @@ Any `.age` file in that folder will be installed into `~/.ssh/<filename>` on tha
 
 ## Notes
 
-- Keep only **encrypted** files (`.age`) in the private secrets directory.
-- You still need a private key on the target machine to decrypt. This repo defaults `age.identityPaths` to `~/.ssh/id_ed25519`, so bootstrap that key on new machines before running `darwin-rebuild`.
+- Keep only **encrypted** files (`.age`) in the secrets directory.
+- Agenix does not handle passphrase-protected SSH keys. Use a dedicated, unencrypted key for `age.identityPaths` (this repo uses `~/.ssh/agenix_ed25519`).
+- You still need that private key on the target machine to decrypt, so bootstrap it before running `darwin-rebuild`.
 - For macOS, decrypted secrets land under `$TMPDIR/agenix/` by default unless you override `age.secrets.<name>.path`.
