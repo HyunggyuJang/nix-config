@@ -16,6 +16,7 @@
 {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
+  home-manager.backupFileExtension = "hm-backup";
   home-manager.extraSpecialArgs = {
     inherit
       hostName
