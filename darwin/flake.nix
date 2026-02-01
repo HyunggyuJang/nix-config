@@ -10,6 +10,8 @@
     home-manager.url =
       "github:nix-community/home-manager/475921375def3eb930e1f8883f619ff8609accb6";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    agenix.url = "github:ryantm/agenix";
+    agenix.inputs.nixpkgs.follows = "nixpkgs";
     firefox-addons.url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
     nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/3d34ee3b73b456efde0d7950ce96575aea190692";

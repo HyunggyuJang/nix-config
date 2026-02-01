@@ -28,7 +28,7 @@
 
    Note: flake-only setup expects these host fields to be set.
 
-3. If you need secrets, prefer a dedicated secret manager (e.g., agenix/sops-nix) or load values at runtime from `pass`/Keychain. Avoid storing plaintext secrets in Nix files.
+3. If you need secrets, prefer agenix (see `docs/guides/agenix.md`) or load values at runtime from `pass`/Keychain. Avoid storing plaintext secrets in Nix files.
 
 4. Apply the configuration and verify the build:
 
