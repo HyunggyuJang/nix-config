@@ -5,7 +5,7 @@
 
 **Goal:** Modularize the darwin config, remove `localconfig`, and document a clear new-machine setup flow with secrets kept out of the public repo.
 
-**Architecture:** Keep `darwin/flake.nix` as the entrypoint, shift domain blocks into `darwin/modules/*`, and define per-host settings in `darwin/hosts/<host>.nix` with an optional gitignored `darwin/hosts/<host>.local.nix` for private mail configs. Update `darwin/Makefile` to resolve the host automatically and pass an explicit flake target.
+**Architecture:** Keep `darwin/flake.nix` as the entrypoint, shift domain blocks into `darwin/modules/*`, and define per-host settings in `darwin/hosts/<host>.nix`. Keep secrets out of the public repo (prefer agenix/sops-nix or runtime secrets). Update `darwin/Makefile` to resolve the host automatically and pass an explicit flake target.
 
 **Tech Stack:** Nix flakes, nix-darwin, home-manager, GNU Make, zsh.
 
@@ -25,7 +25,7 @@
 Include:
 - Prereqs (Nix, nix-darwin, Homebrew)
 - Set LocalHostName (`scutil --set LocalHostName <host>`)
-- Create `darwin/hosts/<host>.nix` and optional `darwin/hosts/<host>.local.nix`
+- Create `darwin/hosts/<host>.nix`
 - Run `make switch` and verify build
 
 **Step 2: Sanity check content**
@@ -164,52 +164,6 @@ git add darwin/hosts/*.nix darwin/flake.nix darwin/configuration.nix darwin/Make
 git commit -m "refactor(darwin): add host modules and explicit flake target"
 ```
 
-### Task 5: Move Mail Configs to Host-Local Secrets
+### Task 5: Secrets handling (agenix/sops-nix)
 
-**Depends on:** Task 4
-**Parallelizable:** no
-**Shared State:** `darwin/configuration.nix`
-
-**Files:**
-- Modify: `darwin/configuration.nix`
-- Create (gitignored): `darwin/hosts/A13884ui-MacBookPro.local.nix`
-- Modify: `docs/guides/darwin-setup.md`
-
-**Step 1: Remove mail config from public repo**
-
-Delete `.mbsyncrc`, `.msmtprc`, and `.notmuch-config` entries from `home.file` in `darwin/configuration.nix`.
-
-**Step 2: Add optional local import**
-
-Add a conditional import of `./hosts/${host.name}.local.nix` when it exists.
-
-**Step 3: Recreate configs locally**
-
-Create `darwin/hosts/A13884ui-MacBookPro.local.nix` with the removed `home.file` entries (do not commit).
-
-**Step 4: Update setup guide**
-
-Document the local secrets file and required keys.
-
-**Step 5: Secret scan**
-
-Run:
-```bash
-rg -i "password|secret|key|token|api" --type nix
-rg "@.*\.(com|org|net)" --type nix
-```
-
-**Step 6: Verify**
-
-Run:
-```bash
-cd darwin
-nix build .#darwinConfigurations.A13884ui-MacBookPro.system --dry-run
-```
-
-**Step 7: Commit**
-
-```bash
-git add darwin/configuration.nix docs/guides/darwin-setup.md
-git commit -m "chore(security): move mail configs to host-local file"
-```
+**Note:** The host-local `*.local.nix` approach was removed under flakes (gitignored files aren’t visible). Use agenix/sops-nix or runtime secrets instead.

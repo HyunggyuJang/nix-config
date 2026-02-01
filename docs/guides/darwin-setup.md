@@ -28,15 +28,7 @@
 
    Note: flake-only setup expects these host fields to be set.
 
-3. (Optional) Create a private host-local file at `darwin/hosts/<host>.local.nix` for secrets or personal mail configs. Keep it gitignored.
-
-   For mail setup, add `home.file` entries for:
-
-   - `.mbsyncrc`
-   - `.msmtprc`
-   - `.notmuch-config`
-
-   Use placeholders in the file and keep credentials in a secret manager (for example, `pass` via `PassCmd` or `passwordeval`).
+3. If you need secrets, prefer a dedicated secret manager (e.g., agenix/sops-nix) or load values at runtime from `pass`/Keychain. Avoid storing plaintext secrets in Nix files.
 
 4. Apply the configuration and verify the build:
 
