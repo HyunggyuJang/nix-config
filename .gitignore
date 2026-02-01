@@ -3,7 +3,6 @@
 
 # Security: Local overrides and sensitive files
 local.nix
-secrets.nix
 private.nix
 *-local.nix
 darwin/hosts/*.local.nix

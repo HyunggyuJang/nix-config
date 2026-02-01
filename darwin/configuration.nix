@@ -33,6 +33,7 @@ with lib; rec {
     ./modules/system-programs.nix
     ./modules/nix-settings.nix
     ./modules/home-manager.nix
+    ./modules/ssh-keys.nix
     ./modules/system-packages.nix
   ];
 }

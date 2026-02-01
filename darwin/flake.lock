@@ -190,8 +190,21 @@
         "home-manager": "home-manager_2",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-firefox-darwin": "nixpkgs-firefox-darwin"
+        "nixpkgs-firefox-darwin": "nixpkgs-firefox-darwin",
+        "secrets": "secrets"
       }
+    },
+    "secrets": {
+      "flake": false,
+      "locked": {
+        "path": "../secrets",
+        "type": "path"
+      },
+      "original": {
+        "path": "../secrets",
+        "type": "path"
+      },
+      "parent": []
     },
     "systems": {
       "locked": {
