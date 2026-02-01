@@ -23,6 +23,7 @@ with lib; rec {
   # Home manager
   imports = [
     "${inputs.home-manager}/nix-darwin"
+    inputs.agenix.darwinModules.default
     ./modules/homebrew.nix
     ./modules/overlays.nix
     ./modules/system-base.nix

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 let
   # https://github.com/NixOS/nixpkgs/issues/11893
   altacv = with pkgs;
@@ -77,6 +77,7 @@ in
     ripgrep
     git
     gnupg
+    inputs.agenix.packages.${pkgs.system}.default
     pass
     gmp
     coreutils
