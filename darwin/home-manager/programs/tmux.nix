@@ -93,6 +93,14 @@
       bind -T toggle z resize-pane -Z \; switch-client -T root
       bind -T toggle Escape switch-client -T root
 
+      # Which-key-ish help popups (use tmux-which-key plugin if this gets too hacky)
+      bind ? display-popup -E "tmux list-keys -T root | less"
+      bind -T window ? display-popup -E "tmux list-keys -T window | less"
+      bind -T buffer ? display-popup -E "tmux list-keys -T buffer | less"
+      bind -T session ? display-popup -E "tmux list-keys -T session | less"
+      bind -T yank ? display-popup -E "tmux list-keys -T yank | less"
+      bind -T toggle ? display-popup -E "tmux list-keys -T toggle | less"
+
       # Reload config quickly
       bind r source-file ~/.tmux.conf \; display-message "tmux.conf reloaded"
     '';
