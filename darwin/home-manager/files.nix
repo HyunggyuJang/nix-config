@@ -295,7 +295,9 @@
       [color]
         ui = auto
 
-      [includeIf "hasconfig:remote.*.url:REDACTED"]
+      [includeIf "hasconfig:remote.*.url:https://REDACTED/**"]
+        path = ${hgj_home}/.gitconfig-work
+      [includeIf "hasconfig:remote.*.url:git@REDACTED:*"]
         path = ${hgj_home}/.gitconfig-work
 
       [diff]
