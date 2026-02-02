@@ -295,7 +295,9 @@
       [color]
         ui = auto
 
-      [includeIf "hasconfig:remote.*.url:gitlab.42dot.ai"]
+      [includeIf "hasconfig:remote.*.url:https://gitlab.42dot.ai/**"]
+        path = ${hgj_home}/.gitconfig-work
+      [includeIf "hasconfig:remote.*.url:git@gitlab.42dot.ai:*"]
         path = ${hgj_home}/.gitconfig-work
 
       [diff]
