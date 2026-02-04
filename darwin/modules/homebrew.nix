@@ -75,6 +75,7 @@ in
       brew "git-filter-repo", args: ["force-bottle", "ignore-dependencies"]
       brew "ast-grep", args: ["force-bottle", "ignore-dependencies"]
       brew "git-lfs", args: ["force-bottle", "ignore-dependencies"]
+      brew "peekaboo", args: ["force-bottle", "ignore-dependencies"]
     '';
   };
 }
