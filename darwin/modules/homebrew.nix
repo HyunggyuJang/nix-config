@@ -76,6 +76,7 @@ in
       brew "ast-grep", args: ["force-bottle", "ignore-dependencies"]
       brew "git-lfs", args: ["force-bottle", "ignore-dependencies"]
       brew "peekaboo", args: ["force-bottle", "ignore-dependencies"]
+      brew "obsidian-cli", args: ["force-bottle", "ignore-dependencies"]
     '';
   };
 }
