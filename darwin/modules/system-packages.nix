@@ -110,6 +110,7 @@ in
     uv
     buf
     poppler-utils
+    openai-whisper
   ];
   environment.pathsToLink = [ "/lib" "/share" ];
   environment.shells = [ pkgs.zsh ];
