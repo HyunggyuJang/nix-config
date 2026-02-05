@@ -15,6 +15,7 @@
         PNPM_HOME = "$HOME/${hgj_localbin}";
         BUN_HOME = "$HOME/.cache/.bun";
         JAVA_HOME = "$HOME/.gradle/jdks/eclipse_adoptium-17-aarch64-os_x/jdk-17.0.17+10/Contents/Home";
+        OPENCODE_EXPERIMENTAL = "true";
       };
     in
     {
