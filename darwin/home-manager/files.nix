@@ -16,6 +16,7 @@
     "Library/Application Support/Antigravity/User/settings.json".source =
       config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Application Support/Cursor/User/settings.json";
     ".gnupg/gpg-agent.conf".source = ./files/gnupg/gpg-agent.conf;
+    ".doom.d".source = config.lib.file.mkOutOfStoreSymlink "${hgj_home}/notes/org/manager";
     ".tridactylrc".source = ./files/tridactylrc;
     "Library/Application Support/Mozilla/NativeMessagingHosts/tridactyl.json".text = builtins.toJSON {
       name = "tridactyl";
