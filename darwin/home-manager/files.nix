@@ -1,8 +1,8 @@
-{
-  config,
-  hgj_home,
-  hgj_localbin,
-  ...
+{ config
+, pkgs
+, hgj_home
+, hgj_localbin
+, ...
 }:
 {
   home.file = {
@@ -17,6 +17,17 @@
       config.lib.file.mkOutOfStoreSymlink "${hgj_home}/Library/Application Support/Cursor/User/settings.json";
     ".gnupg/gpg-agent.conf".source = ./files/gnupg/gpg-agent.conf;
     ".tridactylrc".source = ./files/tridactylrc;
+    "Library/Application Support/Mozilla/NativeMessagingHosts/tridactyl.json".text = builtins.toJSON {
+      name = "tridactyl";
+      description = "Tridactyl native command handler";
+      path = "${pkgs.tridactyl-native}/bin/native_main";
+      type = "stdio";
+      allowed_extensions = [
+        "tridactyl.vim@cmcaine.co.uk"
+        "tridactyl.vim.betas@cmcaine.co.uk"
+        "tridactyl.vim.betas.nonewtab@cmcaine.co.uk"
+      ];
+    };
     ".qutebrowser/config.py".source = ./files/qutebrowser/config.py;
     "Library/Application Support/AquaSKK/keymap.conf".source = ./files/aquaskk/keymap.conf;
     "Library/Application Support/AquaSKK/azik.conf".source = ./files/aquaskk/azik.conf;
