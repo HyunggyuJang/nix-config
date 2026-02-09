@@ -81,11 +81,26 @@ in
   home.activation.preferDoomEmacsAppForLaunchServices = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     raw_app=${lib.escapeShellArg "${pkgs.emacs}/Applications/Emacs.app"}
     doom_app=${lib.escapeShellArg "${config.programs.doom-emacs.finalEmacsPackage}/Applications/Emacs.app"}
+    hm_emacs_app=${lib.escapeShellArg "${config.home.homeDirectory}/Applications/Home Manager Apps/Emacs.app"}
 
-    if [[ -x ${lib.escapeShellArg lsregister} && -d "$doom_app" ]]; then
+    if [[ -x ${lib.escapeShellArg lsregister} ]]; then
       verboseEcho "Registering Doom Emacs app for LaunchServices"
+
+      # Remove stale Nix-store Emacs registrations so `open -a Emacs` resolves
+      # to the current Home Manager app path.
+      while IFS= read -r app; do
+        [[ -z "$app" ]] && continue
+        [[ "$app" == "$doom_app" ]] && continue
+        run --silence ${lsregister} -u "$app" || true
+      done < <(${lsregister} -dump | ${pkgs.gawk}/bin/awk '/path:[[:space:]]*\/nix\/store\/.*\/Applications\/Emacs\.app/ { print $2 }')
+
       run --silence ${lsregister} -u "$raw_app" || true
-      run ${lsregister} -f "$doom_app"
+
+      if [[ -d "$hm_emacs_app" ]]; then
+        run ${lsregister} -f "$hm_emacs_app"
+      elif [[ -d "$doom_app" ]]; then
+        run ${lsregister} -f "$doom_app"
+      fi
     fi
   '';
 }
