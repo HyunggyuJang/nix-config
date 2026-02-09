@@ -146,8 +146,10 @@
         open < ctrl - g ; default
 
         # emacs
-        open < e : skhd -k "ctrl - g"; open -a Emacs
-        open < shift - e : skhd -k "ctrl - g"; DEBUG=1 open -a Emacs
+        # Use HM app path directly to avoid LaunchServices selecting a stale
+        # Emacs.app from an old Nix store generation.
+        open < e : skhd -k "ctrl - g"; open "$HOME/Applications/Home Manager Apps/Emacs.app"
+        open < shift - e : skhd -k "ctrl - g"; DEBUG=1 open "$HOME/Applications/Home Manager Apps/Emacs.app"
 
         # kitty or terminal
         open < k : skhd -k "ctrl - g"; open_kitty
