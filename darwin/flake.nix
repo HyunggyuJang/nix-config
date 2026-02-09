@@ -12,17 +12,6 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
-    doomemacs = {
-      url = "github:HyunggyuJang/doom-emacs/nano-doom";
-      flake = false;
-    };
-    doom-config = {
-      url = "git+ssh://git@github.com/HyunggyuJang/manager.git";
-      flake = false;
-    };
-    nix-doom-emacs-unstraightened.url = "github:marienz/nix-doom-emacs-unstraightened";
-    nix-doom-emacs-unstraightened.inputs.nixpkgs.follows = "nixpkgs";
-    nix-doom-emacs-unstraightened.inputs.doomemacs.follows = "doomemacs";
     secrets = {
       url = "path:../secrets";
       flake = false;
