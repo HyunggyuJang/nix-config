@@ -16,7 +16,10 @@ in
     doomLocalDir = "${config.home.homeDirectory}/.doom";
     profileName = "";
     experimentalFetchTree = true;
-    extraPackages = epkgs: [ epkgs.vterm ];
+    extraPackages = epkgs: [
+      epkgs.vterm
+      epkgs.affe
+    ];
     emacsPackageOverrides = eself: esuper: {
       nov = esuper.nov.overrideAttrs (old: {
         packageRequires = (old.packageRequires or [ ]) ++ [ eself.dash ];
