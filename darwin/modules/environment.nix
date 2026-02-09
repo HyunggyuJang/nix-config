@@ -3,11 +3,11 @@
   environment =
     let
       envVars = {
-        EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
+        # Use the Nix-provided emacs wrapper as fallback so Doom env vars
+        # (DOOMDIR/DOOMPROFILELOADFILE) are set correctly.
+        EDITOR = "emacsclient --alternate-editor='emacs'";
         VISUAL = "$EDITOR";
         LANG = "en_US.UTF-8";
-        DOOMDIR = "${hgj_home}/notes/org/manager";
-        EMACSDIR = "${hgj_home}/.emacs.d";
         DOOMLOCALDIR = "${hgj_home}/.doom";
         SHELL = "${pkgs.zsh}/bin/zsh";
         # LIBGS = "/opt/homebrew/lib/libgs.dylib"; # For tikz's latex preview.
@@ -26,7 +26,7 @@
         # Easy access to Doom
         # SystemPath added before to the variables, it can be inspected at /etc/static/zshenv,
         # which source *-set-environment file.
-        "${envVars.EMACSDIR}/bin"
+        "${hgj_home}/.emacs.d/bin"
         "${brewpath}/bin"
         # rust
         "$HOME/.cargo/bin"

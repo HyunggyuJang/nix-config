@@ -1,6 +1,7 @@
 { config, lib, pkgs, inputs, ... }:
 let
   git = "${pkgs.git}/bin/git";
+  lsregister = "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister";
   emacsRepoDir = "${config.home.homeDirectory}/.emacs.d";
   originUrl = "git@github.com:HyunggyuJang/doom-emacs.git";
   upstreamUrl = "git@github.com:doomemacs/doomemacs.git";
@@ -75,5 +76,16 @@ in
     run ${git} -C "$repo" config branch."$branch".remote origin
     run ${git} -C "$repo" config branch."$branch".merge refs/heads/"$branch"
     run ${git} -C "$repo" config branch."$branch".rebase false
+  '';
+
+  home.activation.preferDoomEmacsAppForLaunchServices = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    raw_app=${lib.escapeShellArg "${pkgs.emacs}/Applications/Emacs.app"}
+    doom_app=${lib.escapeShellArg "${config.programs.doom-emacs.finalEmacsPackage}/Applications/Emacs.app"}
+
+    if [[ -x ${lib.escapeShellArg lsregister} && -d "$doom_app" ]]; then
+      verboseEcho "Registering Doom Emacs app for LaunchServices"
+      run ${lsregister} -u "$raw_app" || true
+      run ${lsregister} -f "$doom_app"
+    fi
   '';
 }
