@@ -10,12 +10,26 @@ in
   programs.doom-emacs = {
     enable = true;
     provideEmacs = true;
-    emacs = pkgs.emacs.override { withNativeCompilation = false; };
+    emacs = pkgs.emacs;
     doomDir = inputs.doom-config.outPath;
     doomLocalDir = "${config.home.homeDirectory}/.doom";
     profileName = "";
     experimentalFetchTree = true;
     extraPackages = epkgs: [ epkgs.vterm ];
+    emacsPackageOverrides = eself: esuper: {
+      nov = esuper.nov.overrideAttrs (old: {
+        packageRequires = (old.packageRequires or [ ]) ++ [ eself.dash ];
+      });
+      anki-editor = esuper.anki-editor.overrideAttrs (old: {
+        packageRequires = (old.packageRequires or [ ]) ++ [
+          eself.dash
+          eself.request
+        ];
+      });
+      laas = esuper.laas.overrideAttrs (old: {
+        packageRequires = (old.packageRequires or [ ]) ++ [ eself.yasnippet ];
+      });
+    };
   };
 
   home.activation.ensureDoomEmacsGitRemotes = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
