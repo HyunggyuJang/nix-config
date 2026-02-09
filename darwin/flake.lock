@@ -48,11 +48,11 @@
     "doom-config": {
       "flake": false,
       "locked": {
-        "lastModified": 1770515509,
-        "narHash": "sha256-/PyYx8eyLpkWAs5vk1LUCEX0rpb73lp9Le01nHW0lsc=",
+        "lastModified": 1770619087,
+        "narHash": "sha256-8Aakm2miUF7Vxeh3FhhiRwq2fbU+iwWiSITe6R/bycE=",
         "ref": "refs/heads/master",
-        "rev": "3310f793bdd4c193a79195a5f703883dd23cb7b4",
-        "revCount": 316,
+        "rev": "35a08f82653d0f5cbf76351721e107781033825f",
+        "revCount": 317,
         "type": "git",
         "url": "ssh://git@github.com/HyunggyuJang/manager.git"
       },
