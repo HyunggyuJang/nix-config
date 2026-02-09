@@ -3,9 +3,9 @@
   environment =
     let
       envVars = {
-        # Use the Nix-provided emacs wrapper as fallback so Doom env vars
-        # (DOOMDIR/DOOMPROFILELOADFILE) are set correctly.
-        EDITOR = "emacsclient --alternate-editor='emacs'";
+        # Keep macOS-style GUI fallback and rely on LaunchServices registration
+        # to resolve Emacs.app to the Doom-wrapped app.
+        EDITOR = "emacsclient --alternate-editor='open -a Emacs'";
         VISUAL = "$EDITOR";
         LANG = "en_US.UTF-8";
         DOOMLOCALDIR = "${hgj_home}/.doom";
