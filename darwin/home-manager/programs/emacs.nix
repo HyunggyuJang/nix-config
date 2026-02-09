@@ -84,7 +84,7 @@ in
 
     if [[ -x ${lib.escapeShellArg lsregister} && -d "$doom_app" ]]; then
       verboseEcho "Registering Doom Emacs app for LaunchServices"
-      run ${lsregister} -u "$raw_app" || true
+      run --silence ${lsregister} -u "$raw_app" || true
       run ${lsregister} -f "$doom_app"
     fi
   '';
