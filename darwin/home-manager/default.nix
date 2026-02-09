@@ -40,6 +40,7 @@
       ./programs/zsh.nix
       ./programs/ssh.nix
       ./programs/direnv.nix
+      inputs.nix-doom-emacs-unstraightened.homeModule
       ./programs/emacs.nix
       ./programs/firefox.nix
       ./programs/fzf.nix
