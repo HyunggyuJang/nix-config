@@ -14,7 +14,6 @@ in
       "nvm"
     ];
     casks = [
-      "appcleaner"
       "kitty"
       "karabiner-elements"
       # "zoom"
@@ -34,7 +33,7 @@ in
       # Docker
       "docker-desktop"
       "obsidian"
-      "neo4j-desktop"
+      # "neo4j-desktop"
       "android-studio"
       "figma"
       # "zed"
@@ -67,7 +66,7 @@ in
       "opencode-desktop"
     ];
     extraConfig = ''
-      brew "aptos", args: ["force-bottle", "ignore-dependencies"]
+      # brew "aptos", args: ["force-bottle", "ignore-dependencies"]
       # brew "glab", args: ["force-bottle", "ignore-dependencies"]
       # brew "tilt", args: ["force-bottle", "ignore-dependencies"]
       brew "terraform-ls", args: ["force-bottle", "ignore-dependencies"]
