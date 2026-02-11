@@ -324,6 +324,8 @@
 
       [difftool "kitty.gui"]
         cmd = kitty-diff "$LOCAL" "$REMOTE"
+      [rerere]
+        enabled = true
     '';
   };
 }
