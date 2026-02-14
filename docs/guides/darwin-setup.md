@@ -36,3 +36,5 @@
    cd darwin
    make switch
    ```
+
+5. If this is an OS upgrade flow (for example Sonoma → Sequoia for Peekaboo), run the checklist in `docs/guides/macos-upgrade-peekaboo.md`. 
