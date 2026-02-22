@@ -104,7 +104,7 @@ const run = async (pi: ExtensionAPI, ctx: ExtensionContext) => {
     "Update flake inputs?",
     `darwin/flake.lock is ${days} day${days !== 1 ? "s" : ""} old.\n` +
     `This will refresh nixpkgs, nix-darwin, home-manager, and nixpkgs-firefox-darwin,\n` +
-    `then sync the new commit hashes into darwin/flake.nix.`,
+    `sync the new commit hashes into darwin/flake.nix, then commit and push to origin.`,
   )
   if (!confirmed) return
 
@@ -118,7 +118,32 @@ const run = async (pi: ExtensionAPI, ctx: ExtensionContext) => {
     )
     const diff = diffResult.stdout.trim()
 
-    ctx.ui.notify("Flake inputs updated successfully.", "info")
+    ctx.ui.setStatus("flake-update", "Committing…")
+    const addResult = await pi.exec(
+      "git",
+      ["add", "darwin/flake.nix", "darwin/flake.lock"],
+      { cwd: repoRoot },
+    )
+    if (addResult.code !== 0 || addResult.killed) {
+      throw new Error(`git add failed: ${addResult.stderr.trim() || addResult.stdout.trim()}`)
+    }
+
+    const commitResult = await pi.exec(
+      "git",
+      ["commit", "-m", "Update darwin flake inputs"],
+      { cwd: repoRoot },
+    )
+    if (commitResult.code !== 0 || commitResult.killed) {
+      throw new Error(`git commit failed: ${commitResult.stderr.trim() || commitResult.stdout.trim()}`)
+    }
+
+    ctx.ui.setStatus("flake-update", "Pushing…")
+    const pushResult = await pi.exec("git", ["push"], { cwd: repoRoot })
+    if (pushResult.code !== 0 || pushResult.killed) {
+      throw new Error(`git push failed: ${pushResult.stderr.trim() || pushResult.stdout.trim()}`)
+    }
+
+    ctx.ui.notify("Flake inputs updated, committed, and pushed.", "info")
 
     if (diff) {
       pi.sendMessage(
