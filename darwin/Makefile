@@ -12,12 +12,12 @@ all: build switch
 
 build:
 		$(call announce,nix run nix-darwin -- switch --flake .#$(HOST))
-		@nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin -- switch --flake .#$(HOST)
+		@nix run --extra-experimental-features nix-command --extra-experimental-features flakes nix-darwin -- switch --flake .#$(HOST) --no-update-lock-file
 switch:
 		$(call announce,darwin-rebuild switch --flake .#$(HOST))
-		@sudo darwin-rebuild switch --flake .#$(HOST) --show-trace
+		@sudo darwin-rebuild switch --flake .#$(HOST) --no-update-lock-file --show-trace
 		@echo "Darwin generation: $$(sudo darwin-rebuild --list-generations | tail -1)"
 rollback:
 		$(call announce,darwin-rebuild switch --rollback --flake .#$(HOST))
-		@sudo darwin-rebuild switch --rollback --flake .#$(HOST)
+		@sudo darwin-rebuild switch --rollback --flake .#$(HOST) --no-update-lock-file
 		@echo "Darwin generation: $$(sudo darwin-rebuild --list-generations | tail -1)"
