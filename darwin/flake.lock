@@ -66,7 +66,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "603626a8da9e1b622e55251a90ef486b8179334c",
         "type": "github"
       }
     },
@@ -87,7 +86,6 @@
       "original": {
         "owner": "nix-darwin",
         "repo": "nix-darwin",
-        "rev": "6a7fdcd5839ec8b135821179eea3b58092171bcf",
         "type": "github"
       }
     },
@@ -103,7 +101,6 @@
       "original": {
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c9bcf43e95457bb8a41b4c144de5cb394afe5261",
         "type": "github"
       }
     },
@@ -124,7 +121,6 @@
       "original": {
         "owner": "bandithedoge",
         "repo": "nixpkgs-firefox-darwin",
-        "rev": "eea90a2e07503710c6476772c8187aaa9da4e180",
         "type": "github"
       }
     },
