@@ -93,3 +93,31 @@ After that, `darwin-rebuild build` would see no mismatch and leave the lock alon
   - `validateFlake()`: runs `darwin-rebuild build --flake .`
 - `darwin/flake.nix`: contains the pinned input URLs that SYNC_SCRIPT patches
 - `darwin/flake.lock`: the lock file whose `original` fields cause the mismatch
+
+---
+
+## Follow-up finding (2026-02-22, evening)
+
+A direct metadata check shows an important difference:
+
+- `github:nix-community/home-manager/master` resolves to current HEAD (`603626a8`, 2026-02-22)
+- `github:nix-community/home-manager` can resolve to `abfad3d2` (2025-04-24) in the failing flow
+
+So the extension should use an explicit branch ref in override input:
+
+```diff
+- "--override-input", "home-manager", "github:nix-community/home-manager",
++ "--override-input", "home-manager", "github:nix-community/home-manager/master",
+```
+
+This avoids ambiguous/default ref behavior and prevents accidental downgrade to
+an old commit during update.
+
+### Suggested research handoff questions
+
+1. Why does unqualified `github:nix-community/home-manager` resolve differently in
+   some flows even with `--refresh`?
+2. Is there daemon-level or fetcher-level caching that `--refresh` on `flake update`
+   does not fully invalidate for subsequent commands?
+3. Should all extension override-input URLs use explicit refs (`/master` or release
+   branch) for determinism?
