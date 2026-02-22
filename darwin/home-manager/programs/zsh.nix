@@ -123,7 +123,7 @@
 
           # eat shell integration (sets up prompt tracking, cwd reporting, etc.)
           [ -n "$EAT_SHELL_INTEGRATION_DIR" ] && \
-            source "$EAT_SHELL_INTEGRATION_DIR/zsh.sh"
+            source "$EAT_SHELL_INTEGRATION_DIR/zsh"
 
           if ! whence nvm; then
               export NVM_DIR="$HOME/.nvm"
