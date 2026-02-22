@@ -3,12 +3,12 @@
 
   inputs = {
     nixpkgs.url =
-      "github:NixOS/nixpkgs/6d70567773843ee381a1adbb212d452a43b078dc";
+      "github:NixOS/nixpkgs/aaf43e7c58bb8093a6325ef1d7b4af616779abc5";
     nix-darwin.url =
-      "github:nix-darwin/nix-darwin/0fc4e7ac670a0ed874abacf73c4b072a6a58064b";
+      "github:nix-darwin/nix-darwin/6a7fdcd5839ec8b135821179eea3b58092171bcf";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url =
-      "github:nix-community/home-manager/475921375def3eb930e1f8883f619ff8609accb6";
+      "github:nix-community/home-manager/abfad3d2958c9e6300a883bd443512c55dfeb1be";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -18,7 +18,7 @@
     };
     firefox-addons.url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
-    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/3d34ee3b73b456efde0d7950ce96575aea190692";
+    nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin/eea90a2e07503710c6476772c8187aaa9da4e180";
     nixpkgs-firefox-darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
