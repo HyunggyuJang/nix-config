@@ -9,7 +9,7 @@ in
     onActivation.autoUpdate = false;
     onActivation.cleanup = "zap";
     global.brewfile = true;
-    brewPrefix = "/opt/homebrew/bin";
+    prefix = "/opt/homebrew";
     taps = [ "steipete/tap" ];
     brews = [
       "nvm"

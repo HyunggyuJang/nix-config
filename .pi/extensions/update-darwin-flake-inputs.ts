@@ -16,19 +16,48 @@ const STALE_DAYS = 7
 
 const INPUTS = ["nixpkgs", "nix-darwin", "home-manager", "nixpkgs-firefox-darwin"] as const
 
-// Python one-shot script: reads flake.lock and patches the rev in each input URL
+// Python script: strips commit pins from input URLs in flake.nix
+// e.g. "github:nix-community/home-manager/abc123..." -> "github:nix-community/home-manager"
+const STRIP_PINS_SCRIPT = String.raw`
+import pathlib, re
+
+inputs = ["nixpkgs", "nix-darwin", "home-manager", "nixpkgs-firefox-darwin"]
+
+text = pathlib.Path("flake.nix").read_text()
+for name in inputs:
+    # Match: name.url = "github:owner/repo/COMMIT_HASH";
+    # Replace with: name.url = "github:owner/repo";
+    pattern = rf"({re.escape(name)}\.url\s*=\s*\"[^\"]+)/[0-9a-f]{{7,}}(\";)"
+    text = re.sub(pattern, r"\1\2", text)
+
+pathlib.Path("flake.nix").write_text(text)
+`.trim()
+
+// Python script: reads flake.lock and patches the rev in each input URL
 const SYNC_SCRIPT = String.raw`
 import json, pathlib, re
 
 lock = json.loads(pathlib.Path("flake.lock").read_text())
 inputs = ["nixpkgs", "nix-darwin", "home-manager", "nixpkgs-firefox-darwin"]
 
+# Follow root inputs mapping to get correct node names
+root_inputs = lock["nodes"]["root"]["inputs"]
+
 text = pathlib.Path("flake.nix").read_text()
 for name in inputs:
-    rev = lock["nodes"][name]["locked"]["rev"]
-    pattern = rf"({re.escape(name)}\.url\s*=\s*\"[^\"]+/)([0-9a-f]{{7,}})(\";)"
+    node_name = root_inputs.get(name, name)  # e.g. home-manager -> home-manager_2
+    rev = lock["nodes"][node_name]["locked"]["rev"]
+    # Match: name.url = "github:owner/repo"; (no commit hash)
+    # Replace with: name.url = "github:owner/repo/REV";
+    pattern = rf"({re.escape(name)}\.url\s*=\s*\"[^\"]+)(\";)"
     def repl(match, rev=rev):
-        return f"{match.group(1)}{rev}{match.group(3)}"
+        url = match.group(1)
+        # If URL already ends with a hash, replace it; otherwise append
+        if re.search(r'/[0-9a-f]{7,}$', url):
+            url = re.sub(r'/[0-9a-f]{7,}$', f'/{rev}', url)
+        else:
+            url = f'{url}/{rev}'
+        return f'{url}{match.group(2)}'
     text, count = re.subn(pattern, repl, text)
     if count != 1:
         raise SystemExit(f"Expected 1 match for {name}, got {count}")
@@ -72,39 +101,35 @@ const getLockAgeDays = (lockPath: string): number | undefined => {
 }
 
 const runUpdate = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir: string) => {
-  ctx.ui.setStatus("flake-update", "Running nix flake update…")
+  // Step 1: Strip commit pins from flake.nix so nix flake update resolves to latest
+  ctx.ui.setStatus("flake-update", "Stripping commit pins from flake.nix…")
+  const stripResult = await pi.exec("python3", ["-c", STRIP_PINS_SCRIPT], { cwd: darwinDir })
+  if (stripResult.code !== 0 || stripResult.killed) {
+    const detail = stripResult.stderr.trim() || stripResult.stdout.trim()
+    throw new Error(`Strip pins failed: ${detail}`)
+  }
 
+  // Step 2: Update the lock file (nix resolves unpinned URLs to latest default branch)
+  ctx.ui.setStatus("flake-update", "Running nix flake update…")
   const updateResult = await pi.exec(
     "nix",
-    [
-      "flake", "update",
-      "--refresh",
-      "--override-input", "nixpkgs",                    "github:NixOS/nixpkgs",
-      "--override-input", "nix-darwin",                 "github:nix-darwin/nix-darwin",
-      "--override-input", "home-manager",               "github:nix-community/home-manager/master",
-      "--override-input", "nixpkgs-firefox-darwin",     "github:bandithedoge/nixpkgs-firefox-darwin",
-      ...INPUTS,
-    ],
+    ["flake", "update", "--refresh", ...INPUTS],
     { cwd: darwinDir },
   )
-
   if (updateResult.code !== 0 || updateResult.killed) {
     const detail = updateResult.stderr.trim() || updateResult.stdout.trim()
     throw new Error(`nix flake update failed: ${detail}`)
   }
 
+  // Step 3: Write the new commit hashes back into flake.nix
   ctx.ui.setStatus("flake-update", "Syncing revisions into flake.nix…")
-
   const syncResult = await pi.exec("python3", ["-c", SYNC_SCRIPT], { cwd: darwinDir })
   if (syncResult.code !== 0 || syncResult.killed) {
     const detail = syncResult.stderr.trim() || syncResult.stdout.trim()
     throw new Error(`Revision sync failed: ${detail}`)
   }
 
-  // SYNC_SCRIPT pins commit revs into flake.nix URLs, making the lock's
-  // 'original' fields stale. Re-lock with --refresh so the lock's 'original'
-  // matches flake.nix before validation (preventing darwin-rebuild from
-  // re-resolving inputs and hitting stale cache).
+  // Step 4: Re-lock so flake.lock's 'original' matches the pinned URLs in flake.nix
   ctx.ui.setStatus("flake-update", "Re-locking to reconcile flake.nix with lock…")
   const relockResult = await pi.exec("nix", ["flake", "lock", "--refresh"], { cwd: darwinDir })
   if (relockResult.code !== 0 || relockResult.killed) {

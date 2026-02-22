@@ -121,3 +121,85 @@ an old commit during update.
    does not fully invalidate for subsequent commands?
 3. Should all extension override-input URLs use explicit refs (`/master` or release
    branch) for determinism?
+
+---
+
+## Research answers (2026-02-22)
+
+### Q1: Why does unqualified URL resolve differently?
+
+Per the [flake reference docs](https://nix.dev/manual/nix/latest/command-ref/new-cli/nix3-flake#types):
+> `github:NixOS/nixpkgs`: **The master branch** of the NixOS/nixpkgs repository.
+
+Both `github:owner/repo` and `github:owner/repo/master` resolve to master. The
+difference is in **what gets stored in the lock file's `original` field**:
+
+| URL form | Lock `original` |
+|----------|-----------------|
+| `github:nix-community/home-manager` | `{owner, repo, type}` — **no ref** |
+| `github:nix-community/home-manager/master` | `{owner, repo, type, ref: "master"}` |
+
+When SYNC_SCRIPT writes a commit hash into flake.nix, Nix compares:
+- flake.nix: `{..., rev: "603626a8"}` (has rev)
+- lock original: `{owner, repo, type}` (no rev, no ref)
+
+**Mismatch → re-resolution triggered.**
+
+With explicit `/master`:
+- flake.nix: `{..., rev: "603626a8"}`
+- lock original: `{..., ref: "master"}`
+
+Still a mismatch (rev vs ref), but Nix may handle this differently since the
+original explicitly specifies a branch.
+
+### Q2: Is there caching that `--refresh` doesn't invalidate?
+
+Yes. From [nix.conf docs](https://nix.dev/manual/nix/latest/command-ref/conf-file#conf-tarball-ttl):
+
+> `tarball-ttl`: The number of seconds a downloaded tarball is considered fresh.
+> **Default: 3600** (1 hour)
+
+GitHub flakes are fetched as tarballs. The cache works like this:
+
+1. `nix flake update --refresh` forces fresh fetch → gets commit `603626a8`
+2. Tarball for `github:nix-community/home-manager` cached at `$XDG_CACHE_HOME/nix/tarballs`
+3. `darwin-rebuild build` (no `--refresh`) checks cache → tarball still "fresh" per TTL
+4. **BUT** the cached tarball may serve a **different commit** than what was just fetched
+   if the tarball URL is for the branch (not a specific commit)
+
+The key insight: tarball URL for `github:owner/repo` points to **branch HEAD**, which
+GitHub may serve from CDN cache. The CDN cache is separate from Nix's tarball cache.
+
+### Q3: Should override-input URLs use explicit refs?
+
+**Yes, for two reasons:**
+
+1. **Lock file consistency**: `github:owner/repo/master` stores `ref: "master"` in
+   the lock's `original`, making the lock more self-documenting.
+
+2. **Determinism**: An explicit ref reduces ambiguity. While Nix docs say
+   `github:owner/repo` defaults to master, having the ref explicit prevents any
+   edge cases with default branch resolution.
+
+**Recommended change:**
+
+```diff
+- "--override-input", "home-manager", "github:nix-community/home-manager",
++ "--override-input", "home-manager", "github:nix-community/home-manager/master",
+```
+
+However, this alone doesn't fix the mismatch problem (SYNC_SCRIPT still writes a
+commit hash into flake.nix, creating `rev` vs `ref` mismatch). The primary fix
+remains **Solution A** (`--no-update-lock-file` on validation).
+
+---
+
+## Final recommendation
+
+Apply both fixes:
+
+1. **Primary**: Add `--no-update-lock-file` to `validateFlake()` to prevent lock
+   modifications during validation.
+
+2. **Secondary**: Use explicit `/master` refs in override-input URLs for better
+   determinism and lock file clarity.
