@@ -95,7 +95,7 @@
           echo >&2 "Homebrew completion path..."
           if [ -f ${brewpath}/bin/brew ]; then
               fpath+=$(brew --prefix)/share/zsh/site-functions
-              if [[ $INSIDE_EMACS != vterm && $TERM_PROGRAM != vscode ]]; then
+              if [[ -z $INSIDE_EMACS && $TERM_PROGRAM != vscode ]]; then
                  PATH=${brewpath}/bin:$PATH
               fi
           else
@@ -121,18 +121,9 @@
               echo $prompt_short_dir
                                       }
 
-          vterm_printf(){
-              if [ -n "$TMUX" ]; then
-                  # Tell tmux to pass the escape sequences through
-                  # (Source: http://permalink.gmane.org/gmane.comp.terminal-emulators.tmux.user/1324)
-                  printf "\ePtmux;\e\e]%s\007\e\\" "$1"
-              elif [ "''${TERM%%-*}" = "screen" ]; then
-                  # GNU screen (screen, screen-256color, screen-256color-bce)
-                  printf "\eP\e]%s\007\e\\" "$1"
-              else
-                  printf "\e]%s\e\\" "$1"
-              fi
-                                                                                  }
+          # eat shell integration (sets up prompt tracking, cwd reporting, etc.)
+          [ -n "$EAT_SHELL_INTEGRATION_DIR" ] && \
+            source "$EAT_SHELL_INTEGRATION_DIR/zsh.sh"
 
           if ! whence nvm; then
               export NVM_DIR="$HOME/.nvm"
