@@ -102,11 +102,27 @@ const runUpdate = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir: str
 }
 
 const validateFlake = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir: string) => {
-  ctx.ui.setStatus("flake-update", "Validating flake…")
-  const result = await pi.exec("nix", ["flake", "show", "--json"], { cwd: darwinDir })
-  if (result.code !== 0 && !result.killed) {
-    const output = result.stderr.trim() || result.stdout.trim()
-    throw new FlakeValidationError(output)
+  ctx.ui.setStatus("flake-update", "Discovering darwinConfigurations…")
+  const evalResult = await pi.exec(
+    "nix",
+    ["eval", "--json", ".#darwinConfigurations", "--apply", "builtins.attrNames"],
+    { cwd: darwinDir },
+  )
+  if (evalResult.code !== 0 && !evalResult.killed) {
+    throw new FlakeValidationError(evalResult.stderr.trim() || evalResult.stdout.trim())
+  }
+
+  const names = JSON.parse(evalResult.stdout.trim()) as string[]
+  const targets = names.map((n) => `.#darwinConfigurations.${n}.system`)
+
+  ctx.ui.setStatus("flake-update", "Dry-run build to validate flake…")
+  const buildResult = await pi.exec(
+    "nix",
+    ["build", "--dry-run", "--no-link", ...targets],
+    { cwd: darwinDir },
+  )
+  if (buildResult.code !== 0 && !buildResult.killed) {
+    throw new FlakeValidationError(buildResult.stderr.trim() || buildResult.stdout.trim())
   }
 }
 
