@@ -2,12 +2,9 @@
  * Darwin Flake Inputs Updater
  *
  * On session start, checks if darwin/flake.lock is stale (> STALE_DAYS days old)
- * and offers to update nixpkgs, nix-darwin, and nixpkgs-firefox-darwin,
- * then syncs the new commit hashes back into darwin/flake.nix.
- *
- * home-manager is intentionally excluded: its flake.nix pin tracks a branch
- * ahead of the GitHub default branch, so --override-input would downgrade it.
- * Update home-manager manually when needed.
+ * and offers to update nixpkgs, nix-darwin, home-manager, and
+ * nixpkgs-firefox-darwin, then syncs the new commit hashes back into
+ * darwin/flake.nix.
  */
 
 import fs from "node:fs"
@@ -17,14 +14,14 @@ import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-age
 
 const STALE_DAYS = 7
 
-const INPUTS = ["nixpkgs", "nix-darwin", "nixpkgs-firefox-darwin"] as const
+const INPUTS = ["nixpkgs", "nix-darwin", "home-manager", "nixpkgs-firefox-darwin"] as const
 
 // Python one-shot script: reads flake.lock and patches the rev in each input URL
 const SYNC_SCRIPT = String.raw`
 import json, pathlib, re
 
 lock = json.loads(pathlib.Path("flake.lock").read_text())
-inputs = ["nixpkgs", "nix-darwin", "nixpkgs-firefox-darwin"]
+inputs = ["nixpkgs", "nix-darwin", "home-manager", "nixpkgs-firefox-darwin"]
 
 text = pathlib.Path("flake.nix").read_text()
 for name in inputs:
@@ -81,9 +78,11 @@ const runUpdate = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir: str
     "nix",
     [
       "flake", "update",
-      "--override-input", "nixpkgs",                "github:NixOS/nixpkgs",
-      "--override-input", "nix-darwin",             "github:nix-darwin/nix-darwin",
-      "--override-input", "nixpkgs-firefox-darwin", "github:bandithedoge/nixpkgs-firefox-darwin",
+      "--refresh",
+      "--override-input", "nixpkgs",                    "github:NixOS/nixpkgs",
+      "--override-input", "nix-darwin",                 "github:nix-darwin/nix-darwin",
+      "--override-input", "home-manager",               "github:nix-community/home-manager",
+      "--override-input", "nixpkgs-firefox-darwin",     "github:bandithedoge/nixpkgs-firefox-darwin",
       ...INPUTS,
     ],
     { cwd: darwinDir },
@@ -128,7 +127,7 @@ const run = async (pi: ExtensionAPI, ctx: ExtensionContext) => {
   const confirmed = await ctx.ui.confirm(
     "Update flake inputs?",
     `darwin/flake.lock is ${days} day${days !== 1 ? "s" : ""} old.\n` +
-    `This will refresh nixpkgs, nix-darwin, and nixpkgs-firefox-darwin,\n` +
+    `This will refresh nixpkgs, nix-darwin, home-manager, and nixpkgs-firefox-darwin,\n` +
     `sync the new commit hashes into darwin/flake.nix, then commit and push to origin.`,
   )
   if (!confirmed) return
