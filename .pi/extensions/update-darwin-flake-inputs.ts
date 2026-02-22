@@ -51,8 +51,15 @@ const getRepoRoot = async (pi: ExtensionAPI, cwd: string) => {
 
 const getLockAgeDays = (lockPath: string): number | undefined => {
   try {
-    const stat = fs.statSync(lockPath)
-    return (Date.now() - stat.mtimeMs) / (1000 * 60 * 60 * 24)
+    const lock = JSON.parse(fs.readFileSync(lockPath, "utf8")) as {
+      nodes: Record<string, { locked?: { lastModified?: number } }>
+    }
+    const timestamps = Object.values(lock.nodes)
+      .map((n) => n.locked?.lastModified)
+      .filter((t): t is number => typeof t === "number")
+    if (timestamps.length === 0) return undefined
+    const newestSec = Math.max(...timestamps)
+    return (Date.now() / 1000 - newestSec) / (60 * 60 * 24)
   } catch {
     return undefined
   }
