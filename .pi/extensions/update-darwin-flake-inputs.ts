@@ -106,7 +106,7 @@ const validateFlake = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir:
   // `darwin-rebuild build` builds the full system closure for the current host
   // without activating it (no root needed), catching the same errors dswitch would.
   ctx.ui.setStatus("flake-update", "darwin-rebuild build (dry-run for dswitch)…")
-  const result = await pi.exec("darwin-rebuild", ["build", "--flake", "."], { cwd: darwinDir })
+  const result = await pi.exec("darwin-rebuild", ["build", "--flake", ".", "--no-update-lock-file"], { cwd: darwinDir })
   if (result.code !== 0 && !result.killed) {
     throw new FlakeValidationError(result.stderr.trim() || result.stdout.trim())
   }
