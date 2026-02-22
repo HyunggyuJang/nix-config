@@ -100,6 +100,17 @@ const runUpdate = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir: str
     const detail = syncResult.stderr.trim() || syncResult.stdout.trim()
     throw new Error(`Revision sync failed: ${detail}`)
   }
+
+  // SYNC_SCRIPT pins commit revs into flake.nix URLs, making the lock's
+  // 'original' fields stale. Re-lock with --refresh so the lock's 'original'
+  // matches flake.nix before validation (preventing darwin-rebuild from
+  // re-resolving inputs and hitting stale cache).
+  ctx.ui.setStatus("flake-update", "Re-locking to reconcile flake.nix with lock…")
+  const relockResult = await pi.exec("nix", ["flake", "lock", "--refresh"], { cwd: darwinDir })
+  if (relockResult.code !== 0 || relockResult.killed) {
+    const detail = relockResult.stderr.trim() || relockResult.stdout.trim()
+    throw new Error(`nix flake lock failed: ${detail}`)
+  }
 }
 
 const validateFlake = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir: string) => {
