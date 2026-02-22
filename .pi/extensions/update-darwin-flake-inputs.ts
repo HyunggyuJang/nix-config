@@ -36,6 +36,12 @@ for name in inputs:
 pathlib.Path("flake.nix").write_text(text)
 `.trim()
 
+class FlakeValidationError extends Error {
+  constructor(public readonly output: string) {
+    super("Flake validation failed")
+  }
+}
+
 const firstLine = (text: string) => {
   for (const line of text.split("\n")) {
     const trimmed = line.trim()
@@ -95,6 +101,15 @@ const runUpdate = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir: str
   }
 }
 
+const validateFlake = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir: string) => {
+  ctx.ui.setStatus("flake-update", "Validating flake…")
+  const result = await pi.exec("nix", ["flake", "show", "--json"], { cwd: darwinDir })
+  if (result.code !== 0 && !result.killed) {
+    const output = result.stderr.trim() || result.stdout.trim()
+    throw new FlakeValidationError(output)
+  }
+}
+
 const run = async (pi: ExtensionAPI, ctx: ExtensionContext) => {
   const repoRoot = await getRepoRoot(pi, ctx.cwd)
   if (!repoRoot) return
@@ -117,6 +132,7 @@ const run = async (pi: ExtensionAPI, ctx: ExtensionContext) => {
 
   try {
     await runUpdate(pi, ctx, darwinDir)
+    await validateFlake(pi, ctx, darwinDir)
 
     const diffResult = await pi.exec(
       "git",
@@ -164,8 +180,24 @@ const run = async (pi: ExtensionAPI, ctx: ExtensionContext) => {
       )
     }
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    ctx.ui.notify(`Flake update failed: ${message}`, "error")
+    if (error instanceof FlakeValidationError) {
+      ctx.ui.notify("Flake validation failed — handing off to agent to fix.", "warning")
+      pi.sendMessage(
+        {
+          customType: "flake-validation-error",
+          content:
+            `darwin flake inputs were updated but \`nix flake show\` failed.\n` +
+            `Please investigate the error, fix the configuration, then commit and push.\n\n` +
+            `\`\`\`\n${error.output}\n\`\`\``,
+          display: true,
+          details: { output: error.output },
+        },
+        { deliverAs: "nextTurn" },
+      )
+    } else {
+      const message = error instanceof Error ? error.message : String(error)
+      ctx.ui.notify(`Flake update failed: ${message}`, "error")
+    }
   } finally {
     ctx.ui.setStatus("flake-update", undefined)
   }
