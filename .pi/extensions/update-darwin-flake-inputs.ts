@@ -81,7 +81,7 @@ const runUpdate = async (pi: ExtensionAPI, ctx: ExtensionContext, darwinDir: str
       "--refresh",
       "--override-input", "nixpkgs",                    "github:NixOS/nixpkgs",
       "--override-input", "nix-darwin",                 "github:nix-darwin/nix-darwin",
-      "--override-input", "home-manager",               "github:nix-community/home-manager",
+      "--override-input", "home-manager",               "github:nix-community/home-manager/master",
       "--override-input", "nixpkgs-firefox-darwin",     "github:bandithedoge/nixpkgs-firefox-darwin",
       ...INPUTS,
     ],
