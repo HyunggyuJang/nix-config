@@ -27,16 +27,26 @@ let
       sshSecretFiles
   );
   gitSecretsDir = "${secretsDir}/git/${hostName}";
-  gitSecretFile = "${gitSecretsDir}/gitconfig-work.age";
+  gitconfigWorkFile = "${gitSecretsDir}/gitconfig-work.age";
+  gitconfigFile = "${gitSecretsDir}/gitconfig.age";
 in
 {
   age.identityPaths = lib.mkDefault [ "${hgj_home}/.ssh/agenix_ed25519" ];
   age.secrets = lib.mkMerge [
     (lib.mkIf (sshSecretFiles != [ ]) secretAttrs)
-    (lib.mkIf (builtins.pathExists gitSecretFile) {
+    (lib.mkIf (builtins.pathExists gitconfigWorkFile) {
       gitconfig-work = {
-        file = gitSecretFile;
+        file = gitconfigWorkFile;
         path = "${hgj_home}/.gitconfig-work";
+        owner = owner;
+        mode = "0600";
+        symlink = false;
+      };
+    })
+    (lib.mkIf (builtins.pathExists gitconfigFile) {
+      gitconfig = {
+        file = gitconfigFile;
+        path = "${hgj_home}/.gitconfig";
         owner = owner;
         mode = "0600";
         symlink = false;

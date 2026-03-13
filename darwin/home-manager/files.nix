@@ -293,39 +293,6 @@
         exec kitty +kitten diff --config "$config" "$@"
       '';
     };
-    ".gitconfig".text = ''
-      [user]
-        name = Hyunggyu Jang
-        email = murasakipurplez5@gmail.com
 
-      [filter "lfs"]
-        clean = git-lfs clean -- %f
-        smudge = git-lfs smudge -- %f
-        process = git-lfs filter-process
-        required = true
-
-      [color]
-        ui = auto
-
-      [includeIf "hasconfig:remote.*.url:https://REDACTED/**"]
-        path = ${hgj_home}/.gitconfig-work
-      [includeIf "hasconfig:remote.*.url:git@REDACTED:*"]
-        path = ${hgj_home}/.gitconfig-work
-
-      [diff]
-        tool = kitty
-
-      [difftool]
-        prompt = false
-        trustExitCode = true
-
-      [difftool "kitty"]
-        cmd = kitty-diff "$LOCAL" "$REMOTE"
-
-      [difftool "kitty.gui"]
-        cmd = kitty-diff "$LOCAL" "$REMOTE"
-      [rerere]
-        enabled = true
-    '';
   };
 }

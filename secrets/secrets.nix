@@ -35,6 +35,7 @@ let
 
   gitFiles = [
     "gitconfig-work"
+    "gitconfig"
   ];
 in
 sshSecrets sshFiles // gitSecrets gitFiles
