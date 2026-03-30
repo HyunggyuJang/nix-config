@@ -55,7 +55,7 @@ in
     # ghc
     ffmpeg-headless
     # sourcegraph
-    nodePackages_latest.pnpm
+    pnpm
     imagemagick
     ghostscript
     # scop

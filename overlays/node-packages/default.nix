@@ -1,13 +1,20 @@
-self: pkgs:
+final: prev:
 
-let myNodePackages = import ./packages {};
+let
+  generatedNodePackages = import ./packages {
+    pkgs = prev;
+    system = prev.stdenv.hostPlatform.system;
+    nodejs = prev.nodejs;
+  };
+  jsdom = generatedNodePackages.jsdom.override {
+    preRebuild = ''
+      sed 's/"link:/"file:/g' --in-place package.json
+    '';
+  };
 in
 {
-  nodePackages = pkgs.nodePackages // myNodePackages // {
-    jsdom = myNodePackages.jsdom.override {
-      preRebuild = ''
-       sed 's/"link:/"file:/g' --in-place package.json
-     '';
-    };
+  inherit jsdom;
+  myNodePackages = generatedNodePackages // {
+    inherit jsdom;
   };
 }
