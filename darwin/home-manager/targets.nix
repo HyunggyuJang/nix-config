@@ -15,9 +15,9 @@
     "~b" = "moveWordBackward:";
     "~p" = "selectPreviousKeyView:";
     "~n" = "selectNextKeyView:";
-    # Excaping XML expressions should be done automatically!
-    "~&lt;" = "moveToBeginningOfDocument:";
-    "~&gt;" = "moveToEndOfDocument:";
+    # XML escaping is handled by plist generation.
+    "~<" = "moveToBeginningOfDocument:";
+    "~>" = "moveToEndOfDocument:";
     "~v" = "pageUp:";
     "~/" = "complete:";
     "~c" = [
