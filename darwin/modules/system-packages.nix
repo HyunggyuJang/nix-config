@@ -93,6 +93,7 @@ in
     mermaid-cli
     nodejs
     awscli2
+    google-cloud-sdk
     gh
     go
     yq-go
