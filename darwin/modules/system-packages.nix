@@ -104,6 +104,7 @@ in
     istioctl
     # glab is provided via custom overlay to get v1.65.0
     glab
+    inputs.googleworkspace-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
     postgresql
     mongosh
     python3

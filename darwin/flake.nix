@@ -7,10 +7,14 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    flake-utils.url = "github:numtide/flake-utils";
+    flake-utils.inputs.systems.follows = "systems";
+    systems.url = "github:nix-systems/default";
     agenix.url = "github:ryantm/agenix";
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     agenix.inputs.home-manager.follows = "home-manager";
     agenix.inputs.darwin.follows = "nix-darwin";
+    agenix.inputs.systems.follows = "systems";
     secrets = {
       url = "path:../secrets";
       flake = false;
@@ -19,6 +23,9 @@
     firefox-addons.inputs.nixpkgs.follows = "nixpkgs";
     nixpkgs-firefox-darwin.url = "github:bandithedoge/nixpkgs-firefox-darwin";
     nixpkgs-firefox-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    googleworkspace-cli.url = "github:googleworkspace/cli";
+    googleworkspace-cli.inputs.nixpkgs.follows = "nixpkgs";
+    googleworkspace-cli.inputs.flake-utils.follows = "flake-utils";
   };
 
   outputs = inputs@{ nix-darwin, nixpkgs, ... }: {
