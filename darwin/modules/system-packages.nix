@@ -111,6 +111,7 @@ in
     buf
     poppler-utils
     openai-whisper
+    librsvg
   ];
   environment.pathsToLink = [ "/lib" "/share" ];
   environment.shells = [ pkgs.zsh ];

@@ -8,11 +8,11 @@
         # Simple derivation that just extracts the binary from the tarball
         glab = prev.stdenv.mkDerivation rec {
           pname = "glab";
-          version = "1.80.4";
+          version = "1.92.1";
 
           src = prev.fetchurl {
             url = "https://gitlab.com/gitlab-org/cli/-/releases/v${version}/downloads/${pname}_${version}_darwin_arm64.tar.gz";
-            sha256 = "sha256-pebDuHBc4bSysKYKJaPay6o/dkhPaDwHp8Ksttaepb8=";
+            sha256 = "sha256-6Qnv5cZ61QY5RNieE6KTtpCBotB1DEdS73uTd+I6bVo=";
           };
 
           dontUnpack = false;
