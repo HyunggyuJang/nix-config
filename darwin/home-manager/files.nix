@@ -1,6 +1,7 @@
 { config
 , pkgs
 , hgj_home
+, hgj_projects
 , hgj_localbin
 , ...
 }:
@@ -291,6 +292,15 @@
         fi
 
         exec kitty +kitten diff --config "$config" "$@"
+      '';
+    };
+    "${hgj_localbin}/agent-wiki" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        set -euo pipefail
+
+        exec uv run --project "${hgj_projects}/agent-wiki" agent-wiki "$@"
       '';
     };
 
