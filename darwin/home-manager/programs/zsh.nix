@@ -16,6 +16,12 @@
       sessionVariables = {
         RPROMPT = "";
       };
+      envExtra = ''
+        # Atlassian API token session
+        if [ -f "$HOME/.config/atlassian-cli/session.sh" ]; then
+          source "$HOME/.config/atlassian-cli/session.sh"
+        fi
+      '';
       shellAliases = {
         dbuild = "cd ${hgj_darwin_home} && TERM=xterm-256color make && cd -";
         dswitch = "cd ${hgj_darwin_home} && TERM=xterm-256color caffeinate -i make switch && cd -";
