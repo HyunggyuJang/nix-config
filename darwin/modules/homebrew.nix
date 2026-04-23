@@ -64,7 +64,7 @@ in
     ] ++ lib.optionals (machineType == "M3-Pro") [
       "cloudflare-warp"
       "sdm"
-      # "cursor"
+      "cursor"
       "opencode-desktop"
     ];
     extraConfig = ''

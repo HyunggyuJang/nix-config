@@ -2,7 +2,7 @@
 {
   programs = {
     vscode = {
-      enable = false;
+      enable = true;
       package = pkgs.code-cursor;
       profiles.default.extensions =
         (with pkgs.vscode-extensions; [
