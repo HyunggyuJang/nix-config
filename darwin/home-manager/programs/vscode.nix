@@ -750,6 +750,7 @@
           }
         ];
         "workbench.startupEditor" = "none";
+        "editor.accessibilitySupport" = "on";
         "cursor.cpp.disabledLanguages" = [ ];
         "github.copilot.enable" = {
           "plaintext" = "true";
