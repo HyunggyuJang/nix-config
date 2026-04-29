@@ -43,6 +43,7 @@ in
       "mongodb-compass"
       # onyx zsa moonlander
       "keymapp"
+      "libreoffice"
     ] ++ lib.optionals (machineType == "MacBook-Air") [
       "slack"
       # For Bing AI + Google meet
