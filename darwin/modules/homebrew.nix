@@ -44,6 +44,7 @@ in
       # onyx zsa moonlander
       "keymapp"
       "libreoffice"
+      "claude"
     ] ++ lib.optionals (machineType == "MacBook-Air") [
       "slack"
       # For Bing AI + Google meet
